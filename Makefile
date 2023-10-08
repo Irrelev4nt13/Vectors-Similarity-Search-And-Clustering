@@ -1,5 +1,5 @@
 CXX := g++
-FLAGS = -g3 -Wall
+FLAGS = -g3
 
 BIN_DIR := bin
 BUILD_DIR := build
@@ -7,9 +7,9 @@ INCLUDE_DIR := include
 MODULES_DIR := modules
 SRC_DIR := src
 
-LSH := $(BIN_DIR)/lsh
-CUBE := $(BIN_DIR)/cube
-CLUSTER := $(BIN_DIR)/cluster
+LSH := $(BIN_DIR)/lsh_main
+CUBE := $(BIN_DIR)/cube_main
+CLUSTER := $(BIN_DIR)/cluster_main
 
 SRC_FILES := $(wildcard $(SRC_DIR)/*.cpp)
 
@@ -21,6 +21,11 @@ OBJ_MODULES := $(patsubst $(MODULES_DIR)/%.cpp, $(BUILD_DIR)/%.o, $(MODULES_FILE
 
 EXEC_FILES := $(patsubst $(SRC_DIR)/%.cpp, $(BIN_DIR)/%, $(SRC_FILES))
 
+ARGS_LSH = -d input_file -q query_file -k 1 -L 2 -o output_file -N 3 -R 3.14
+
+ARGS_CUBE = 
+
+ARGS_CLUSTER = 
 
 all: $(EXEC_FILES) $(OBJ_MODULES)
 
@@ -41,19 +46,19 @@ clean:
 	rm -f $(BIN_DIR)/* $(BUILD_DIR)/*
 
 run-lsh: $(LSH)
-	./$(LSH)
+	./$(LSH) $(ARGS_LSH)
 
 run-cube: $(CUBE)
-	./$(CUBE)
+	./$(CUBE) $(ARGS_CUBE)
 
 run-cluster: $(CLUSTER)
-	./$(CLUSTER)
+	./$(CLUSTER) $(ARGS_CLUSTER)
 
 valgrind-lsh: $(LSH)
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(LSH)
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes -s ./$(LSH) $(ARGS_LSH)
 
 valgrind-cube: $(CUBE)
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(CUBE)
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes -s ./$(CUBE) $(ARGS_CUBE)
 
 valgrind-cluster: $(CLUSTER)
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(CLUSTER)
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes -s ./$(CLUSTER) $(ARGS_CLUSTER)
