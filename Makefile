@@ -23,9 +23,9 @@ EXEC_FILES := $(patsubst $(SRC_DIR)/%.cpp, $(BIN_DIR)/%, $(SRC_FILES))
 
 ARGS_LSH = -d input_file -q query_file -k 1 -L 2 -o output_file -N 3 -R 3.14
 
-ARGS_CUBE = 
+ARGS_CUBE = -d input_file -q query_file -k 1 -M 2 -probes 3 -o output_file -N 4 -R 3.14 
 
-ARGS_CLUSTER = 
+ARGS_CLUSTER = -i input_file -c config_file -o output_file -complete -m Classic
 
 all: $(EXEC_FILES) $(OBJ_MODULES)
 

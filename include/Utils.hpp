@@ -20,3 +20,10 @@ void split_cube_args(const int argc, const char *argv[],
                      std::string &output_file,
                      int &num_of_nearest_neighbors,
                      double &radius);
+
+void split_cluster_args(const int argc, const char *argv[],
+                        std::string &input_file,
+                        std::string &configuration_file,
+                        std::string &output_file,
+                        bool &complete,
+                        std::string &method);

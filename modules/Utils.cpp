@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cstring>
 #include <Utils.hpp>
-
+#include <sstream>
 void split_lsh_args(const int argc, const char *argv[],
                     std::string &input_file,
                     std::string &query_file,
@@ -67,5 +67,28 @@ void split_cube_args(const int argc, const char *argv[],
             num_of_nearest_neighbors = atoi(argv[i + 1]);
         else if (!strcmp(argv[i], "-R"))
             radius = atof(argv[i + 1]);
+    }
+}
+
+void split_cluster_args(const int argc, const char *argv[],
+                        std::string &input_file,
+                        std::string &configuration_file,
+                        std::string &output_file,
+                        bool &complete,
+                        std::string &method)
+{
+    complete = false;
+    for (int i = 0; i < argc; i++)
+    {
+        if (!strcmp(argv[i], "-i"))
+            input_file = std::string(argv[i + 1]);
+        else if (!strcmp(argv[i], "-c"))
+            configuration_file = std::string(argv[i + 1]);
+        else if (!strcmp(argv[i], "-o"))
+            output_file = std::string(argv[i + 1]);
+        else if (!strcmp(argv[i], "-complete"))
+            complete = true;
+        else if (!strcmp(argv[i], "-m"))
+            method = std::string(argv[i + 1]);
     }
 }
