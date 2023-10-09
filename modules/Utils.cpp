@@ -2,6 +2,9 @@
 #include <cstring>
 #include <Utils.hpp>
 #include <sstream>
+#include <fstream>
+#include <string>
+
 void split_lsh_args(const int argc, const char *argv[], LshArgs &args)
 {
     for (int i = 0; i < argc; i++)
@@ -61,4 +64,34 @@ void split_cluster_args(const int argc, const char *argv[], ClusterArgs &args)
         else if (!strcmp(argv[i], "-m"))
             args.method = std::string(argv[i + 1]);
     }
+}
+
+void parseInputFile(const std::string &inputFile, Metadata &metadata, char **images)
+{
+    std::ifstream file(inputFile);
+
+    if (!file.is_open())
+    {
+        std::cerr << "Failed to open the file." << std::endl;
+        exit(1);
+    }
+
+    int magicNumber;
+
+    // std::string magic;
+
+    if (file >> magicNumber)
+    {
+        std::cout << "Read integer: " << magicNumber << std::endl;
+    }
+    else
+    {
+        std::cerr << "Failed to read an integer from the file." << std::endl;
+    }
+
+    // file.read(&magicNumber, 1);
+
+    std::cout << "magic: " << magicNumber << std::endl;
+
+    file.close();
 }

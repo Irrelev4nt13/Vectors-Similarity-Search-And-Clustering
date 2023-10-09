@@ -9,7 +9,7 @@
             "cwd": "${fileDirname}",
             "args": [
                 "-d",
-                "input_file",
+                "datasets/train-images.idx3-ubyte",
                 "-q",
                 "query_file",
                 "-k",

@@ -21,7 +21,7 @@ OBJ_MODULES := $(patsubst $(MODULES_DIR)/%.cpp, $(BUILD_DIR)/%.o, $(MODULES_FILE
 
 EXEC_FILES := $(patsubst $(SRC_DIR)/%.cpp, $(BIN_DIR)/%, $(SRC_FILES))
 
-ARGS_LSH = -d input_file -q query_file -k 1 -L 2 -o output_file -N 3 -R 3.14
+ARGS_LSH = -d datasets/train-images.idx3-ubyte -q query_file -k 1 -L 2 -o output_file -N 3 -R 3.14
 
 ARGS_CUBE = -d input_file -q query_file -k 1 -M 2 -probes 3 -o output_file -N 4 -R 3.14 
 
