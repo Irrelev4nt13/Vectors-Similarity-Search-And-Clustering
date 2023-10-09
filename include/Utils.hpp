@@ -10,3 +10,13 @@ void split_lsh_args(const int argc, const char *argv[],
                     std::string &output_file,
                     int &num_of_nearest_neighbors,
                     double &radius);
+
+void split_cube_args(const int argc, const char *argv[],
+                     std::string &input_file,
+                     std::string &query_file,
+                     int &dimension,
+                     int &max_candidates,
+                     int &probes,
+                     std::string &output_file,
+                     int &num_of_nearest_neighbors,
+                     double &radius);
