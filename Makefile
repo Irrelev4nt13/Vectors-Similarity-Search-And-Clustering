@@ -3,7 +3,6 @@ FLAGS := -g3 -std=c++11
 
 BIN_DIR := bin
 BUILD_DIR := build
-INCLUDE_DIR := include
 MODULES_DIR := modules
 SRC_DIR := src
 
@@ -21,9 +20,9 @@ OBJ_MODULES := $(patsubst $(MODULES_DIR)/%.cpp, $(BUILD_DIR)/%.o, $(MODULES_FILE
 
 EXEC_FILES := $(patsubst $(SRC_DIR)/%.cpp, $(BIN_DIR)/%, $(SRC_FILES))
 
-INCLUDE_DIRS := $(shell find $(INCLUDE_DIR) -type d)
+INCLUDE_DIRS := $(shell find $(MODULES_DIR) -type d)
 
-INCLUDE_FLAGS := $(addprefix -I, $(INCLUDE_DIRS) $(INCLUDE_DIR))
+INCLUDE_FLAGS := $(addprefix -I, $(INCLUDE_DIRS) $(MODULES_DIR))
 
 
 all: $(EXEC_FILES) $(OBJ_MODULES)
