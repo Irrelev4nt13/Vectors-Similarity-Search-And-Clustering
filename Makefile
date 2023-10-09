@@ -23,7 +23,7 @@ EXEC_FILES := $(patsubst $(SRC_DIR)/%.cpp, $(BIN_DIR)/%, $(SRC_FILES))
 
 INCLUDE_DIRS := $(shell find $(INCLUDE_DIR) -type d)
 
-INCLUDE_FLAGS := $(addprefix -I, $(MODULES_DIR) $(INCLUDE_DIRS))
+INCLUDE_FLAGS := $(addprefix -I, $(INCLUDE_DIRS) $(INCLUDE_DIR))
 
 
 all: $(EXEC_FILES) $(OBJ_MODULES)
@@ -47,19 +47,26 @@ clean:
 	rm -rf $(BIN_DIR)/* $(BUILD_DIR)/*
 
 
+lsh: $(LSH)
+
+cube: $(CUBE)
+
+cluster: $(CLUSTER)
+
+
 ARGS_LSH := -d datasets/train-images.idx3-ubyte -q query_file -k 1 -L 2 -o output_file -N 3 -R 3.14
 
-ARGS_CUBE := -d input_file -q query_file -k 1 -M 2 -probes 3 -o output_file -N 4 -R 3.14 
+ARGS_CUBE := -d input_file -q query_file -k 1 -M 2 -probes 3 -o output_file -N 4 -R 3.14
 
 ARGS_CLUSTER := -i input_file -c config_file -o output_file -complete -m Classic
 
-run-lsh: $(LSH)
+run-lsh: lsh
 	./$(LSH) $(ARGS_LSH)
 
-run-cube: $(CUBE)
+run-cube: cube
 	./$(CUBE) $(ARGS_CUBE)
 
-run-cluster: $(CLUSTER)
+run-cluster: cluster
 	./$(CLUSTER) $(ARGS_CLUSTER)
 
 

@@ -25,7 +25,7 @@
             ],
             "stopAtEntry": false,
             "externalConsole": false,
-            "preLaunchTask": "compile",
+            "preLaunchTask": "compile-lsh",
             "MIMode": "gdb",
             "miDebuggerArgs": "-q -ex quit; wait() { fg >/dev/null; }; /bin/gdb -q --interpreter=mi",
             "setupCommands": [
@@ -67,7 +67,7 @@
             ],
             "stopAtEntry": false,
             "externalConsole": false,
-            "preLaunchTask": "compile",
+            "preLaunchTask": "compile-cube",
             "MIMode": "gdb",
             "miDebuggerArgs": "-q -ex quit; wait() { fg >/dev/null; }; /bin/gdb -q --interpreter=mi",
             "setupCommands": [
@@ -102,7 +102,7 @@
             ],
             "stopAtEntry": false,
             "externalConsole": false,
-            "preLaunchTask": "compile",
+            "preLaunchTask": "compile-cluster",
             "MIMode": "gdb",
             "miDebuggerArgs": "-q -ex quit; wait() { fg >/dev/null; }; /bin/gdb -q --interpreter=mi",
             "setupCommands": [
