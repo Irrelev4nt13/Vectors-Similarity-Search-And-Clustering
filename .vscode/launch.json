@@ -1,0 +1,122 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "lsh debug",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/lsh_main",
+            "cwd": "${fileDirname}",
+            "args": [
+                "-d",
+                "input_file",
+                "-q",
+                "query_file",
+                "-k",
+                "1",
+                "-L",
+                "2",
+                "-o",
+                "output_file",
+                "-N",
+                "3",
+                "-R",
+                "3.14"
+            ],
+            "stopAtEntry": false,
+            "externalConsole": false,
+            "preLaunchTask": "compile",
+            "MIMode": "gdb",
+            "miDebuggerArgs": "-q -ex quit; wait() { fg >/dev/null; }; /bin/gdb -q --interpreter=mi",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "cube debug",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/cube_main",
+            "cwd": "${fileDirname}",
+            "args": [
+                "-d",
+                "input_file",
+                "-q",
+                "query_file",
+                "-k",
+                "1",
+                "-M",
+                "2",
+                "-probes",
+                "3",
+                "-o",
+                "output_file",
+                "-N",
+                "4",
+                "-R",
+                "3.14"
+            ],
+            "stopAtEntry": false,
+            "externalConsole": false,
+            "preLaunchTask": "compile",
+            "MIMode": "gdb",
+            "miDebuggerArgs": "-q -ex quit; wait() { fg >/dev/null; }; /bin/gdb -q --interpreter=mi",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "cluster debug",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/cluster_main",
+            "cwd": "${fileDirname}",
+            "args": [
+                "-i",
+                "input_file",
+                "-c",
+                "config_file",
+                "-o",
+                "output_file",
+                "-complete",
+                "-m",
+                "Classic"
+            ],
+            "stopAtEntry": false,
+            "externalConsole": false,
+            "preLaunchTask": "compile",
+            "MIMode": "gdb",
+            "miDebuggerArgs": "-q -ex quit; wait() { fg >/dev/null; }; /bin/gdb -q --interpreter=mi",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        }
+    ]
+}
