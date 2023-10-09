@@ -11,7 +11,34 @@
         },
         {
             "type": "shell",
-            "label": "compile",
+            "label": "compile-all",
+            "command": "make",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "type": "shell",
+            "label": "compile-lsh",
+            "command": "make",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "type": "shell",
+            "label": "compile-cube",
+            "command": "make",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "type": "shell",
+            "label": "compile-cluster",
             "command": "make",
             "group": {
                 "kind": "build",
