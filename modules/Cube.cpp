@@ -1,20 +1,25 @@
 #include <iostream>
 #include <Cube.hpp>
 
-Cube::Cube(const std::string &input_file,
-           const std::string &query_file,
-           const int &dimension,
-           const int &max_candidates,
-           const int &probes,
-           const std::string &output_file,
-           const int &num_of_nearest_neighbors,
-           const double &radius)
-    : input_file(input_file),
-      query_file(query_file),
-      dimension(dimension),
-      max_candidates(max_candidates),
-      probes(probes),
-      output_file(output_file),
-      num_of_nearest_neighbors(num_of_nearest_neighbors),
-      radius(radius) {}
+Cube::Cube(const CubeArgs &args)
+    : input_file(args.input_file),
+      query_file(args.query_file),
+      dimension(args.dimension),
+      max_candidates(args.max_candidates),
+      probes(args.probes),
+      output_file(args.output_file),
+      num_of_nearest_neighbors(args.num_of_nearest_neighbors),
+      radius(args.radius) {}
 Cube::~Cube() {}
+
+void Cube::print_cube()
+{
+    std::cout << input_file << std::endl;
+    std::cout << query_file << std::endl;
+    std::cout << dimension << std::endl;
+    std::cout << max_candidates << std::endl;
+    std::cout << probes << std::endl;
+    std::cout << output_file << std::endl;
+    std::cout << num_of_nearest_neighbors << std::endl;
+    std::cout << radius << std::endl;
+}

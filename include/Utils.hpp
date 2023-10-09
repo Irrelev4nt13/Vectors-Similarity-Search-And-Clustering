@@ -1,29 +1,12 @@
 #pragma once
 
 #include <iostream>
+#include <Lsh.hpp>
+#include <Cube.hpp>
+#include <Cluster.hpp>
 
-void split_lsh_args(const int argc, const char *argv[],
-                    std::string &input_file,
-                    std::string &query_file,
-                    int &num_of_hash_functions,
-                    int &num_of_hash_tables,
-                    std::string &output_file,
-                    int &num_of_nearest_neighbors,
-                    double &radius);
+void split_lsh_args(const int argc, const char *argv[], LshArgs &args);
 
-void split_cube_args(const int argc, const char *argv[],
-                     std::string &input_file,
-                     std::string &query_file,
-                     int &dimension,
-                     int &max_candidates,
-                     int &probes,
-                     std::string &output_file,
-                     int &num_of_nearest_neighbors,
-                     double &radius);
+void split_cube_args(const int argc, const char *argv[], CubeArgs &args);
 
-void split_cluster_args(const int argc, const char *argv[],
-                        std::string &input_file,
-                        std::string &configuration_file,
-                        std::string &output_file,
-                        bool &complete,
-                        std::string &method);
+void split_cluster_args(const int argc, const char *argv[], ClusterArgs &args);

@@ -2,6 +2,18 @@
 
 #include <iostream>
 
+class LshArgs
+{
+public:
+    std::string input_file = "";
+    std::string query_file = "";
+    std::string output_file = "";
+    int num_of_hash_functions = 4;
+    int num_of_hash_tables = 5;
+    int num_of_nearest_neighbors = 1;
+    double radius = 10000;
+};
+
 class Lsh
 {
 private:
@@ -15,22 +27,7 @@ private:
     double radius;                // -R <radius>
 
 public:
-    Lsh(const std::string &input_file,
-        const std::string &query_file,
-        const int &num_of_hash_functions,
-        const int &num_of_hash_tables,
-        const std::string &output_file,
-        const int &num_of_nearest_neighbors,
-        const double &radius);
+    Lsh(const LshArgs &args);
     ~Lsh();
-    void print_lsh()
-    {
-        std::cout << input_file << std::endl;
-        std::cout << query_file << std::endl;
-        std::cout << num_of_hash_functions << std::endl;
-        std::cout << num_of_hash_tables << std::endl;
-        std::cout << output_file << std::endl;
-        std::cout << num_of_nearest_neighbors << std::endl;
-        std::cout << radius << std::endl;
-    }
+    void print_lsh();
 };

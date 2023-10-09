@@ -2,6 +2,18 @@
 
 #include <iostream>
 
+class CubeArgs
+{
+public:
+    std::string input_file = "";
+    std::string query_file = "";
+    int dimension = 14;
+    int max_candidates = 10;
+    int probes = 2;
+    std::string output_file = "";
+    int num_of_nearest_neighbors = 1;
+    double radius = 10000;
+};
 class Cube
 {
 private:
@@ -16,24 +28,7 @@ private:
     double radius;                // -R <radius>
 
 public:
-    Cube(const std::string &input_file,
-         const std::string &query_file,
-         const int &dimension,
-         const int &max_candidates,
-         const int &probes,
-         const std::string &output_file,
-         const int &num_of_nearest_neighbors,
-         const double &radius);
+    Cube(const CubeArgs &args);
     ~Cube();
-    void print_cube()
-    {
-        std::cout << input_file << std::endl;
-        std::cout << query_file << std::endl;
-        std::cout << dimension << std::endl;
-        std::cout << max_candidates << std::endl;
-        std::cout << probes << std::endl;
-        std::cout << output_file << std::endl;
-        std::cout << num_of_nearest_neighbors << std::endl;
-        std::cout << radius << std::endl;
-    }
+    void print_cube();
 };
