@@ -4,6 +4,8 @@
 #include <sstream>
 #include <fstream>
 #include <string>
+#include <vector>
+#include <arpa/inet.h>
 
 void split_lsh_args(const int argc, const char *argv[], LshArgs &args)
 {
@@ -66,32 +68,42 @@ void split_cluster_args(const int argc, const char *argv[], ClusterArgs &args)
     }
 }
 
-void parseInputFile(const std::string &inputFile, Metadata &metadata, char **images)
+void parseInputFile(const std::string &inputFile, Metadata &metadata, std::vector<std::vector<char>> &images)
 {
-    std::ifstream file(inputFile);
+    std::ifstream file(inputFile, std::ios::binary);
 
     if (!file.is_open())
     {
         std::cerr << "Failed to open the file." << std::endl;
+        file.close();
         exit(1);
     }
 
-    int magicNumber;
-
-    // std::string magic;
-
-    if (file >> magicNumber)
+    if (!file.read((char *)&metadata, sizeof(Metadata)))
     {
-        std::cout << "Read integer: " << magicNumber << std::endl;
-    }
-    else
-    {
-        std::cerr << "Failed to read an integer from the file." << std::endl;
+        std::cerr << "Failed to read the header." << std::endl;
+        file.close();
+        exit(1);
     }
 
-    // file.read(&magicNumber, 1);
+    metadata.magicNumber = ntohl(metadata.magicNumber);
+    metadata.numOfImages = ntohl(metadata.numOfImages);
+    metadata.numOfRows = ntohl(metadata.numOfRows);
+    metadata.numOfColumns = ntohl(metadata.numOfColumns);
 
-    std::cout << "magic: " << magicNumber << std::endl;
+    const int image_size = metadata.numOfRows * metadata.numOfColumns;
+
+    images.resize(metadata.numOfImages);
+    for (int i = 0; i < images.size(); i++)
+    {
+        images[i].resize(metadata.numOfRows * metadata.numOfColumns);
+        if (!file.read(images[i].data(), image_size))
+        {
+            std::cerr << "Failed to read image data." << std::endl;
+            file.close();
+            exit(1);
+        }
+    }
 
     file.close();
 }

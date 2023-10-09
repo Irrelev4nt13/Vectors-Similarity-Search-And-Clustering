@@ -5,10 +5,10 @@
 class Metadata
 {
 public:
-    int magicNumber;
-    int numOfImages;
-    int numOfRows;
-    int numOfColumns;
+    uint32_t magicNumber;
+    uint32_t numOfImages;
+    uint32_t numOfRows;
+    uint32_t numOfColumns;
 };
 
 class Data
