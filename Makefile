@@ -6,7 +6,7 @@ BUILD_DIR := build
 INCLUDE_DIR := include
 MODULES_DIR := modules
 SRC_DIR := src
-
+# done
 LSH := $(BIN_DIR)/lsh_main
 CUBE := $(BIN_DIR)/cube_main
 CLUSTER := $(BIN_DIR)/cluster_main

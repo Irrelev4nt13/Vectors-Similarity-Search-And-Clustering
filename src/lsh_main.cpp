@@ -20,3 +20,13 @@ int main(int argc, char const *argv[])
     delete lsh;
     return 0;
 }
+
+// We need to implement the following:
+// Lsh me metrikh L2 ston d-space
+//      prepei omos na dinete parametropoihsei oste na xrhsimopoihthei
+//      kai me allh metrikh kai se allh diastash eukola
+
+// Πρέπει να επιστρέφει
+//      α) Πλησιεστερο γειτονα
+//      β) τους Ν πλησιεστερους γειτονες
+//      γ) τα διανυσματα εντος ακτινας R απο το q
