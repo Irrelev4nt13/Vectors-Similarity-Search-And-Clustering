@@ -4,17 +4,20 @@
 #include <iomanip>
 
 #include <Lsh.hpp>
+#include <LshCmdParser.hpp>
 #include <Utils.hpp>
 
 int main(int argc, char const *argv[])
 {
-    LshArgs lshArgs = LshArgs();
-    split_lsh_args(argc, argv, lshArgs);
-    Lsh *lsh = new Lsh(lshArgs);
+    LshCmdParser parser(argc, argv);
+
+    LshCmdArgs args = parser.GetLshArgs();
+
+    Lsh *lsh = new Lsh(args.numHashFuncs, args.numHtables, args.numNn, args.radius);
 
     Metadata metadata = Metadata();
     std::vector<std::vector<char>> *images = new std::vector<std::vector<char>>;
-    parseInputFile(lshArgs.input_file, metadata, *images);
+    parseInputFile(args.inputFile, metadata, *images);
 
     delete images;
     delete lsh;
