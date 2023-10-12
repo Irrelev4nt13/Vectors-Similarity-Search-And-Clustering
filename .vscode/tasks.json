@@ -11,8 +11,26 @@
         },
         {
             "type": "shell",
-            "label": "compile-all",
-            "command": "make",
+            "label": "compile-deb-lsh",
+            "command": "make deb-lsh",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "type": "shell",
+            "label": "compile-deb-cube",
+            "command": "make deb-cube",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "type": "shell",
+            "label": "compile-deb-cluster",
+            "command": "make deb-cluster",
             "group": {
                 "kind": "build",
                 "isDefault": true

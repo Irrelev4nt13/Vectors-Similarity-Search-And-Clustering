@@ -5,7 +5,7 @@
             "name": "lsh debug",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/lsh_main",
+            "program": "${workspaceFolder}/bin/lsh_main-deb",
             "cwd": "${fileDirname}",
             "args": [
                 "-d",
@@ -25,7 +25,7 @@
             ],
             "stopAtEntry": false,
             "externalConsole": false,
-            "preLaunchTask": "compile-lsh",
+            "preLaunchTask": "compile-deb-lsh",
             "MIMode": "gdb",
             "miDebuggerArgs": "-q -ex quit; wait() { fg >/dev/null; }; /bin/gdb -q --interpreter=mi",
             "setupCommands": [
@@ -45,7 +45,7 @@
             "name": "cube debug",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/cube_main",
+            "program": "${workspaceFolder}/bin/cube_main-deb",
             "cwd": "${fileDirname}",
             "args": [
                 "-d",
@@ -67,7 +67,7 @@
             ],
             "stopAtEntry": false,
             "externalConsole": false,
-            "preLaunchTask": "compile-cube",
+            "preLaunchTask": "compile-deb-cube-deb",
             "MIMode": "gdb",
             "miDebuggerArgs": "-q -ex quit; wait() { fg >/dev/null; }; /bin/gdb -q --interpreter=mi",
             "setupCommands": [
@@ -102,7 +102,7 @@
             ],
             "stopAtEntry": false,
             "externalConsole": false,
-            "preLaunchTask": "compile-cluster",
+            "preLaunchTask": "compile-deb-cluster",
             "MIMode": "gdb",
             "miDebuggerArgs": "-q -ex quit; wait() { fg >/dev/null; }; /bin/gdb -q --interpreter=mi",
             "setupCommands": [
