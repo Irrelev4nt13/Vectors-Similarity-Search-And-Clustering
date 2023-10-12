@@ -6,6 +6,9 @@
 #include <arpa/inet.h>
 #include <Image.hpp>
 
+#include <unistd.h>
+#include <limits.h>
+
 class Metadata
 {
 public:
@@ -24,6 +27,11 @@ private:
 public:
     FileParser(std::string inputFile)
     {
+
+#ifdef DEBUG
+        inputFile = getFullPath() + "/" + inputFile;
+#endif // DEBUG
+
         std::ifstream file(inputFile, std::ios::binary);
 
         if (!file.is_open())
@@ -72,5 +80,32 @@ public:
     inline const std::vector<Image> &GetImages() const
     {
         return images;
+    }
+
+    static std::string getFullPath()
+    {
+#ifdef DEBUG
+
+        std::string cwd;
+        char buffer[PATH_MAX];
+        if (getcwd(buffer, sizeof(buffer)) != nullptr)
+        {
+            cwd = buffer;
+        }
+
+        int numParents = 2;
+        std::string fullPath = cwd;
+        for (int i = 0; i < numParents; i++)
+        {
+            size_t pos = fullPath.rfind('/');
+            if (pos != std::string::npos)
+            {
+                fullPath = fullPath.substr(0, pos);
+            }
+        }
+
+        return fullPath;
+#endif // DEBUG
+        return "";
     }
 };

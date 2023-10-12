@@ -2,7 +2,7 @@ CXX := g++
 FLAGS = -std=c++11
 RELEASE_FLAGS := -O2
 DEVELOPMENT_FLAGS := -g3
-DEBUG_FLAGS := -g3 -DDebug
+DEBUG_FLAGS := -g3 -DDEBUG
 
 FLAGS += $(DEVELOPMENT_FLAGS)
 
@@ -40,13 +40,13 @@ $(BUILD_DIR)/%.o: $(MODULES_DIR)/%.cpp
 
 $(BUILD_DIR)/%-deb.o: $(MODULES_DIR)/%.cpp
 	@mkdir -p $(@D)
-	$(CXX) -c $< -o $@ $(INCLUDE_FLAGS) $(FLAGS)
+	$(CXX) -c $< -o $@ $(INCLUDE_FLAGS) $(DEBUG_FLAGS)
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CXX) -c $< -o $@ $(INCLUDE_FLAGS) $(FLAGS)
 
 $(BUILD_DIR)/%-deb.o: $(SRC_DIR)/%.cpp
-	$(CXX) -c $< -o $@ $(INCLUDE_FLAGS) $(FLAGS)
+	$(CXX) -c $< -o $@ $(INCLUDE_FLAGS) $(DEBUG_FLAGS)
 
 $(BIN_DIR)/%: $(BUILD_DIR)/%.o $(OBJ_MODULES)
 	$(CXX) $^ -o $@ $(INCLUDE_FLAGS)
