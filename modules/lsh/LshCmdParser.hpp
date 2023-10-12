@@ -42,9 +42,9 @@ public:
         }
     }
 
-    ~LshCmdParser(){};
+    ~LshCmdParser() {}
 
-    const LshCmdArgs &GetLshArgs() const
+    inline const LshCmdArgs &GetLshArgs() const
     {
         return this->args;
     }

@@ -1,7 +1,5 @@
 #include <iostream>
-#include <fstream>
 #include <vector>
-#include <iomanip>
 
 #include <Lsh.hpp>
 #include <LshCmdParser.hpp>
@@ -13,13 +11,14 @@ int main(int argc, char const *argv[])
 
     LshCmdArgs args = parser.GetLshArgs();
 
-    Lsh *lsh = new Lsh(args.numHashFuncs, args.numHtables, args.numNn, args.radius);
+    FileParser fileParser(args.inputFile);
 
-    Metadata metadata = Metadata();
-    std::vector<std::vector<char>> *images = new std::vector<std::vector<char>>;
-    parseInputFile(args.inputFile, metadata, *images);
+    Metadata metadata = fileParser.GetMetadata();
+    std::vector<Image> images = fileParser.GetImages();
 
-    delete images;
-    delete lsh;
+    Lsh lsh(images, args.numHashFuncs, args.numHtables, args.numNn, args.radius);
+
+    lsh.solve();
+
     return 0;
 }

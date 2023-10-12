@@ -48,46 +48,6 @@ void split_cluster_args(const int argc, const char *argv[], ClusterArgs &args)
     }
 }
 
-void parseInputFile(const std::string &inputFile, Metadata &metadata, std::vector<std::vector<char>> &images)
-{
-    std::ifstream file(inputFile, std::ios::binary);
-
-    if (!file.is_open())
-    {
-        std::cerr << "Failed to open the file." << std::endl;
-        file.close();
-        exit(1);
-    }
-
-    if (!file.read((char *)&metadata, sizeof(Metadata)))
-    {
-        std::cerr << "Failed to read the header." << std::endl;
-        file.close();
-        exit(1);
-    }
-
-    metadata.magicNumber = ntohl(metadata.magicNumber);
-    metadata.numOfImages = ntohl(metadata.numOfImages);
-    metadata.numOfRows = ntohl(metadata.numOfRows);
-    metadata.numOfColumns = ntohl(metadata.numOfColumns);
-
-    const int image_size = metadata.numOfRows * metadata.numOfColumns;
-
-    images.resize(metadata.numOfImages);
-    for (int i = 0; i < images.size(); i++)
-    {
-        images[i].resize(metadata.numOfRows * metadata.numOfColumns);
-        if (!file.read(images[i].data(), image_size))
-        {
-            std::cerr << "Failed to read image data." << std::endl;
-            file.close();
-            exit(1);
-        }
-    }
-
-    file.close();
-}
-
 double DotProduct(const std::vector<double> &first, const std::vector<unsigned char> &second)
 {
     double sum = 0;
