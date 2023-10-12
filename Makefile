@@ -1,5 +1,8 @@
 CXX := g++
-FLAGS := -g3 -std=c++11
+FLAGS := -std=c++11
+DEBUG_FLAGS := -g3 -DDebug
+
+BUILD_TYPE := DEVELOPMENT
 
 BIN_DIR := bin
 BUILD_DIR := build
@@ -18,6 +21,8 @@ OBJ_FILES := $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_DIR)/%.o, $(SRC_FILES))
 
 OBJ_MODULES := $(patsubst $(MODULES_DIR)/%.cpp, $(BUILD_DIR)/%.o, $(MODULES_FILES))
 
+OBJ_MODULES_DEBUG := $(patsubst $(MODULES_DIR)/%.cpp, $(BUILD_DIR)/%-deb.o, $(MODULES_FILES))
+
 EXEC_FILES := $(patsubst $(SRC_DIR)/%.cpp, $(BIN_DIR)/%, $(SRC_FILES))
 
 INCLUDE_DIRS := $(shell find $(MODULES_DIR) -type d)
@@ -31,14 +36,25 @@ $(BUILD_DIR)/%.o: $(MODULES_DIR)/%.cpp
 	@mkdir -p $(@D)
 	$(CXX) -c $< -o $@ $(INCLUDE_FLAGS) $(FLAGS)
 
+$(BUILD_DIR)/%-deb.o: $(MODULES_DIR)/%.cpp
+	@mkdir -p $(@D)
+	$(CXX) -c $< -o $@ $(INCLUDE_FLAGS) $(FLAGS)
+
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
+	$(CXX) -c $< -o $@ $(INCLUDE_FLAGS) $(FLAGS)
+
+$(BUILD_DIR)/%-deb.o: $(SRC_DIR)/%.cpp
 	$(CXX) -c $< -o $@ $(INCLUDE_FLAGS) $(FLAGS)
 
 $(BIN_DIR)/%: $(BUILD_DIR)/%.o $(OBJ_MODULES)
 	$(CXX) $^ -o $@ $(INCLUDE_FLAGS)
 
+$(BIN_DIR)/%-deb: $(BUILD_DIR)/%-deb.o $(OBJ_MODULES_DEBUG)
+	$(CXX) $^ -o $@ $(INCLUDE_FLAGS) $(DEBUG_FLAGS)
 
-.PHONY: all clean run-lsh run-cube run-cluster valgrind-lsh valgrind-cube valgrind-cluster
+
+.PHONY: all clean lsh cube cluster run-lsh run-cube run-cluster \
+valgrind-lsh valgrind-cube valgrind-cluster deb-lsh deb-cube deb-cluster
 
 .SECONDARY: $(OBJ_FILES)
 
@@ -79,3 +95,10 @@ valgrind-cube: $(CUBE)
 
 valgrind-cluster: $(CLUSTER)
 	valgrind $(VALGRIND_ARGS) ./$(CLUSTER) $(ARGS_CLUSTER)
+
+
+deb-lsh: clean $(LSH)-deb
+
+deb-cube: clean $(CUBE)-deb
+
+deb-cluster: clean $(CLUSTER)-deb
