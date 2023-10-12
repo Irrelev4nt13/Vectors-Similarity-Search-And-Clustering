@@ -16,6 +16,6 @@ double DotProduct(const std::vector<double> &first, const std::vector<unsigned c
 
 int64_t Modulo(int64_t first, int64_t second);
 
-double EuclideanDistance(const std::vector<double> &first, const std::vector<unsigned char> &second);
+double EuclideanDistance(const std::vector<unsigned char> &first, const std::vector<unsigned char> &second);
 
-double ManhattanDistance(const std::vector<double> &first, const std::vector<unsigned char> &second);
+double ManhattanDistance(const std::vector<unsigned char> &first, const std::vector<unsigned char> &second);

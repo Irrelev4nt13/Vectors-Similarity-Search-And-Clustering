@@ -18,5 +18,6 @@ public:
     Lsh(const std::vector<Image> &images, const int &numHashFuncs, const int &numHtables, const int &numNn, const double &radius);
     ~Lsh();
     void print_lsh();
-    void solve();
+    void Approximate_kNN();
+    void Approximate_Range_Search();
 };

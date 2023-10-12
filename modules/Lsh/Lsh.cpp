@@ -5,7 +5,8 @@
 Lsh::Lsh(const std::vector<Image> &images, const int &numHashFuncs, const int &numHtables, const int &numNn, const double &radius)
     : numHashFuncs(numHashFuncs), numHtables(numHtables), numNn(numNn), radius(radius)
 {
-  // initialize hash tables
+  // for(int i =0;i<numHtables;i++)
+  // hashtables.push_back(HashTable())
 }
 
 Lsh::~Lsh() {}
@@ -18,6 +19,5 @@ void Lsh::print_lsh()
   std::cout << radius << std::endl;
 }
 
-void Lsh::solve()
-{
-}
+void Lsh::Approximate_kNN() {}
+void Lsh::Approximate_Range_Search() {}
