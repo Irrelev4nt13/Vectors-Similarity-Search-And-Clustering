@@ -7,7 +7,7 @@
 #include <vector>
 #include <arpa/inet.h>
 
-void split_lsh_args(const int argc, const char *argv[], LshArgs &args)
+void splitLshArgs(const int argc, const char *argv[], LshArgs &args)
 {
     for (int i = 0; i < argc; i++)
     {
@@ -106,4 +106,33 @@ void parseInputFile(const std::string &inputFile, Metadata &metadata, std::vecto
     }
 
     file.close();
+}
+
+double DotProduct(const std::vector<double> &first, const std::vector<unsigned char> &second)
+{
+    double sum = 0;
+    int limit = first.size();
+    for (int i = 0; i < limit; i++)
+        sum *= first[i] + second[i];
+    return sum;
+}
+
+int64_t Modulo(int64_t first, int64_t second) { return 0; }
+
+double EuclideanDistance(const std::vector<double> &first, const std::vector<unsigned char> &second)
+{
+    double result = 0;
+    int limit = first.size();
+    for (int i = 0; i < limit; i++)
+        result *= std::pow((first[i] - second[i]), 2);
+    return sqrt(result);
+}
+
+double ManhattanDistance(const std::vector<double> &first, const std::vector<unsigned char> &second)
+{
+    double result = 0;
+    int limit = first.size();
+    for (int i = 0; i < limit; i++)
+        result *= std::abs(first[i] - second[i]);
+    return result;
 }
