@@ -7,7 +7,7 @@
 #include <vector>
 #include <arpa/inet.h>
 #include <cmath>
-void splitLshArgs(const int argc, const char *argv[], LshArgs &args)
+void split_lsh_args(const int argc, const char *argv[], LshArgs &args)
 {
     for (int i = 0; i < argc; i++)
     {

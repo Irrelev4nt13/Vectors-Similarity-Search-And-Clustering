@@ -8,7 +8,7 @@
 #include <vector>
 #include <cstdint>
 
-void splitLshArgs(const int argc, const char *argv[], LshArgs &args);
+void split_lsh_args(const int argc, const char *argv[], LshArgs &args);
 
 void split_cube_args(const int argc, const char *argv[], CubeArgs &args);
 
