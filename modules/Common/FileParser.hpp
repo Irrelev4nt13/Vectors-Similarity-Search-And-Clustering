@@ -4,7 +4,7 @@
 #include <vector>
 #include <fstream>
 #include <arpa/inet.h>
-#include <PublicTypes.hpp>
+#include <Image.hpp>
 
 class Metadata
 {
@@ -50,8 +50,8 @@ public:
         images.resize(metadata.numOfImages);
         for (int i = 0; i < images.size(); i++)
         {
-            images[i].resize(metadata.numOfRows * metadata.numOfColumns);
-            if (!file.read((char *)images[i].data(), image_size))
+            images[i].pixels.resize(metadata.numOfRows * metadata.numOfColumns);
+            if (!file.read((char *)images[i].pixels.data(), image_size))
             {
                 std::cerr << "Failed to read image data." << std::endl;
                 file.close();
