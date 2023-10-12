@@ -1,6 +1,8 @@
 #pragma once
 
 #include <iostream>
+#include <PublicTypes.hpp>
+#include <vector>
 
 class Lsh
 {
@@ -11,7 +13,8 @@ private:
     double radius;    // -R radius
 
 public:
-    Lsh(const int &numHashFuncs, const int &numHtables, const int &numNn, const double &radius);
+    Lsh(const std::vector<Image> &images, const int &numHashFuncs, const int &numHtables, const int &numNn, const double &radius);
     ~Lsh();
     void print_lsh();
+    void solve();
 };
