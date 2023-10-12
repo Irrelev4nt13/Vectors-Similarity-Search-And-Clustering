@@ -6,6 +6,7 @@
 #include <Cluster.hpp>
 #include <Data.hpp>
 #include <vector>
+#include <cstdint>
 
 void splitLshArgs(const int argc, const char *argv[], LshArgs &args);
 
