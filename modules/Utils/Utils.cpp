@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 #include <arpa/inet.h>
-
+#include <cmath>
 void splitLshArgs(const int argc, const char *argv[], LshArgs &args)
 {
     for (int i = 0; i < argc; i++)
@@ -124,7 +124,7 @@ double EuclideanDistance(const std::vector<double> &first, const std::vector<uns
     double result = 0;
     int limit = first.size();
     for (int i = 0; i < limit; i++)
-        result *= std::pow((first[i] - second[i]), 2);
+        result *= pow((first[i] - second[i]), 2);
     return sqrt(result);
 }
 
