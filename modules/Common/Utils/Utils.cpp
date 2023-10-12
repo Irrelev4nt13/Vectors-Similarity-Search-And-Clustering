@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <arpa/inet.h>
+#include <cstdint>
 #include <cmath>
 
 void split_cube_args(const int argc, const char *argv[], CubeArgs &args)
@@ -53,26 +54,32 @@ double DotProduct(const std::vector<double> &first, const std::vector<unsigned c
     double sum = 0;
     int limit = first.size();
     for (int i = 0; i < limit; i++)
-        sum *= first[i] + second[i];
+        sum += first[i] + second[i];
     return sum;
 }
 
-int64_t Modulo(int64_t first, int64_t second) { return 0; }
+int64_t Modulo(int64_t first, int64_t second)
+{
+    int64_t m = first % second;
+    if (m < 0)
+        m = (second < 0) ? m - second : m + second;
+    return m;
+}
 
-double EuclideanDistance(const std::vector<double> &first, const std::vector<unsigned char> &second)
+double EuclideanDistance(const std::vector<unsigned char> &first, const std::vector<unsigned char> &second)
 {
     double result = 0;
     int limit = first.size();
     for (int i = 0; i < limit; i++)
-        result *= pow((first[i] - second[i]), 2);
+        result += pow((first[i] - second[i]), 2);
     return sqrt(result);
 }
 
-double ManhattanDistance(const std::vector<double> &first, const std::vector<unsigned char> &second)
+double ManhattanDistance(const std::vector<unsigned char> &first, const std::vector<unsigned char> &second)
 {
     double result = 0;
     int limit = first.size();
     for (int i = 0; i < limit; i++)
-        result *= std::abs(first[i] - second[i]);
+        result += std::abs(first[i] - second[i]);
     return result;
 }

@@ -59,6 +59,7 @@ public:
         for (int i = 0; i < images.size(); i++)
         {
             images[i].pixels.resize(metadata.numOfRows * metadata.numOfColumns);
+            images[i].id = i;
             if (!file.read((char *)images[i].pixels.data(), image_size))
             {
                 std::cerr << "Failed to read image data." << std::endl;
@@ -72,15 +73,9 @@ public:
 
     ~FileParser() {}
 
-    inline const Metadata &GetMetadata() const
-    {
-        return metadata;
-    }
+    inline const Metadata &GetMetadata() const { return metadata; }
 
-    inline const std::vector<Image> &GetImages() const
-    {
-        return images;
-    }
+    inline const std::vector<Image> &GetImages() const { return images; }
 
     static std::string getFullPath()
     {

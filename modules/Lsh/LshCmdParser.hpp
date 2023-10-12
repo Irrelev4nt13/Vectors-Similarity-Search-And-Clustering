@@ -44,8 +44,5 @@ public:
 
     ~LshCmdParser() {}
 
-    inline const LshCmdArgs &GetLshArgs() const
-    {
-        return this->args;
-    }
+    inline const LshCmdArgs &GetLshArgs() const { return this->args; }
 };
