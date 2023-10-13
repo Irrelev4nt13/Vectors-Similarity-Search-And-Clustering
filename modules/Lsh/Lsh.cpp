@@ -2,11 +2,12 @@
 #include <Lsh.hpp>
 #include <FileParser.hpp>
 
-Lsh::Lsh(const std::vector<Image> &images, const int &numHashFuncs, const int &numHtables, const int &numNn, const double &radius)
-    : numHashFuncs(numHashFuncs), numHtables(numHtables), numNn(numNn), radius(radius)
+Lsh::Lsh(const std::vector<Image> &images, const int &numHashFuncs, const int &numHtables, const int &numNn, const double &radius, const int &w, const int &numBuckets)
+    : numHashFuncs(numHashFuncs), numHtables(numHtables), numNn(numNn), radius(radius), w(w), numBuckets(numBuckets)
 {
-  // for(int i =0;i<numHtables;i++)
-  // hashtables.push_back(HashTable())
+  for (int i = 0; i < numHtables; i++)
+    hashtables.push_back(HashTable(numBuckets, AmplifiedHashFunction(w, numHashFuncs, images.size())));
+  std::cout << hashtables.size() << std::endl;
 }
 
 Lsh::~Lsh() {}

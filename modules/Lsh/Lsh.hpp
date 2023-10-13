@@ -13,9 +13,11 @@ private:
     int numNn;                         // -Ν number of Nearest Neighbors
     double radius;                     // -R radius
     std::vector<HashTable> hashtables; // hash tables
+    int numBuckets;
+    int w;
 
 public:
-    Lsh(const std::vector<Image> &images, const int &numHashFuncs, const int &numHtables, const int &numNn, const double &radius);
+    Lsh(const std::vector<Image> &images, const int &numHashFuncs, const int &numHtables, const int &numNn, const double &radius, const int &w, const int &numBuckets);
     ~Lsh();
     void print_lsh();
     void Approximate_kNN();

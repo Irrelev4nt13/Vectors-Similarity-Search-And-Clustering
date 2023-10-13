@@ -50,7 +50,7 @@ void split_cluster_args(const int argc, const char *argv[], ClusterArgs &args)
     }
 }
 
-double DotProduct(const std::vector<double> &first, const std::vector<unsigned char> &second)
+double DotProduct(const std::vector<double> &first, const std::vector<uint> &second)
 {
     double sum = 0;
     int limit = first.size();
@@ -78,4 +78,11 @@ double ManhattanDistance(const std::vector<unsigned char> &first, const std::vec
     for (int i = 0; i < limit; i++)
         result += std::abs(first[i] - second[i]);
     return result;
+}
+
+std::mt19937 &RandGen()
+{
+    // static std::random_device rd;
+    static std::mt19937 gen(0);
+    return gen;
 }

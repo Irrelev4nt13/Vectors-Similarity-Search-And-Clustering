@@ -13,33 +13,36 @@ int main(int argc, char const *argv[])
 
     LshCmdArgs args = parser.GetLshArgs();
 
+    // Check if the input is empty in order to ask for it in the main
     FileParser inputParser(args.inputFile);
 
-    Metadata metadata_input = inputParser.GetMetadata();
-    std::vector<Image> images_input = inputParser.GetImages();
+    const std::vector<Image> input_images = inputParser.GetImages();
 
+    // Check if the query is empty in order to ask for it in the main
     FileParser queryParser(args.queryFile);
 
-    Metadata metadata_query = queryParser.GetMetadata();
-    std::vector<Image> images_query = queryParser.GetImages();
+    const std::vector<Image> query_images = queryParser.GetImages();
 
-    // Lsh lsh(images, args.numHashFuncs, args.numHtables, args.numNn, args.radius);
-    std::vector<std::tuple<Image, double>> brute_vector = BruteForce(images_input, images_query[0], 3);
-    // while (!brute_vector.empty())
+    int w = 5;
+    int numBuckets = inputParser.GetMetadata().numOfImages / 8;
+
+    Lsh lsh(input_images, args.numHashFuncs, args.numHtables, args.numNn, args.radius, w, numBuckets);
+
+    // while (true)
     // {
-    //     const std::tuple<Image, double> &neighbor = brute_vector.top();
-    //     // std::cout << "ImageID: " << std::get<0>(neighbor).id << "\tDistance: " << std::get<1>(neighbor) << "\n";
-    //     // neighbor.second.print();  // Uncomment if you have a print method for Image
-    //     // nearestNeighbors.pop();
+    // Replace by a for to parse all queries
+    const Image &query = query_images[0];
+
+    // std::vector<std::tuple<Image, double>> brute_vector = BruteForce(input_images, query, args.numNn);
+
+    // std::cout << "Query Image: " << query.id << std::endl;
+    // for (const auto &tuple : brute_vector)
+    // {
+    //     double dist = std::get<1>(tuple);
+    //     const Image &image = std::get<0>(tuple);
+    //     std::cout << "ImageID: " << image.id << "\tDistance: " << dist << "\n";
     // }
-    // std::cout << "------------------\n";
+
     // }
-    std::cout << "Query Image: " << images_query[0].id << std::endl;
-    for (const auto &tuple : brute_vector)
-    {
-        double dist = std::get<1>(tuple);
-        const Image &image = std::get<0>(tuple);
-        std::cout << "ImageID: " << image.id << "\tDistance: " << dist << "\n";
-    }
-    return 0;
+    return EXIT_SUCCESS;
 }
