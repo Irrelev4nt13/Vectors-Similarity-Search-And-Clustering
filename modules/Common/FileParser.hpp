@@ -38,14 +38,14 @@ public:
         {
             std::cerr << "Failed to open the file." << std::endl;
             file.close();
-            exit(1);
+            exit(EXIT_FAILURE);
         }
 
         if (!file.read((char *)&metadata, sizeof(Metadata)))
         {
             std::cerr << "Failed to read the header." << std::endl;
             file.close();
-            exit(1);
+            exit(EXIT_FAILURE);
         }
 
         metadata.magicNumber = ntohl(metadata.magicNumber);
@@ -64,7 +64,7 @@ public:
             {
                 std::cerr << "Failed to read image data." << std::endl;
                 file.close();
-                exit(1);
+                exit(EXIT_FAILURE);
             }
         }
 
