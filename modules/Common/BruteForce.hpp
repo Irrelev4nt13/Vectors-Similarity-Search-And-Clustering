@@ -7,12 +7,13 @@
 #include <Utils.hpp>
 
 // Custom comparison function to sort the tuples by the double value.
-struct CompareTuple
+class CompareTuple
 {
+public:
     bool operator()(const std::tuple<Image, double> &a, const std::tuple<Image, double> &b) const
     {
         // Compare based on the double value.
-        return std::get<1>(a) < std::get<1>(b); // Change the comparison as per your requirements (e.g., '<' for min-heap).
+        return std::get<1>(a) < std::get<1>(b);
     }
 };
 
