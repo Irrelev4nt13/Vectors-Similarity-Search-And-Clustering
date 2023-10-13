@@ -1,6 +1,5 @@
 #include <iostream>
 #include <cstring>
-#include <Utils.hpp>
 #include <sstream>
 #include <fstream>
 #include <string>
@@ -8,6 +7,8 @@
 #include <arpa/inet.h>
 #include <cstdint>
 #include <cmath>
+
+#include <Utils.hpp>
 
 void split_cube_args(const int argc, const char *argv[], CubeArgs &args)
 {
@@ -58,13 +59,8 @@ double DotProduct(const std::vector<double> &first, const std::vector<unsigned c
     return sum;
 }
 
-int64_t Modulo(int64_t first, int64_t second)
-{
-    int64_t m = first % second;
-    if (m < 0)
-        m = (second < 0) ? m - second : m + second;
-    return m;
-}
+template <typename T>
+uint Modulo(T first, T second) { return static_cast<uint>(first % second); }
 
 double EuclideanDistance(const std::vector<unsigned char> &first, const std::vector<unsigned char> &second)
 {
