@@ -5,12 +5,17 @@
 #include "Image.hpp"
 #include "FileParser.hpp"
 
+#ifdef DEBUG
+#include <unistd.h>
+#include <limits.h>
+#endif
+
 FileParser::FileParser(std::string inputFile)
 {
 
 #ifdef DEBUG
     inputFile = getFullPath() + "/" + inputFile;
-#endif // DEBUG
+#endif
 
     std::ifstream file(inputFile, std::ios::binary);
 
@@ -64,7 +69,7 @@ std::string FileParser::getFullPath()
         cwd = buffer;
     }
 
-    int numParents = 2;
+    int numParents = 3;
     std::string fullPath = cwd;
     for (int i = 0; i < numParents; i++)
     {
@@ -76,6 +81,6 @@ std::string FileParser::getFullPath()
     }
 
     return fullPath;
-#endif // DEBUG
+#endif
     return "";
 }
