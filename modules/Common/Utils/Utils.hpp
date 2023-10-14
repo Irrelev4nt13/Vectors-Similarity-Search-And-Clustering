@@ -3,7 +3,7 @@
 #include <iostream>
 #include <random>
 #include <vector>
-#include <Lsh.hpp>
+// #include <Lsh.hpp>
 #include <Cube.hpp>
 #include <Cluster.hpp>
 #include <FileParser.hpp>
@@ -12,10 +12,11 @@ void split_cube_args(const int argc, const char *argv[], CubeArgs &args);
 
 void split_cluster_args(const int argc, const char *argv[], ClusterArgs &args);
 
-double DotProduct(const std::vector<double> &first, const std::vector<uint> &second);
+double DotProduct(const std::vector<double> &first, const std::vector<uint8_t> &second);
 
-template <typename T>
-uint Modulo(T first, T second);
+// template <typename T>
+// uint Modulo(int first, int second);
+int64_t Modulo(int64_t a, int64_t b);
 
 double EuclideanDistance(const std::vector<unsigned char> &first, const std::vector<unsigned char> &second);
 

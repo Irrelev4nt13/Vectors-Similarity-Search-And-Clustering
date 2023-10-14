@@ -20,6 +20,6 @@ public:
     Lsh(const std::vector<Image> &images, const int &numHashFuncs, const int &numHtables, const int &numNn, const double &radius, const int &w, const int &numBuckets);
     ~Lsh();
     void print_lsh();
-    void Approximate_kNN();
-    void Approximate_Range_Search();
+    std::vector<std::tuple<Image, double>> Approximate_kNN(const Image &query);
+    std::vector<Image> Approximate_Range_Search(const Image &query);
 };
