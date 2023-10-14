@@ -10,11 +10,34 @@
 
 // void split_cluster_args(const int argc, const char *argv[], ClusterArgs &args);
 
-double DotProduct(const std::vector<double> &first, const std::vector<uint8_t> &second);
+template <typename T, typename U>
+double DotProduct(const std::vector<T> &first, const std::vector<U> &second)
+{
+    double sum = 0;
+    size_t limit = std::min(first.size(), second.size());
 
-// template <typename T>
-// uint Modulo(int first, int second);
-int64_t Modulo(int64_t a, int64_t b);
+    // std::cout << "first:\t" << first.size() << std::endl;
+    // std::cout << second.size() << std::endl;
+    // exit(EXIT_SUCCESS);
+
+    for (size_t i = 0; i < limit; ++i)
+    {
+        sum += (double)first[i] * (double)second[i];
+    }
+
+    return sum;
+}
+
+template <typename T, typename U>
+int64_t Modulo(T a, U b)
+{
+    int64_t m = (int64_t)a % (int64_t)b;
+    if (m < 0)
+    {
+        m = (b < 0) ? m - (int64_t)b : m + (int64_t)b;
+    }
+    return m;
+}
 
 double EuclideanDistance(const std::vector<unsigned char> &first, const std::vector<unsigned char> &second);
 

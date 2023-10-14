@@ -45,30 +45,6 @@
 //     }
 // }
 
-double DotProduct(const std::vector<double> &first, const std::vector<uint8_t> &second)
-{
-    double sum = 0;
-    int limit = first.size();
-    // std::cout << "first:\t" << first.size() << std::endl;
-    // std::cout << second.size() << std::endl;
-    // exit(EXIT_SUCCESS);
-    for (int i = 0; i < limit; i++)
-        sum += (first[i] + second[i]);
-    return sum;
-}
-// template <typename T>
-// uint Modulo(int first, int second) { return static_cast<uint>(first % second); }
-int64_t Modulo(int64_t a, int64_t b)
-{
-    int64_t m = a % b;
-    if (m < 0)
-    {
-        m = (b < 0) ? m - b : m + b;
-    }
-
-    return m;
-}
-
 double EuclideanDistance(const std::vector<unsigned char> &first, const std::vector<unsigned char> &second)
 {
     double result = 0;
