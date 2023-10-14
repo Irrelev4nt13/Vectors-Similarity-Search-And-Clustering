@@ -40,12 +40,10 @@ int main(int argc, char const *argv[])
 
     Image *query = query_images[0];
 
-    std::vector<std::tuple<Image *, double>> *brute_vector;
-
-    brute_vector = BruteForce(input_images, *query, args.numNn);
+    std::vector<std::tuple<Image *, double>> brute_vector = BruteForce(input_images, *query, args.numNn);
 
     std::cout << "Query Image: " << query->id << std::endl;
-    for (auto tuple : *brute_vector)
+    for (auto tuple : brute_vector)
     {
         double dist = std::get<1>(tuple);
         Image *image = std::get<0>(tuple);
@@ -72,8 +70,6 @@ int main(int argc, char const *argv[])
     //     std::cout << std::endl;
     // }
     // // }
-
-    delete brute_vector;
 
     return EXIT_SUCCESS;
 }

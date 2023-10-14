@@ -5,6 +5,6 @@
 
 #include "Image.hpp"
 
-std::vector<std::tuple<Image *, double>> *BruteForce(const std::vector<Image *> &images_input, const Image &query, int k);
+std::vector<std::tuple<Image *, double>> BruteForce(const std::vector<Image *> &images_input, const Image &query, int k);
 
 #endif

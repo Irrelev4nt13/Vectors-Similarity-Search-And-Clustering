@@ -17,7 +17,7 @@ public:
     }
 };
 
-std::vector<std::tuple<Image *, double>> *BruteForce(const std::vector<Image *> &images_input, const Image &query, int k)
+std::vector<std::tuple<Image *, double>> BruteForce(const std::vector<Image *> &images_input, const Image &query, int k)
 {
     std::priority_queue<std::tuple<Image *, double>, std::vector<std::tuple<Image *, double>>, CompareTuple> nearestNeighbors;
 
@@ -31,10 +31,10 @@ std::vector<std::tuple<Image *, double>> *BruteForce(const std::vector<Image *> 
             nearestNeighbors.pop();
     }
 
-    std::vector<std::tuple<Image *, double>> *KnearestNeighbors = new std::vector<std::tuple<Image *, double>>;
+    std::vector<std::tuple<Image *, double>> KnearestNeighbors;
     while (!nearestNeighbors.empty())
     {
-        KnearestNeighbors->insert(KnearestNeighbors->begin(), nearestNeighbors.top());
+        KnearestNeighbors.insert(KnearestNeighbors.begin(), nearestNeighbors.top());
         nearestNeighbors.pop();
     }
     return KnearestNeighbors;
