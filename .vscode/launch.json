@@ -11,7 +11,7 @@
                 "-d",
                 "datasets/train-images.idx3-ubyte",
                 "-q",
-                "query_file",
+                "datasets/t10k-images.idx3-ubyte",
                 "-k",
                 "1",
                 "-L",
