@@ -18,13 +18,13 @@ class FileParser
 {
 private:
     Metadata metadata;
-    std::vector<Image> images;
+    std::vector<Image *> images;
 
 public:
     FileParser(std::string inputFile);
     ~FileParser();
     inline const Metadata &GetMetadata() const { return metadata; }
-    inline const std::vector<Image> &GetImages() const { return images; }
+    inline const std::vector<Image *> &GetImages() const { return images; }
     std::string getFullPath();
 };
 
