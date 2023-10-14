@@ -43,9 +43,10 @@ FileParser::FileParser(std::string inputFile)
     images.resize(metadata.numOfImages);
     for (int i = 0; i < images.size(); i++)
     {
-        images[i].pixels.resize(metadata.numOfRows * metadata.numOfColumns);
-        images[i].id = i;
-        if (!file.read((char *)images[i].pixels.data(), image_size))
+        images[i] = new Image;
+        images[i]->pixels.resize(metadata.numOfRows * metadata.numOfColumns);
+        images[i]->id = i;
+        if (!file.read((char *)images[i]->pixels.data(), image_size))
         {
             std::cerr << "Failed to read image data." << std::endl;
             file.close();
@@ -56,7 +57,13 @@ FileParser::FileParser(std::string inputFile)
     file.close();
 }
 
-FileParser::~FileParser() {}
+FileParser::~FileParser()
+{
+    for (const Image *image_ptr : images)
+    {
+        delete image_ptr;
+    }
+}
 
 std::string FileParser::getFullPath()
 {
