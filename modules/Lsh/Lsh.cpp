@@ -1,9 +1,11 @@
-#include <iostream>
-#include <queue>
 #include <vector>
+#include <queue>
+#include <tuple>
 
-#include <Lsh.hpp>
-#include <FileParser.hpp>
+#include "Image.hpp"
+#include "Utils.hpp"
+#include "HashTable.hpp"
+#include "Lsh.hpp"
 
 Lsh::Lsh(const std::vector<Image> &images, const int &numHashFuncs, const int &numHtables, const int &numNn, const double &radius, const int &w, const int &numBuckets)
     : numHashFuncs(numHashFuncs), numHtables(numHtables), numNn(numNn), radius(radius), w(w), numBuckets(numBuckets)
@@ -15,21 +17,10 @@ Lsh::Lsh(const std::vector<Image> &images, const int &numHashFuncs, const int &n
     for (int j = 0; j < images.size(); j++)
 
       hashtables[i].insert(images[j]);
-    // break;
   }
-  // break;
-  // std::cout << hashtables.size() << std::endl;
 }
 
 Lsh::~Lsh() {}
-
-void Lsh::print_lsh()
-{
-  std::cout << numHashFuncs << std::endl;
-  std::cout << numHtables << std::endl;
-  std::cout << numNn << std::endl;
-  std::cout << radius << std::endl;
-}
 
 class CompareTuple
 {
@@ -58,8 +49,6 @@ std::vector<std::tuple<Image, double>> Lsh::Approximate_kNN(const Image &query)
         nearestNeighbors.pop();
     }
   }
-  // Find the bucket that the query is in
-  // loop through all it's element calculate distance with every one of them and add it in the priority queue
 
   std::vector<std::tuple<Image, double>> KnearestNeighbors;
   while (!nearestNeighbors.empty())

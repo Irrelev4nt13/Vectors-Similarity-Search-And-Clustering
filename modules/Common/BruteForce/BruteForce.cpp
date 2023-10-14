@@ -1,10 +1,10 @@
-#pragma once
-#include <iostream>
 #include <vector>
 #include <queue>
+#include <tuple>
 
-#include <Image.hpp>
-#include <Utils.hpp>
+#include "Image.hpp"
+#include "Utils.hpp"
+#include "BruteForce.hpp"
 
 // Custom comparison function to sort the tuples by the double value.
 class CompareTuple

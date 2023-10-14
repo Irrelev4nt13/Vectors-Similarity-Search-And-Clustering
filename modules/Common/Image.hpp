@@ -14,13 +14,4 @@ public:
     Image() {}
 
     ~Image() {}
-
-    void print()
-    {
-        for (auto pixel : pixels)
-        {
-            std::cout << static_cast<int>(pixel) << " ";
-        }
-        std::cout << std::endl;
-    }
 };
