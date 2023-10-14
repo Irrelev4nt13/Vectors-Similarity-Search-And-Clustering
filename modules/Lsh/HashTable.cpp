@@ -10,7 +10,7 @@ HashFunction::HashFunction(const int &w, const float &t, const std::vector<doubl
 
 HashFunction::~HashFunction() {}
 
-int HashFunction::hash(const Image &image) const { return floor((DotProduct(v, image.pixels) + t) / w); }
+int HashFunction::hash(Image *image) const { return floor((DotProduct(v, image->pixels) + t) / w); }
 
 AmplifiedHashFunction::AmplifiedHashFunction(const int &w, const int &numHashFuncs, const int &dimension)
 {
@@ -30,7 +30,7 @@ AmplifiedHashFunction::AmplifiedHashFunction(const int &w, const int &numHashFun
 }
 AmplifiedHashFunction::~AmplifiedHashFunction() {}
 
-int AmplifiedHashFunction::hash(const Image &image) const
+int AmplifiedHashFunction::hash(Image *image) const
 {
     uint hashval = 0;
     for (int i = 0, num_hashes = hash_functions.size(); i < num_hashes; i++)
@@ -42,13 +42,13 @@ HashTable::HashTable(const int &numBuckets, const AmplifiedHashFunction &hash) :
 {
     for (int i = 0; i < numBuckets; i++)
     {
-        std::vector<Image> new_bucket;
+        std::vector<Image *> new_bucket;
         buckets.push_back(new_bucket);
     }
 }
 
 HashTable::~HashTable() {}
 
-void HashTable::insert(const Image &image) { buckets.at(Modulo(hashamp.hash(image), numBuckets)).push_back(image); }
+void HashTable::insert(Image *image) { buckets.at(Modulo(hashamp.hash(image), numBuckets)).push_back(image); }
 
-std::vector<Image> HashTable::get_bucket(const Image &image) { return buckets.at(Modulo(hashamp.hash(image), numBuckets)); }
+std::vector<Image *> HashTable::get_bucket(Image *image) { return buckets.at(Modulo(hashamp.hash(image), numBuckets)); }

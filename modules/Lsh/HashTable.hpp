@@ -18,7 +18,7 @@ public:
     HashFunction(const int &w, const float &t, const std::vector<double> &v);
     ~HashFunction();
 
-    int hash(const Image &image) const;
+    int hash(Image *image) const;
 };
 class AmplifiedHashFunction
 {
@@ -30,7 +30,7 @@ public:
     AmplifiedHashFunction(const int &w, const int &numHashFuncs, const int &dimension);
     ~AmplifiedHashFunction();
 
-    int hash(const Image &image) const;
+    int hash(Image *image) const;
 };
 
 template <typename T>
@@ -40,16 +40,16 @@ class HashTable
 {
 private:
     int numBuckets;
-    std::vector<Bucket<Image>> buckets;
+    std::vector<Bucket<Image *>> buckets;
     AmplifiedHashFunction hashamp;
 
 public:
     HashTable(const int &numBuckets, const AmplifiedHashFunction &hash);
     ~HashTable();
 
-    void insert(const Image &image);
+    void insert(Image *image);
 
-    std::vector<Image> get_bucket(const Image &image);
+    std::vector<Image *> get_bucket(Image *image);
 };
 
 #endif
