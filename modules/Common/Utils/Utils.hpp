@@ -1,16 +1,14 @@
-#pragma once
+#ifndef UTILS_HPP_
+#define UTILS_HPP_
 
-#include <iostream>
-#include <random>
 #include <vector>
-// #include <Lsh.hpp>
-#include <Cube.hpp>
-#include <Cluster.hpp>
-#include <FileParser.hpp>
+#include <random>
+#include <cstdint>
 
-void split_cube_args(const int argc, const char *argv[], CubeArgs &args);
+// They need to be moved into another file with class based implementation
+// void split_cube_args(const int argc, const char *argv[], CubeArgs &args);
 
-void split_cluster_args(const int argc, const char *argv[], ClusterArgs &args);
+// void split_cluster_args(const int argc, const char *argv[], ClusterArgs &args);
 
 double DotProduct(const std::vector<double> &first, const std::vector<uint8_t> &second);
 
@@ -23,3 +21,5 @@ double EuclideanDistance(const std::vector<unsigned char> &first, const std::vec
 double ManhattanDistance(const std::vector<unsigned char> &first, const std::vector<unsigned char> &second);
 
 std::mt19937 &RandGen();
+
+#endif
