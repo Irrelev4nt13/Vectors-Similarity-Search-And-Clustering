@@ -17,13 +17,13 @@ public:
     }
 };
 
-std::vector<std::tuple<Image *, double>> BruteForce(const std::vector<Image *> &images_input, const Image &query, int k)
+std::vector<std::tuple<Image *, double>> BruteForce(const std::vector<Image *> &images_input, const Image *query, int k)
 {
     std::priority_queue<std::tuple<Image *, double>, std::vector<std::tuple<Image *, double>>, CompareTuple> nearestNeighbors;
 
     for (Image *input : images_input)
     {
-        double dist = EuclideanDistance(input->pixels, query.pixels);
+        double dist = EuclideanDistance(input->pixels, query->pixels);
         std::tuple<Image *, double> new_tuple(input, dist);
         nearestNeighbors.push(new_tuple);
 
