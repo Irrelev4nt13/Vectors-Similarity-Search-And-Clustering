@@ -38,7 +38,6 @@ std::vector<std::tuple<Image *, double>> Lsh::Approximate_kNN(Image *query)
   for (int i = 0; i < numHtables; i++)
   {
     const std::vector<Image *> bucket = hashtables[i].get_bucket(query);
-
     for (Image *input : bucket)
     {
       double dist = EuclideanDistance(input->pixels, query->pixels);

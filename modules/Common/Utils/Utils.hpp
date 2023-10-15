@@ -6,42 +6,23 @@
 #include <cstdint>
 
 // They need to be moved into another file with class based implementation
-// void split_cube_args(const int argc, const char *argv[], CubeArgs &args);
-
 // void split_cluster_args(const int argc, const char *argv[], ClusterArgs &args);
 
 template <typename T, typename U>
 double DotProduct(const std::vector<T> &first, const std::vector<U> &second)
 {
-    double sum = 0;
-    size_t limit = std::min(first.size(), second.size());
-
-    // std::cout << "first:\t" << first.size() << std::endl;
-    // std::cout << second.size() << std::endl;
-    // exit(EXIT_SUCCESS);
-
-    for (size_t i = 0; i < limit; ++i)
-    {
-        sum += (double)first[i] * (double)second[i];
-    }
-
+    double sum = 0.0;
+    for (size_t i = 0; i < first.size(); ++i)
+        sum += first[i] * second[i];
     return sum;
 }
 
 template <typename T, typename U>
-int64_t Modulo(T a, U b)
-{
-    int64_t m = (int64_t)a % (int64_t)b;
-    if (m < 0)
-    {
-        m = (b < 0) ? m - (int64_t)b : m + (int64_t)b;
-    }
-    return m;
-}
+uint8_t Modulo(T a, U b) { return static_cast<uint8_t>(a % b); }
 
-double EuclideanDistance(const std::vector<unsigned char> &first, const std::vector<unsigned char> &second);
+double EuclideanDistance(const std::vector<uint8_t> &first, const std::vector<uint8_t> &second);
 
-double ManhattanDistance(const std::vector<unsigned char> &first, const std::vector<unsigned char> &second);
+double ManhattanDistance(const std::vector<uint8_t> &first, const std::vector<uint8_t> &second);
 
 std::mt19937 &RandGen();
 

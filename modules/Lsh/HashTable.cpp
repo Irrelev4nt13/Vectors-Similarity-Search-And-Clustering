@@ -34,7 +34,9 @@ int AmplifiedHashFunction::hash(Image *image) const
 {
     uint hashval = 0;
     for (int i = 0, num_hashes = hash_functions.size(); i < num_hashes; i++)
-        hashval = Modulo(Modulo(hashval, MODULUS) + Modulo(r[i] * hash_functions[i].hash(image), MODULUS), MODULUS);
+        hashval += r[i] * hash_functions[i].hash(image);
+    return Modulo(hashval, MODULUS);
+    // hashval = Modulo(Modulo(hashval, MODULUS) + Modulo(r[i] * hash_functions[i].hash(image), MODULUS), MODULUS);
     return hashval;
 }
 
@@ -49,6 +51,16 @@ HashTable::HashTable(const int &numBuckets, const AmplifiedHashFunction &hash) :
 
 HashTable::~HashTable() {}
 
-void HashTable::insert(Image *image) { buckets.at(Modulo(hashamp.hash(image), numBuckets)).push_back(image); }
+void HashTable::insert(Image *image)
+{
+    // if (image->id == 53843)
+    //     std::cout << "True bucket at: " << static_cast<int>(Modulo(hashamp.hash(image), numBuckets)) << std::endl;
+    buckets.at(Modulo(hashamp.hash(image), numBuckets)).push_back(image);
+}
 
-std::vector<Image *> HashTable::get_bucket(Image *image) { return buckets.at(Modulo(hashamp.hash(image), numBuckets)); }
+std::vector<Image *> HashTable::get_bucket(Image *image)
+{
+    // std::cout << "Aprox bucket at: " << static_cast<int>(Modulo(hashamp.hash(image), numBuckets)) << std::endl;
+
+    return buckets.at(Modulo(hashamp.hash(image), numBuckets));
+}
