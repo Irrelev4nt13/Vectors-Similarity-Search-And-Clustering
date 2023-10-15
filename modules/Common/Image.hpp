@@ -1,4 +1,5 @@
-#pragma once
+#ifndef IMAGE_HPP_
+#define IMAGE_HPP_
 
 #include <iostream>
 #include <vector>
@@ -15,3 +16,5 @@ public:
 
     ~Image() {}
 };
+
+#endif
