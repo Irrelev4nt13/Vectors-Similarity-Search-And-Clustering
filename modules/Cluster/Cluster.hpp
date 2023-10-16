@@ -12,6 +12,7 @@ private:
 
 public:
     Cluster(std::vector<Image *> &members) : member_of_cluster(members) {}
+    Cluster(Image *image) { member_of_cluster.push_back(image); }
     Cluster() {}
     ~Cluster() {}
     std::vector<Image *> *GetMemberOfCluster() { return &member_of_cluster; }

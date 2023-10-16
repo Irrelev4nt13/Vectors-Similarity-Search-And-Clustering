@@ -21,6 +21,9 @@ double EuclideanDistance(const std::vector<uint8_t> &first, const std::vector<ui
 
 double ManhattanDistance(const std::vector<uint8_t> &first, const std::vector<uint8_t> &second);
 
+// double MinDistanceToCentroid();
+// double MinDistanceBetweenCentroids();
+
 std::mt19937 &RandGen();
 
 #endif
