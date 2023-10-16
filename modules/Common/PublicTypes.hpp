@@ -11,4 +11,6 @@ typedef Image *ImagePtr;
 
 typedef std::tuple<ImagePtr, double> Neighbor;
 
+typedef std::unordered_map<std::string, bool> CubeMap;
+
 #endif
