@@ -3,6 +3,7 @@
 #include <fstream>
 #include <chrono>
 
+#include "Image.hpp"
 #include "Lsh.hpp"
 #include "LshCmdArgs.hpp"
 #include "FileParser.hpp"
