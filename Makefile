@@ -77,7 +77,7 @@ ARGS_LSH := -d datasets/train-images.idx3-ubyte -q datasets/t10k-images.idx3-uby
 
 ARGS_CUBE := -d input_file -q query_file -k 1 -M 2 -probes 3 -o output_file -N 4 -R 3.14
 
-ARGS_CLUSTER := -i input_file -c config_file -o output_file -complete -m Classic
+ARGS_CLUSTER := -i datasets/train-images.idx3-ubyte -c conf/cluster.conf -o output_cluster.txt -complete -m Classic
 
 run-lsh: lsh
 	./$(LSH) $(ARGS_LSH)

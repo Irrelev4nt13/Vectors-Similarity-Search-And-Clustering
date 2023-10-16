@@ -5,9 +5,6 @@
 #include <random>
 #include <cstdint>
 
-// They need to be moved into another file with class based implementation
-// void split_cluster_args(const int argc, const char *argv[], ClusterArgs &args);
-
 template <typename T, typename U>
 double DotProduct(const std::vector<T> &first, const std::vector<U> &second)
 {

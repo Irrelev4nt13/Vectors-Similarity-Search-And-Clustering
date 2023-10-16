@@ -1,29 +1,21 @@
-#pragma once
+#ifndef CLUSTER_HPP_
+#define CLUSTER_HPP_
 
-#include <iostream>
-#include <iomanip>
+#include <vector>
 
-class ClusterArgs
-{
-public:
-    std::string input_file = "";
-    std::string configuration_file = "";
-    std::string output_file = "";
-    bool complete = false;
-    std::string method = "";
-};
+#include "Image.hpp"
+
 class Cluster
 {
 private:
-    // The arguments initialized with the default values
-    std::string input_file;         // –i <input file>
-    std::string configuration_file; // –c <configuration file>
-    std::string output_file;        // -ο <output file>
-    bool complete;                  // -complete <optional>
-    std::string method;             // -m <method: Classic OR LSH or Hypercube>
+    std::vector<Image *> member_of_cluster;
 
 public:
-    Cluster(const ClusterArgs &args);
-    ~Cluster();
-    void print_cluster();
+    Cluster(std::vector<Image *> &members) : member_of_cluster(members) {}
+    Cluster() {}
+    ~Cluster() {}
+    std::vector<Image *> *GetMemberOfCluster() { return &member_of_cluster; }
+    void AddToCluster(Image *image) { member_of_cluster.push_back(image); }
 };
+
+#endif
