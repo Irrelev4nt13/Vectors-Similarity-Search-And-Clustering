@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <chrono>
+#include <math.h>
 
 #include "BruteForce.hpp"
 #include "CubeCmdArgs.hpp"
@@ -27,8 +28,9 @@ int main(int argc, char const *argv[])
     output_file.open(args.outputFile);
 
     int w = 4;
+    int numBuckets = std::pow(2, args.dimension);
 
-    Cube cube(input_images, w, args.dimension, args.maxCanditates, args.probes, args.numNn, args.radius);
+    Cube cube(input_images, w, args.dimension, args.maxCanditates, args.probes, args.numNn, args.radius, numBuckets);
     // for (int i = 0; i < 10; i++)
     // {
     //     Image *query = query_images[i];

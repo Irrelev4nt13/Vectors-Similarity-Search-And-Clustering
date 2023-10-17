@@ -47,6 +47,32 @@ int AmpLsh::hash(ImagePtr image) const
     return Modulo(hashval, M);
 }
 
+AmpCube::AmpCube(int w, int numHashFuncs, int dimension)
+{
+    std::normal_distribution<> standard_normal(0.0, 1.0);
+    std::uniform_real_distribution<> uniform_real(0, w);
+
+    cubeMaps.resize(numHashFuncs);
+
+    for (int i = 0; i < numHashFuncs; i++)
+    {
+        std::vector<double> v;
+        for (int j = 0; j < dimension; j++)
+            v.push_back(standard_normal(RandGen()));
+        hash_functions.push_back(HashFunction(w, uniform_real(RandGen()), v));
+
+        cubeMaps.push_back(std::unordered_map<int, int>());
+    }
+}
+
+AmpCube::~AmpCube()
+{
+}
+
+int AmpCube::hash(ImagePtr image) const
+{
+}
+
 HashTable::HashTable(const int &numBuckets, GenericAmp *hash) : numBuckets(numBuckets), hashmap(hash)
 {
     for (int i = 0; i < numBuckets; i++)
