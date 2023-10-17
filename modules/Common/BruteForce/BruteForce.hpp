@@ -4,7 +4,8 @@
 #include <vector>
 
 #include "Image.hpp"
+#include "PublicTypes.hpp"
 
-std::vector<std::tuple<Image *, double>> BruteForce(const std::vector<Image *> &images_input, const Image *query, int k);
+std::vector<Neighbor> BruteForce(const std::vector<ImagePtr> &images_input, const ImagePtr query, int k);
 
 #endif

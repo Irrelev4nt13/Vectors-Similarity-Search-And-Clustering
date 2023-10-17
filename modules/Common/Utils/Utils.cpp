@@ -1,9 +1,19 @@
+#include <iostream>
 #include <vector>
 #include <random>
 #include <cstdint>
 #include <cmath>
 
 #include "Utils.hpp"
+
+void readFilenameIfEmpty(std::string &filename)
+{
+    if (filename.empty())
+    {
+        std::cout << "Enter " << filename << " file: ";
+        std::getline(std::cin, filename);
+    }
+}
 
 double EuclideanDistance(const std::vector<uint8_t> &first, const std::vector<uint8_t> &second)
 {

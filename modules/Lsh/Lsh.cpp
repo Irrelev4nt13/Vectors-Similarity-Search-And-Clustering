@@ -6,6 +6,7 @@
 #include "Utils.hpp"
 #include "HashTable.hpp"
 #include "Lsh.hpp"
+#include "PublicTypes.hpp"
 
 Lsh::Lsh(const std::vector<Image *> &images, const int &numHashFuncs, const int &numHtables, const int &numNn, const double &radius, const int &w, const int &numBuckets)
     : numHashFuncs(numHashFuncs), numHtables(numHtables), numNn(numNn), radius(radius), w(w), numBuckets(numBuckets)
@@ -13,7 +14,7 @@ Lsh::Lsh(const std::vector<Image *> &images, const int &numHashFuncs, const int 
   int dimension = images.at(0)->pixels.size();
   for (int i = 0; i < numHtables; i++)
   {
-    hashtables.push_back(HashTable(numBuckets, AmplifiedHashFunction(w, numHashFuncs, dimension)));
+    hashtables.push_back(HashTable(numBuckets, new AmpLsh(w, numHashFuncs, dimension)));
     for (int j = 0; j < images.size(); j++)
 
       hashtables[i].insert(images[j]);
@@ -22,15 +23,6 @@ Lsh::Lsh(const std::vector<Image *> &images, const int &numHashFuncs, const int 
 
 Lsh::~Lsh() {}
 
-class CompareTuple
-{
-public:
-  bool operator()(const std::tuple<Image *, double> &a, const std::tuple<Image *, double> &b) const
-  {
-    // Compare based on the double value.
-    return std::get<1>(a) < std::get<1>(b);
-  }
-};
 std::vector<std::tuple<Image *, double>> Lsh::Approximate_kNN(Image *query)
 {
   std::priority_queue<std::tuple<Image *, double>, std::vector<std::tuple<Image *, double>>, CompareTuple> nearestNeighbors;

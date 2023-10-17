@@ -2,15 +2,28 @@
 #define PUBLIC_TYPES_HPP_
 
 #include <iostream>
+#include <tuple>
 
 #include "Image.hpp"
-
-// definitions of public common types used across all modules
 
 typedef Image *ImagePtr;
 
 typedef std::tuple<ImagePtr, double> Neighbor;
 
-typedef std::unordered_map<std::string, bool> CubeMap;
+class GenericAmp
+{
+public:
+    virtual int hash(ImagePtr image) const = 0;
+};
+
+class CompareTuple
+{
+public:
+    bool operator()(const std::tuple<Image *, double> &a, const std::tuple<Image *, double> &b) const
+    {
+        // Compare based on the double value.
+        return std::get<1>(a) < std::get<1>(b);
+    }
+};
 
 #endif

@@ -5,6 +5,8 @@
 #include <random>
 #include <cstdint>
 
+void readFilenameIfEmpty(std::string &filename);
+
 template <typename T, typename U>
 double DotProduct(const std::vector<T> &first, const std::vector<U> &second)
 {

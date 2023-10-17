@@ -8,29 +8,23 @@
 #include "FileParser.hpp"
 #include "Utils.hpp"
 
-void readFilenameIfEmpty(std::string &filename)
-{
-    std::cout << "Enter " << filename << " file: ";
-    std::getline(std::cin, filename);
-}
-
 int main(int argc, char const *argv[])
 {
     CubeCmdArgs args(argc, argv);
 
-    // readFilenameIfEmpty(args.inputFile);
+    readFilenameIfEmpty(args.inputFile);
     FileParser inputParser(args.inputFile);
 
     const std::vector<ImagePtr> input_images = inputParser.GetImages();
 
-    // readFilenameIfEmpty(args.queryFile);
+    readFilenameIfEmpty(args.queryFile);
     FileParser queryParser(args.queryFile);
 
     const std::vector<ImagePtr> query_images = queryParser.GetImages();
 
-    // readFilenameIfEmpty(args.outputFile);
-    // std::ofstream output_file;
-    // output_file.open(args.outputFile);
+    readFilenameIfEmpty(args.outputFile);
+    std::ofstream output_file;
+    output_file.open(args.outputFile);
 
     int w = 4;
 

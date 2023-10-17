@@ -4,8 +4,7 @@
 #include <vector>
 
 #include "Image.hpp"
-
-#define MODULUS 4294967291 // This is a prime number (2^32 - 5)
+#include "PublicTypes.hpp"
 
 class HashFunction
 {
@@ -18,19 +17,20 @@ public:
     HashFunction(const int &w, const float &t, const std::vector<double> &v);
     ~HashFunction();
 
-    int hash(Image *image) const;
+    int hash(ImagePtr image) const;
 };
-class AmplifiedHashFunction
+
+class AmpLsh : public GenericAmp
 {
 private:
     std::vector<int> r;
     std::vector<HashFunction> hash_functions;
 
 public:
-    AmplifiedHashFunction(const int &w, const int &numHashFuncs, const int &dimension);
-    ~AmplifiedHashFunction();
+    AmpLsh(const int &w, const int &numHashFuncs, const int &dimension);
+    ~AmpLsh();
 
-    int hash(Image *image) const;
+    int hash(ImagePtr image) const;
 };
 
 template <typename T>
@@ -40,16 +40,16 @@ class HashTable
 {
 private:
     int numBuckets;
-    std::vector<Bucket<Image *>> buckets;
-    AmplifiedHashFunction hashamp;
+    std::vector<Bucket<ImagePtr>> buckets;
+    GenericAmp *hashmap;
 
 public:
-    HashTable(const int &numBuckets, const AmplifiedHashFunction &hash);
+    HashTable(const int &numBuckets, GenericAmp *hash);
     ~HashTable();
 
-    void insert(Image *image);
+    void insert(ImagePtr image);
 
-    std::vector<Image *> get_bucket(Image *image);
+    std::vector<ImagePtr> get_bucket(ImagePtr image);
 };
 
 #endif

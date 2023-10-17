@@ -4,6 +4,7 @@
 #include <chrono>
 
 #include "Image.hpp"
+#include "Utils.hpp"
 #include "Lsh.hpp"
 #include "LshCmdArgs.hpp"
 #include "FileParser.hpp"
@@ -13,32 +14,17 @@ int main(int argc, char const *argv[])
 {
     LshCmdArgs args(argc, argv);
 
-    // Check if the input is empty in order to ask for it in the main
-    if (args.inputFile.empty())
-    {
-        std::cout << "Enter input file: ";
-        std::getline(std::cin, args.inputFile);
-    }
+    readFilenameIfEmpty(args.inputFile);
     FileParser inputParser(args.inputFile);
 
-    const std::vector<Image *> input_images = inputParser.GetImages();
+    const std::vector<ImagePtr> input_images = inputParser.GetImages();
 
-    // Check if the query is empty in order to ask for it in the main
-    if (args.queryFile.empty())
-    {
-        std::cout << "Enter query file: ";
-        std::getline(std::cin, args.queryFile);
-    }
+    readFilenameIfEmpty(args.queryFile);
     FileParser queryParser(args.queryFile);
 
-    const std::vector<Image *> query_images = queryParser.GetImages();
+    std::vector<ImagePtr> query_images = queryParser.GetImages();
 
-    // std::fstream output_file()
-    if (args.outputFile.empty())
-    {
-        std::cout << "Enter output file: ";
-        std::getline(std::cin, args.outputFile);
-    }
+    readFilenameIfEmpty(args.outputFile);
     std::ofstream output_file;
     output_file.open(args.outputFile);
 
