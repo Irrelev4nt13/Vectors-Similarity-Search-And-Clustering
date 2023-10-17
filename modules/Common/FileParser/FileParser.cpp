@@ -76,7 +76,7 @@ std::string FileParser::getFullPath()
         cwd = buffer;
     }
 
-    int numParents = 3;
+    int numParents = 2;
     std::string fullPath = cwd;
     for (int i = 0; i < numParents; i++)
     {

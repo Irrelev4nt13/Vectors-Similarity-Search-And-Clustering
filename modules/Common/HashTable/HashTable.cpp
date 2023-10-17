@@ -6,13 +6,22 @@
 #include "Utils.hpp"
 #include "HashTable.hpp"
 
-HashFunction::HashFunction(const int &w, const float &t, const std::vector<double> &v) : w(w), t(t), v(v) {}
+// static const int64_t M = (int64_t)((1 << 32) - 5);
+static const int64_t M = ((int64_t)(1) << 32) - 5;
+// static const long long int M = (1 << 32) - 5;
+
+HashFunction::HashFunction(const int &w, const float &t, const std::vector<double> &v) : w(w), t(t), v(v)
+{
+}
 
 HashFunction::~HashFunction() {}
 
-int HashFunction::hash(Image *image) const { return floor((DotProduct(v, image->pixels) + t) / w); }
+int HashFunction::hash(ImagePtr image) const
+{
+    return floor((DotProduct(v, image->pixels) + t) / w);
+}
 
-AmplifiedHashFunction::AmplifiedHashFunction(const int &w, const int &numHashFuncs, const int &dimension)
+AmpLsh::AmpLsh(const int &w, const int &numHashFuncs, const int &dimension)
 {
     std::normal_distribution<> standard_normal(0.0, 1.0);
     std::uniform_real_distribution<> uniform_real(0, w);
@@ -28,39 +37,33 @@ AmplifiedHashFunction::AmplifiedHashFunction(const int &w, const int &numHashFun
         hash_functions.push_back(HashFunction(w, uniform_real(RandGen()), v));
     }
 }
-AmplifiedHashFunction::~AmplifiedHashFunction() {}
+AmpLsh::~AmpLsh() {}
 
-int AmplifiedHashFunction::hash(Image *image) const
+int AmpLsh::hash(ImagePtr image) const
 {
     uint hashval = 0;
     for (int i = 0, num_hashes = hash_functions.size(); i < num_hashes; i++)
         hashval += r[i] * hash_functions[i].hash(image);
-    return Modulo(hashval, MODULUS);
-    // hashval = Modulo(Modulo(hashval, MODULUS) + Modulo(r[i] * hash_functions[i].hash(image), MODULUS), MODULUS);
-    return hashval;
+    return Modulo(hashval, M);
 }
 
-HashTable::HashTable(const int &numBuckets, const AmplifiedHashFunction &hash) : numBuckets(numBuckets), hashamp(hash)
+HashTable::HashTable(const int &numBuckets, GenericAmp *hash) : numBuckets(numBuckets), hashmap(hash)
 {
     for (int i = 0; i < numBuckets; i++)
     {
-        std::vector<Image *> new_bucket;
+        std::vector<ImagePtr> new_bucket;
         buckets.push_back(new_bucket);
     }
 }
 
 HashTable::~HashTable() {}
 
-void HashTable::insert(Image *image)
+void HashTable::insert(ImagePtr image)
 {
-    // if (image->id == 53843)
-    //     std::cout << "True bucket at: " << static_cast<int>(Modulo(hashamp.hash(image), numBuckets)) << std::endl;
-    buckets.at(Modulo(hashamp.hash(image), numBuckets)).push_back(image);
+    buckets.at(Modulo(hashmap->hash(image), numBuckets)).push_back(image);
 }
 
-std::vector<Image *> HashTable::get_bucket(Image *image)
+std::vector<ImagePtr> HashTable::get_bucket(ImagePtr image)
 {
-    // std::cout << "Aprox bucket at: " << static_cast<int>(Modulo(hashamp.hash(image), numBuckets)) << std::endl;
-
-    return buckets.at(Modulo(hashamp.hash(image), numBuckets));
+    return buckets.at(Modulo(hashmap->hash(image), numBuckets));
 }

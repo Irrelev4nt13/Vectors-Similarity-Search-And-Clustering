@@ -4,6 +4,7 @@
 #include <queue>
 
 #include "Cube.hpp"
+#include "PublicTypes.hpp"
 #include "Table.hpp"
 
 Cube::Cube(const std::vector<ImagePtr> images, int w, int dimension, int maxCanditates, int probes, int numNn, double radius)
@@ -30,16 +31,6 @@ void Cube::print_cube()
     std::cout << radius << std::endl;
 }
 
-class CompareTuple
-{
-public:
-    bool operator()(const std::tuple<Image *, double> &a, const std::tuple<Image *, double> &b) const
-    {
-        // Compare based on the double value.
-        return std::get<1>(a) < std::get<1>(b);
-    }
-};
-
 std::vector<Neighbor> Cube::Approximate_kNN(ImagePtr query)
 {
     std::priority_queue<std::tuple<Image *, double>, std::vector<std::tuple<Image *, double>>, CompareTuple> nearestNeighbors;
@@ -56,4 +47,6 @@ std::vector<Neighbor> Cube::Approximate_kNN(ImagePtr query)
 }
 std::vector<Image *> Cube::Approximate_Range_Search(ImagePtr query)
 {
+    std::vector<Image *> vec;
+    return vec;
 }
