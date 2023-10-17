@@ -33,10 +33,12 @@ public:
                 queryFile = std::string(argv[i + 1]);
             else if (!strcmp(argv[i], "-k"))
                 dimension = atoi(argv[i + 1]);
-            else if (!strcmp(argv[i], "-L"))
+            else if (!strcmp(argv[i], "-M"))
                 maxCanditates = atoi(argv[i + 1]);
             else if (!strcmp(argv[i], "-o"))
                 outputFile = std::string(argv[i + 1]);
+            else if (!strcmp(argv[i], "-probes"))
+                probes = atoi(argv[i + 1]);
             else if (!strcmp(argv[i], "-N"))
                 numNn = atoi(argv[i + 1]);
             else if (!strcmp(argv[i], "-R"))
