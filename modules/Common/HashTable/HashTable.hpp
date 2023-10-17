@@ -2,6 +2,7 @@
 #define HASHTABLE_HPP_
 
 #include <vector>
+#include <unordered_map>
 
 #include "Image.hpp"
 #include "PublicTypes.hpp"
@@ -29,6 +30,19 @@ private:
 public:
     AmpLsh(const int &w, const int &numHashFuncs, const int &dimension);
     ~AmpLsh();
+
+    int hash(ImagePtr image) const;
+};
+
+class AmpCube : public GenericAmp
+{
+private:
+    std::vector<std::unordered_map<int, int>> cubeMaps;
+    std::vector<HashFunction> hash_functions;
+
+public:
+    AmpCube(int w, int numHashFuncs, int dimension);
+    ~AmpCube();
 
     int hash(ImagePtr image) const;
 };
