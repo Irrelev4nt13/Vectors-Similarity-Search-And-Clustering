@@ -8,7 +8,7 @@
 #include "Lsh.hpp"
 #include "PublicTypes.hpp"
 
-Lsh::Lsh(const std::vector<Image *> &images, const int &numHashFuncs, const int &numHtables, const int &numNn, const double &radius, const int &w, const int &numBuckets)
+Lsh::Lsh(const std::vector<ImagePtr> &images, int numHashFuncs, int numHtables, int numNn, double radius, int w, int numBuckets)
     : numHashFuncs(numHashFuncs), numHtables(numHtables), numNn(numNn), radius(radius), w(w), numBuckets(numBuckets)
 {
   int dimension = images.at(0)->pixels.size();
@@ -23,17 +23,17 @@ Lsh::Lsh(const std::vector<Image *> &images, const int &numHashFuncs, const int 
 
 Lsh::~Lsh() {}
 
-std::vector<std::tuple<Image *, double>> Lsh::Approximate_kNN(Image *query)
+std::vector<Neighbor> Lsh::Approximate_kNN(ImagePtr query)
 {
-  std::priority_queue<std::tuple<Image *, double>, std::vector<std::tuple<Image *, double>>, CompareTuple> nearestNeighbors;
+  std::priority_queue<Neighbor, std::vector<Neighbor>, CompareTuple> nearestNeighbors;
 
   for (int i = 0; i < numHtables; i++)
   {
-    const std::vector<Image *> bucket = hashtables[i].get_bucket(query);
-    for (Image *input : bucket)
+    const std::vector<ImagePtr> bucket = hashtables[i].get_bucket(query);
+    for (ImagePtr input : bucket)
     {
       double dist = EuclideanDistance(input->pixels, query->pixels);
-      std::tuple<Image *, double> new_tuple(input, dist);
+      Neighbor new_tuple(input, dist);
       nearestNeighbors.push(new_tuple);
 
       if (nearestNeighbors.size() > numNn)
@@ -41,7 +41,7 @@ std::vector<std::tuple<Image *, double>> Lsh::Approximate_kNN(Image *query)
     }
   }
 
-  std::vector<std::tuple<Image *, double>> KnearestNeighbors;
+  std::vector<Neighbor> KnearestNeighbors;
   while (!nearestNeighbors.empty())
   {
     KnearestNeighbors.insert(KnearestNeighbors.begin(), nearestNeighbors.top());
@@ -50,14 +50,14 @@ std::vector<std::tuple<Image *, double>> Lsh::Approximate_kNN(Image *query)
   return KnearestNeighbors;
 }
 
-std::vector<Image *> Lsh::Approximate_Range_Search(Image *query)
+std::vector<ImagePtr> Lsh::Approximate_Range_Search(ImagePtr query)
 {
-  std::vector<Image *> RangeSearch;
+  std::vector<ImagePtr> RangeSearch;
   for (int i = 0; i < numHtables; i++)
   {
-    const std::vector<Image *> bucket = hashtables[i].get_bucket(query);
+    const std::vector<ImagePtr> bucket = hashtables[i].get_bucket(query);
 
-    for (Image *input : bucket)
+    for (ImagePtr input : bucket)
     {
       double dist = EuclideanDistance(input->pixels, query->pixels);
       if (dist >= 0 && dist < radius)

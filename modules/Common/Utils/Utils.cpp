@@ -15,6 +15,28 @@ void readFilenameIfEmpty(std::string &filename)
     }
 }
 
+std::chrono::nanoseconds clockUtil(ClockEnum action)
+{
+    static std::chrono::_V2::system_clock::time_point startTime;
+
+    if (action == ClockEnum::BEGIN)
+    {
+        startTime = std::chrono::high_resolution_clock::now();
+    }
+    else if (action == ClockEnum::END)
+    {
+        std::chrono::_V2::system_clock::time_point endTime = std::chrono::high_resolution_clock::now();
+
+        std::chrono::nanoseconds duration = std::chrono::duration_cast<std::chrono::nanoseconds>(startTime - endTime);
+
+        return duration;
+    }
+    else
+    {
+        return std::chrono::nanoseconds(0);
+    }
+}
+
 double EuclideanDistance(const std::vector<uint8_t> &first, const std::vector<uint8_t> &second)
 {
     double difference, result = 0.0;

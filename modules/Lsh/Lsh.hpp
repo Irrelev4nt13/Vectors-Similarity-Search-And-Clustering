@@ -18,7 +18,7 @@ private:
     int numBuckets;
 
 public:
-    Lsh(const std::vector<Image *> &images, const int &numHashFuncs, const int &numHtables, const int &numNn, const double &radius, const int &w, const int &numBuckets);
+    Lsh(const std::vector<ImagePtr> &images, int numHashFuncs, int numHtables, int numNn, double radius, int w, int numBuckets);
     ~Lsh();
     std::vector<std::tuple<Image *, double>> Approximate_kNN(Image *query);
     std::vector<Image *> Approximate_Range_Search(Image *query);

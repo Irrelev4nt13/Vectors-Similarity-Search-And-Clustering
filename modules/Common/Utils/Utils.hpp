@@ -1,11 +1,21 @@
 #ifndef UTILS_HPP_
 #define UTILS_HPP_
 
+#include <iostream>
+#include <chrono>
 #include <vector>
 #include <random>
 #include <cstdint>
 
+enum class ClockEnum
+{
+    BEGIN,
+    END
+};
+
 void readFilenameIfEmpty(std::string &filename);
+
+std::chrono::nanoseconds clockUtil(ClockEnum action);
 
 template <typename T, typename U>
 double DotProduct(const std::vector<T> &first, const std::vector<U> &second)

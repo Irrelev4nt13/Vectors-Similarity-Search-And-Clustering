@@ -19,21 +19,25 @@ int main(int argc, char const *argv[])
 
     const std::vector<ImagePtr> input_images = inputParser.GetImages();
 
-    readFilenameIfEmpty(args.queryFile);
-    FileParser queryParser(args.queryFile);
-
-    std::vector<ImagePtr> query_images = queryParser.GetImages();
-
-    readFilenameIfEmpty(args.outputFile);
-    std::ofstream output_file;
-    output_file.open(args.outputFile);
-
     int w = 4;
     int numBuckets = inputParser.GetMetadata().numOfImages / 8;
 
     Lsh lsh(input_images, args.numHashFuncs, args.numHtables, args.numNn, args.radius, w, numBuckets);
     while (true)
     {
+        readFilenameIfEmpty(args.queryFile);
+        FileParser queryParser(args.queryFile);
+        std::vector<ImagePtr> query_images = queryParser.GetImages();
+
+        if (args.queryFile == "exit")
+            break;
+
+        args.queryFile.clear();
+
+        readFilenameIfEmpty(args.outputFile);
+        std::ofstream output_file;
+        output_file.open(args.outputFile);
+
         // for (const Image &query : query_images){
 
         // }
@@ -46,10 +50,10 @@ int main(int argc, char const *argv[])
             // auto end_lsh = std::chrono::high_resolution_clock::now();
             // auto elapsed_lsh = std::chrono::duration_cast<std::chrono::nanoseconds>(end_lsh - begin_lsh);
 
-            // auto begin_brute = std::chrono::high_resolution_clock::now();
+            auto begin_brute = std::chrono::high_resolution_clock::now();
             std::vector<std::tuple<Image *, double>> brute_vector = BruteForce(input_images, query, args.numNn);
-            // auto end_brute = std::chrono::high_resolution_clock::now();
-            // auto elapsed_brute = std::chrono::duration_cast<std::chrono::nanoseconds>(end_brute - begin_brute);
+            auto end_brute = std::chrono::high_resolution_clock::now();
+            auto elapsed_brute = std::chrono::duration_cast<std::chrono::nanoseconds>(end_brute - begin_brute);
 
             output_file << "Query: " << query->id << std::endl;
             // for (auto &tuple : aprox_vector)
@@ -73,22 +77,8 @@ int main(int argc, char const *argv[])
 
             output_file << std::endl;
         }
+
         output_file.close();
-        // for (auto query : query_images)
-        //     delete query;
-
-        std::cout << "\nEnter new query file, type exit to stop: ";
-        std::getline(std::cin, args.queryFile);
-
-        if (args.queryFile == "exit")
-            break;
-        else
-        {
-            // must use new. Do not allocate to stack
-            FileParser newQueryParser(args.queryFile);
-
-            query_images = newQueryParser.GetImages();
-        }
     }
 
     return EXIT_SUCCESS;
