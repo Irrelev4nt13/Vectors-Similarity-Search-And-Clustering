@@ -31,7 +31,7 @@ public:
     AmpLsh(const int &w, const int &numHashFuncs, const int &dimension);
     ~AmpLsh();
 
-    int hash(ImagePtr image) const;
+    int hash(ImagePtr image);
 };
 
 class AmpCube : public GenericAmp
@@ -44,7 +44,7 @@ public:
     AmpCube(int w, int numHashFuncs, int dimension);
     ~AmpCube();
 
-    int hash(ImagePtr image) const;
+    int hash(ImagePtr image);
 };
 
 template <typename T>

@@ -13,7 +13,7 @@ typedef std::tuple<ImagePtr, double> Neighbor;
 class GenericAmp
 {
 public:
-    virtual int hash(ImagePtr image) const = 0;
+    virtual int hash(ImagePtr image) = 0;
 };
 
 class CompareTuple
