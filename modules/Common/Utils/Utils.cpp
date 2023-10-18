@@ -6,35 +6,29 @@
 
 #include "Utils.hpp"
 
-void readFilenameIfEmpty(std::string &filename)
+void readFilenameIfEmpty(std::string &filename, std::string fileType)
 {
     if (filename.empty())
     {
-        std::cout << "Enter " << filename << " file: ";
+        std::cout << "Enter " << fileType << " file: ";
         std::getline(std::cin, filename);
     }
 }
 
-std::chrono::nanoseconds clockUtil(ClockEnum action)
+static std::chrono::_V2::system_clock::time_point startTime;
+
+void startClock()
 {
-    static std::chrono::_V2::system_clock::time_point startTime;
+    startTime = std::chrono::high_resolution_clock::now();
+}
 
-    if (action == ClockEnum::BEGIN)
-    {
-        startTime = std::chrono::high_resolution_clock::now();
-    }
-    else if (action == ClockEnum::END)
-    {
-        std::chrono::_V2::system_clock::time_point endTime = std::chrono::high_resolution_clock::now();
+std::chrono::nanoseconds stopClock()
+{
+    std::chrono::_V2::system_clock::time_point endTime = std::chrono::high_resolution_clock::now();
 
-        std::chrono::nanoseconds duration = std::chrono::duration_cast<std::chrono::nanoseconds>(startTime - endTime);
+    std::chrono::nanoseconds duration = std::chrono::duration_cast<std::chrono::nanoseconds>(startTime - endTime);
 
-        return duration;
-    }
-    else
-    {
-        return std::chrono::nanoseconds(0);
-    }
+    return duration;
 }
 
 double EuclideanDistance(const std::vector<uint8_t> &first, const std::vector<uint8_t> &second)

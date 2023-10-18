@@ -14,28 +14,29 @@ int main(int argc, char const *argv[])
 {
     LshCmdArgs args(argc, argv);
 
-    readFilenameIfEmpty(args.inputFile);
+    readFilenameIfEmpty(args.inputFile, "input");
     FileParser inputParser(args.inputFile);
 
     const std::vector<ImagePtr> input_images = inputParser.GetImages();
+
+    readFilenameIfEmpty(args.queryFile, "query");
+
+    readFilenameIfEmpty(args.outputFile, "output");
+    std::ofstream output_file;
 
     int w = 4;
     int numBuckets = inputParser.GetMetadata().numOfImages / 8;
 
     Lsh lsh(input_images, args.numHashFuncs, args.numHtables, args.numNn, args.radius, w, numBuckets);
+
     while (true)
     {
-        readFilenameIfEmpty(args.queryFile);
         FileParser queryParser(args.queryFile);
         std::vector<ImagePtr> query_images = queryParser.GetImages();
 
         if (args.queryFile == "exit")
             break;
 
-        args.queryFile.clear();
-
-        readFilenameIfEmpty(args.outputFile);
-        std::ofstream output_file;
         output_file.open(args.outputFile);
 
         // for (const Image &query : query_images){
@@ -43,39 +44,49 @@ int main(int argc, char const *argv[])
         // }
         for (int i = 0; i < 10; i++)
         {
-            Image *query = query_images[i];
+            ImagePtr query = query_images[i];
 
-            // auto begin_lsh = std::chrono::high_resolution_clock::now();
-            std::vector<std::tuple<Image *, double>> aprox_vector = lsh.Approximate_kNN(query);
-            // auto end_lsh = std::chrono::high_resolution_clock::now();
-            // auto elapsed_lsh = std::chrono::duration_cast<std::chrono::nanoseconds>(end_lsh - begin_lsh);
+            startClock();
+            std::vector<Neighbor> aprox_vector = lsh.Approximate_kNN(query);
+            auto elapsed_lsh = stopClock();
 
-            auto begin_brute = std::chrono::high_resolution_clock::now();
-            std::vector<std::tuple<Image *, double>> brute_vector = BruteForce(input_images, query, args.numNn);
-            auto end_brute = std::chrono::high_resolution_clock::now();
-            auto elapsed_brute = std::chrono::duration_cast<std::chrono::nanoseconds>(end_brute - begin_brute);
+            startClock();
+            std::vector<Neighbor> brute_vector = BruteForce(input_images, query, args.numNn);
+            auto elapsed_brute = stopClock();
 
             output_file << "Query: " << query->id << std::endl;
-            // for (auto &tuple : aprox_vector)
+
             int limit = aprox_vector.size();
             for (int i = 0; i < limit; i++)
             {
-                double dist = std::get<1>(aprox_vector[i]);
-                Image *image = std::get<0>(aprox_vector[i]);
+                ImagePtr image;
+                double dist;
+                std::tie(image, dist) = aprox_vector[i];
+
                 output_file << "Nearest neighbor-" << i + 1 << ": " << image->id << std::endl
                             << "distanceLSH: " << dist << "\n";
+
                 dist = std::get<1>(brute_vector[i]);
                 output_file << "distanceTrue: " << dist << "\n";
             }
-            // output_file << "tLSH: " << elapsed_lsh.count() * 1e-9 << std::endl;
-            // output_file << "tTrue: " << elapsed_brute.count() * 1e-9 << std::endl;
-            // std::vector<Image *> range_vector = lsh.Approximate_Range_Search(query);
+
+            output_file << "tLSH: " << elapsed_lsh.count() * 1e-9 << std::endl;
+            output_file << "tTrue: " << elapsed_brute.count() * 1e-9 << std::endl;
+
+            std::vector<ImagePtr> range_vector = lsh.Approximate_Range_Search(query);
+
             output_file << "R-near neighbors:" << std::endl;
-            // for (auto &image : range_vector)
-            //     // output_file << "ImageID: " <<
-            //     output_file << image->id << std::endl;
+            for (auto &image : range_vector)
+                output_file << "ImageID: " << image->id << std::endl;
 
             output_file << std::endl;
+
+            // Read new query and output files.
+            args.queryFile.clear();
+            readFilenameIfEmpty(args.queryFile, "query");
+
+            args.outputFile.clear();
+            readFilenameIfEmpty(args.outputFile, "output");
         }
 
         output_file.close();
