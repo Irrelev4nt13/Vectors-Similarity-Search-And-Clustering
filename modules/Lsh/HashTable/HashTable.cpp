@@ -75,10 +75,11 @@ int AmpLsh::hash(ImagePtr image)
 
 HashTable::HashTable(const int &numBuckets, const AmpLsh &hash) : numBuckets(numBuckets), hashmap(hash)
 {
+    buckets.resize(numBuckets);
     for (int i = 0; i < numBuckets; i++)
     {
         std::vector<ImagePtr> new_bucket;
-        buckets.push_back(new_bucket);
+        buckets[i] = new_bucket;
     }
 }
 
@@ -88,9 +89,6 @@ HashTable::~HashTable()
 
 void HashTable::insert(ImagePtr image)
 {
-    // std::cout << "hash: " << hashmap.hash(image) << std::endl;
-    // std::cout << "modulo: " << Modulo(hashmap.hash(image), numBuckets) << std::endl;
-    // std::cout << "buckets size" << buckets.size() << std::endl;
     buckets.at(Modulo(hashmap.hash(image), numBuckets)).push_back(image);
 }
 

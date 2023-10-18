@@ -31,11 +31,11 @@ int main(int argc, char const *argv[])
 
     while (true)
     {
-        FileParser queryParser(args.queryFile);
-        std::vector<ImagePtr> query_images = queryParser.GetImages();
-
         if (args.queryFile == "exit")
             break;
+
+        FileParser queryParser(args.queryFile);
+        std::vector<ImagePtr> query_images = queryParser.GetImages();
 
         output_file.open(args.outputFile);
 
@@ -55,8 +55,6 @@ int main(int argc, char const *argv[])
             auto elapsed_brute = stopClock();
 
             output_file << "Query: " << query->id << std::endl;
-
-            std::cout << "calculating" << std::endl;
 
             int limit = aprox_vector.size();
             for (int i = 0; i < limit; i++)
@@ -82,14 +80,17 @@ int main(int argc, char const *argv[])
                 output_file << "ImageID: " << image->id << std::endl;
 
             output_file << std::endl;
-
-            // Read new query and output files.
-            args.queryFile.clear();
-            readFilenameIfEmpty(args.queryFile, "query");
-
-            args.outputFile.clear();
-            readFilenameIfEmpty(args.outputFile, "output");
         }
+
+        // Read new query and output files.
+        args.queryFile.clear();
+        readFilenameIfEmpty(args.queryFile, "query");
+
+        if (args.queryFile == "exit")
+            break;
+
+        args.outputFile.clear();
+        readFilenameIfEmpty(args.outputFile, "output");
 
         output_file.close();
     }
