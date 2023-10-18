@@ -11,12 +11,11 @@
 class Cube
 {
 private:
-    int dimension;       // –k number of dimensions
-    int maxCanditates;   // -M maximum candidates
-    int probes;          // -p probes
-    int numNn;           // -Ν number of nearest Neighbors
-    double radius;       // -R radius
-    HashTable hashTable; // hypercube hash table
+    int dimension;     // –k number of dimensions
+    int maxCanditates; // -M maximum candidates
+    int probes;        // -p probes
+    int numNn;         // -Ν number of nearest Neighbors
+    double radius;     // -R radius
     int w;
 
 public:

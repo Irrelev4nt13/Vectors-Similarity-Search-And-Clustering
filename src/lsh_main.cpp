@@ -56,6 +56,8 @@ int main(int argc, char const *argv[])
 
             output_file << "Query: " << query->id << std::endl;
 
+            std::cout << "calculating" << std::endl;
+
             int limit = aprox_vector.size();
             for (int i = 0; i < limit; i++)
             {

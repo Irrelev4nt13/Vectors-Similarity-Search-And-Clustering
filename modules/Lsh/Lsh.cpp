@@ -14,7 +14,7 @@ Lsh::Lsh(const std::vector<ImagePtr> &images, int numHashFuncs, int numHtables, 
   int dimension = images.at(0)->pixels.size();
   for (int i = 0; i < numHtables; i++)
   {
-    hashtables.push_back(HashTable(numBuckets, new AmpLsh(w, numHashFuncs, dimension)));
+    hashtables.push_back(HashTable(numBuckets, AmpLsh(w, numHashFuncs, dimension)));
     for (int j = 0; j < images.size(); j++)
 
       hashtables[i].insert(images[j]);
