@@ -23,8 +23,8 @@ public:
     Cube(const std::vector<ImagePtr> images, int w, int dimension, int maxCanditates, int probes, int numNn, double radius, int numBuckets);
     ~Cube();
     void print_cube();
-    std::vector<std::tuple<Image *, double>> Approximate_kNN(Image *query);
-    std::vector<Image *> Approximate_Range_Search(Image *query);
+    std::vector<Neighbor> Approximate_kNN(Image *query);
+    std::vector<ImagePtr> Approximate_Range_Search(Image *query);
 };
 
 #endif

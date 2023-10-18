@@ -23,9 +23,9 @@ int main(int argc, char const *argv[])
 
     const std::vector<ImagePtr> query_images = queryParser.GetImages();
 
-    readFilenameIfEmpty(args.outputFile);
-    std::ofstream output_file;
-    output_file.open(args.outputFile);
+    // readFilenameIfEmpty(args.outputFile);
+    // std::ofstream output_file;
+    // output_file.open(args.outputFile);
 
     int w = 4;
     int numBuckets = std::pow(2, args.dimension);
