@@ -5,23 +5,10 @@
 #include <unordered_map>
 
 #include "Image.hpp"
+#include "HashFunction.hpp"
 #include "PublicTypes.hpp"
 
-class HashFunction
-{
-private:
-    int w;
-    float t;
-    std::vector<double> v;
-
-public:
-    HashFunction(const int &w, const float &t, const std::vector<double> &v);
-    ~HashFunction();
-
-    int hash(ImagePtr image) const;
-};
-
-class AmpLsh : public GenericAmp
+class AmpLsh
 {
 private:
     std::vector<int> r;
@@ -34,19 +21,6 @@ public:
     int hash(ImagePtr image);
 };
 
-class AmpCube : public GenericAmp
-{
-private:
-    std::vector<std::unordered_map<int, int>> cubeMaps;
-    std::vector<HashFunction> hash_functions;
-
-public:
-    AmpCube(int w, int numHashFuncs, int dimension);
-    ~AmpCube();
-
-    int hash(ImagePtr image);
-};
-
 template <typename T>
 using Bucket = std::vector<T>;
 
@@ -55,10 +29,10 @@ class HashTable
 private:
     int numBuckets;
     std::vector<Bucket<ImagePtr>> buckets;
-    GenericAmp *hashmap;
+    AmpLsh hashmap;
 
 public:
-    HashTable(const int &numBuckets, GenericAmp *hash);
+    HashTable(const int &numBuckets, const AmpLsh &hashmap);
     ~HashTable();
 
     void insert(ImagePtr image);

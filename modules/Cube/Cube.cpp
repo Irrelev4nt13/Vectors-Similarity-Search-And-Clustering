@@ -8,14 +8,16 @@
 #include "HashTable.hpp"
 
 Cube::Cube(const std::vector<ImagePtr> images, int w, int dimension, int maxCanditates, int probes, int numNn, double radius, int numBuckets)
-    : dimension(dimension), maxCanditates(maxCanditates), probes(probes), numNn(numNn), radius(radius), w(w),
-      hashTable(numBuckets, new AmpLsh(w, dimension, images[0]->pixels.size()))
+    : dimension(dimension), maxCanditates(maxCanditates), probes(probes), numNn(numNn), radius(radius), w(w)
 {
+    //   hashTable(numBuckets, AmpLsh(w, dimension, images[0]->pixels.size()))
     // for (int i = 0; i < images.size(); i++)
     //     hashTable.insert(images[i]);
 }
 
-Cube::~Cube() {}
+Cube::~Cube()
+{
+}
 
 void Cube::print_cube()
 {
