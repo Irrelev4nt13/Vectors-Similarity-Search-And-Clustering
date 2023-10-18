@@ -88,7 +88,10 @@ HashTable::HashTable(const int &numBuckets, GenericAmp *hash) : numBuckets(numBu
     }
 }
 
-HashTable::~HashTable() {}
+HashTable::~HashTable()
+{
+    delete hashmap;
+}
 
 void HashTable::insert(ImagePtr image) { buckets.at(Modulo(hashmap->hash(image), numBuckets)).push_back(image); }
 

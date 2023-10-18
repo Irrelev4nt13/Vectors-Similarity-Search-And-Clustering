@@ -13,12 +13,12 @@ int main(int argc, char const *argv[])
 {
     CubeCmdArgs args(argc, argv);
 
-    readFilenameIfEmpty(args.inputFile);
+    readFilenameIfEmpty(args.inputFile, "input");
     FileParser inputParser(args.inputFile);
 
     const std::vector<ImagePtr> input_images = inputParser.GetImages();
 
-    readFilenameIfEmpty(args.queryFile);
+    readFilenameIfEmpty(args.queryFile, "query");
     FileParser queryParser(args.queryFile);
 
     const std::vector<ImagePtr> query_images = queryParser.GetImages();

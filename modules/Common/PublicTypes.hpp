@@ -19,7 +19,7 @@ public:
 class CompareTuple
 {
 public:
-    bool operator()(const std::tuple<Image *, double> &a, const std::tuple<Image *, double> &b) const
+    bool operator()(const std::tuple<ImagePtr, double> &a, const std::tuple<ImagePtr, double> &b) const
     {
         // Compare based on the double value.
         return std::get<1>(a) < std::get<1>(b);

@@ -7,15 +7,13 @@
 #include <random>
 #include <cstdint>
 
-enum class ClockEnum
-{
-    BEGIN,
-    END
-};
+void readFilenameIfEmpty(std::string &filename, std::string fileType);
 
-void readFilenameIfEmpty(std::string &filename);
+// static std::chrono::_V2::system_clock::time_point startTime;
 
-std::chrono::nanoseconds clockUtil(ClockEnum action);
+void startClock();
+
+std::chrono::nanoseconds stopClock();
 
 template <typename T, typename U>
 double DotProduct(const std::vector<T> &first, const std::vector<U> &second)
