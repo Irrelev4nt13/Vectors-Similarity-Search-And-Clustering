@@ -1,17 +1,14 @@
-#include <iostream>
 #include <vector>
 #include <queue>
-#include <string>
 #include <bitset>
-#include <iomanip>
 
 #include "Utils.hpp"
 #include "Cube.hpp"
 #include "PublicTypes.hpp"
 #include "HashFunction.hpp"
 
-Cube::Cube(const std::vector<ImagePtr> images, int w, int dimension, int maxCanditates, int probes, int numNn, double radius, int numBuckets)
-    : dimension(dimension), maxCanditates(maxCanditates), probes(probes), numNn(numNn), radius(radius), w(w), numBuckets(numBuckets)
+Cube::Cube(const std::vector<ImagePtr> images, int w, int dimension, int maxCanditates, int probes, int numNn, int numBuckets)
+    : dimension(dimension), maxCanditates(maxCanditates), probes(probes), numNn(numNn), w(w), numBuckets(numBuckets)
 {
     std::normal_distribution<> standard_normal(0.0, 1.0);
     std::uniform_real_distribution<> uniform_real(0, w);
@@ -27,10 +24,9 @@ Cube::Cube(const std::vector<ImagePtr> images, int w, int dimension, int maxCand
         buckets.push_back(std::vector<ImagePtr>());
 
     map = new std::unordered_map<int, int>[dimension];
+
     for (int i = 0; i < images.size(); i++)
-    {
         insert(images[i]);
-    }
 }
 
 int Cube::hash(ImagePtr image)
@@ -40,7 +36,6 @@ int Cube::hash(ImagePtr image)
     for (int i = 0; i < dimension; i++)
     {
         int hash = hash_functions[i].hash(image);
-        // std::cout << hash << " ";
         if (map[i].find(hash) == map[i].end())
             map[i][hash] = uniform_int(RandGen());
 
@@ -63,7 +58,7 @@ std::vector<Neighbor> Cube::Approximate_kNN(ImagePtr query)
     int candidates = 0;
     // std::cout << query_bucket << " " << std::bitset<32>(query_bucket).to_string() << std::endl;
     std::vector<ImagePtr> bucket = buckets[query_bucket];
-    for (Image *input : bucket)
+    for (ImagePtr input : bucket)
     {
         double dist = EuclideanDistance(input->pixels, query->pixels);
         // std::cout << dist << " ";
@@ -94,7 +89,7 @@ std::vector<Neighbor> Cube::Approximate_kNN(ImagePtr query)
                 // std::cout << std::setw(6) << query_bucket << " and " << std::setw(6) << j << " has hamDistance: " << i
                 //           << std::setw(6) << j << " bucket has: " << std::setw(6) << buckets[j].size() << " elements" << std::endl;
                 bucket = buckets[j];
-                for (Image *input : bucket)
+                for (ImagePtr input : bucket)
                 {
                     double dist = EuclideanDistance(input->pixels, query->pixels);
                     // std::cout << dist << " ";
@@ -128,7 +123,7 @@ std::vector<Neighbor> Cube::Approximate_kNN(ImagePtr query)
     // {
     //     // if ()
     // const std::vector<ImagePtr> bucket = buckets[query_bucket];
-    // for (Image *input : bucket)
+    // for (ImagePtr input : bucket)
     // {
     //     double dist = EuclideanDistance(input->pixels, query->pixels);
     //     Neighbor new_neighbor(input, dist);
@@ -148,7 +143,7 @@ std::vector<Neighbor> Cube::Approximate_kNN(ImagePtr query)
     }
     return KnearestNeighbors;
 }
-std::vector<ImagePtr> Cube::Approximate_Range_Search(ImagePtr query)
+std::vector<ImagePtr> Cube::Approximate_Range_Search(ImagePtr query, const double radius)
 {
     std::vector<ImagePtr> RangeSearch;
 
@@ -158,7 +153,7 @@ std::vector<ImagePtr> Cube::Approximate_Range_Search(ImagePtr query)
     int candidates = 0;
     // std::cout << query_bucket << " " << std::bitset<32>(query_bucket).to_string() << std::endl;
     std::vector<ImagePtr> bucket = buckets[query_bucket];
-    for (Image *input : bucket)
+    for (ImagePtr input : bucket)
     {
         double dist = EuclideanDistance(input->pixels, query->pixels);
         if (dist <= radius)
@@ -179,7 +174,7 @@ std::vector<ImagePtr> Cube::Approximate_Range_Search(ImagePtr query)
                 // std::cout << std::setw(6) << query_bucket << " and " << std::setw(6) << j << " has hamDistance: " << i
                 //           << std::setw(6) << j << " bucket has: " << std::setw(6) << buckets[j].size() << " elements" << std::endl;
                 bucket = buckets[j];
-                for (Image *input : bucket)
+                for (ImagePtr input : bucket)
                 {
                     double dist = EuclideanDistance(input->pixels, query->pixels);
                     if (dist <= radius)

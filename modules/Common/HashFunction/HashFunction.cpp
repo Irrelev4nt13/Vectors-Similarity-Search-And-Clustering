@@ -6,7 +6,7 @@
 #include "Utils.hpp"
 #include "PublicTypes.hpp"
 
-HashFunction::HashFunction(const int &w, const float &t, const std::vector<double> &v) : w(w), t(t), v(v) {}
+HashFunction::HashFunction(const int w, const float t, const std::vector<double> &v) : w(w), t(t), v(v) {}
 
 HashFunction::~HashFunction() {}
 

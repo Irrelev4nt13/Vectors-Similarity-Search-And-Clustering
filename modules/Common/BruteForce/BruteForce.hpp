@@ -6,6 +6,6 @@
 #include "Image.hpp"
 #include "PublicTypes.hpp"
 
-std::vector<Neighbor> BruteForce(const std::vector<ImagePtr> &images_input, const ImagePtr query, int k);
+std::vector<Neighbor> BruteForce(const std::vector<ImagePtr> &images_input, const ImagePtr query, const int k);
 
 #endif

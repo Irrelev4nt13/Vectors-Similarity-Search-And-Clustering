@@ -1,15 +1,15 @@
+#include <iostream>
 #include <vector>
 #include <queue>
 #include <tuple>
-
 #include "Image.hpp"
 #include "Utils.hpp"
 #include "HashTable.hpp"
 #include "Lsh.hpp"
 #include "PublicTypes.hpp"
 
-Lsh::Lsh(const std::vector<ImagePtr> &images, int numHashFuncs, int numHtables, int numNn, double radius, int w, int numBuckets)
-    : numHashFuncs(numHashFuncs), numHtables(numHtables), numNn(numNn), radius(radius), w(w), numBuckets(numBuckets)
+Lsh::Lsh(const std::vector<ImagePtr> &images, int numHashFuncs, int numHtables, int numNn, int w, int numBuckets)
+    : numHashFuncs(numHashFuncs), numHtables(numHtables), numNn(numNn), w(w), numBuckets(numBuckets)
 {
   int dimension = images.at(0)->pixels.size();
   for (int i = 0; i < numHtables; i++)
@@ -50,7 +50,7 @@ std::vector<Neighbor> Lsh::Approximate_kNN(ImagePtr query)
   return KnearestNeighbors;
 }
 
-std::vector<ImagePtr> Lsh::Approximate_Range_Search(ImagePtr query)
+std::vector<ImagePtr> Lsh::Approximate_Range_Search(ImagePtr query, const double radius)
 {
   std::vector<ImagePtr> RangeSearch;
   for (int i = 0; i < numHtables; i++)

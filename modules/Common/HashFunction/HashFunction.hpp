@@ -13,7 +13,7 @@ private:
     std::vector<double> v;
 
 public:
-    HashFunction(const int &w, const float &t, const std::vector<double> &v);
+    HashFunction(const int w, const float t, const std::vector<double> &v);
     ~HashFunction();
 
     int hash(ImagePtr image) const;
