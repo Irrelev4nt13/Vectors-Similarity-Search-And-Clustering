@@ -59,10 +59,8 @@ FileParser::FileParser(std::string inputFile)
 
 FileParser::~FileParser()
 {
-    for (const Image *image_ptr : images)
-    {
+    for (const ImagePtr image_ptr : images)
         delete image_ptr;
-    }
 }
 
 std::string FileParser::getFullPath()

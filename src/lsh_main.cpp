@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
-#include <chrono>
+#include <tuple>
 
 #include "Image.hpp"
 #include "Utils.hpp"
@@ -27,7 +27,7 @@ int main(int argc, char const *argv[])
     int w = 4;
     int numBuckets = inputParser.GetMetadata().numOfImages / 8;
 
-    Lsh lsh(input_images, args.numHashFuncs, args.numHtables, args.numNn, args.radius, w, numBuckets);
+    Lsh lsh(input_images, args.numHashFuncs, args.numHtables, args.numNn, w, numBuckets);
 
     while (true)
     {
@@ -39,12 +39,10 @@ int main(int argc, char const *argv[])
 
         output_file.open(args.outputFile);
 
-        // for (const Image &query : query_images){
-
-        // }
-        for (int i = 0; i < 10; i++)
+        int query_num = query_images.size();
+        for (int q = 0; q < 10; q++)
         {
-            ImagePtr query = query_images[i];
+            ImagePtr query = query_images[q];
 
             startClock();
             std::vector<Neighbor> aprox_vector = lsh.Approximate_kNN(query);
@@ -59,9 +57,8 @@ int main(int argc, char const *argv[])
             int limit = aprox_vector.size();
             for (int i = 0; i < limit; i++)
             {
-                ImagePtr image;
-                double dist;
-                std::tie(image, dist) = aprox_vector[i];
+                double dist = std::get<1>(aprox_vector[i]);
+                ImagePtr image = std::get<0>(aprox_vector[i]);
 
                 output_file << "Nearest neighbor-" << i + 1 << ": " << image->id << std::endl
                             << "distanceLSH: " << dist << "\n";
@@ -73,11 +70,12 @@ int main(int argc, char const *argv[])
             output_file << "tLSH: " << elapsed_lsh.count() * 1e-9 << std::endl;
             output_file << "tTrue: " << elapsed_brute.count() * 1e-9 << std::endl;
 
-            std::vector<ImagePtr> range_vector = lsh.Approximate_Range_Search(query);
+            std::vector<ImagePtr> range_vector = lsh.Approximate_Range_Search(query, args.radius);
 
             output_file << "R-near neighbors:" << std::endl;
-            for (auto &image : range_vector)
-                output_file << "ImageID: " << image->id << std::endl;
+            limit = range_vector.size();
+            for (int i = 0; i < limit; i++)
+                output_file << range_vector[i]->id << std::endl;
 
             output_file << std::endl;
         }

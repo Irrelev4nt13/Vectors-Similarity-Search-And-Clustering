@@ -1,7 +1,8 @@
 #include <iostream>
 #include <fstream>
-#include <chrono>
+#include <vector>
 #include <math.h>
+#include <tuple>
 
 #include "BruteForce.hpp"
 #include "CubeCmdArgs.hpp"
@@ -26,7 +27,8 @@ int main(int argc, char const *argv[])
     int w = 4;
     int numBuckets = std::pow(2, args.dimension);
 
-    Cube cube(input_images, w, args.dimension, args.maxCanditates, args.probes, args.numNn, args.radius, numBuckets);
+    Cube cube(input_images, w, args.dimension, args.maxCanditates, args.probes, args.numNn, numBuckets);
+
     while (true)
     {
         if (args.queryFile == "exit")
@@ -37,41 +39,46 @@ int main(int argc, char const *argv[])
 
         output_file.open(args.outputFile);
 
-        for (int i = 0; i < 10; i++)
+        int query_num = query_images.size();
+        for (int q = 0; q < 10; q++)
         {
-            Image *query = query_images[i];
+            ImagePtr query = query_images[q];
 
-            auto begin_cube = std::chrono::high_resolution_clock::now();
-            std::vector<std::tuple<Image *, double>> aprox_vector = cube.Approximate_kNN(query);
-            auto end_cube = std::chrono::high_resolution_clock::now();
-            auto elapsed_cube = std::chrono::duration_cast<std::chrono::nanoseconds>(end_cube - begin_cube);
+            startClock();
+            std::vector<Neighbor> aprox_vector = cube.Approximate_kNN(query);
+            auto elapsed_cube = stopClock();
 
-            auto begin_brute = std::chrono::high_resolution_clock::now();
-            std::vector<std::tuple<Image *, double>> brute_vector = BruteForce(input_images, query, args.numNn);
-            auto end_brute = std::chrono::high_resolution_clock::now();
-            auto elapsed_brute = std::chrono::duration_cast<std::chrono::nanoseconds>(end_brute - begin_brute);
+            startClock();
+            std::vector<Neighbor> brute_vector = BruteForce(input_images, query, args.numNn);
+            auto elapsed_brute = stopClock();
 
             output_file << "Query: " << query->id << std::endl;
+
             int limit = aprox_vector.size();
             for (int i = 0; i < limit; i++)
             {
                 double dist = std::get<1>(aprox_vector[i]);
-                Image *image = std::get<0>(aprox_vector[i]);
+                ImagePtr image = std::get<0>(aprox_vector[i]);
+
                 output_file << "Nearest neighbor-" << i + 1 << ": " << image->id << std::endl
                             << "distanceHypercube: " << dist << "\n";
+
                 dist = std::get<1>(brute_vector[i]);
                 output_file << "distanceTrue: " << dist << "\n";
             }
+
             output_file << "tHypercube: " << elapsed_cube.count() * 1e-9 << std::endl;
             output_file << "tTrue: " << elapsed_brute.count() * 1e-9 << std::endl;
-            std::vector<ImagePtr> range_vector = cube.Approximate_Range_Search(query);
+
+            std::vector<ImagePtr> range_vector = cube.Approximate_Range_Search(query, args.radius);
+
             output_file << "R-near neighbors:" << std::endl;
             for (auto &image : range_vector)
-                // output_file << "ImageID: " <<
                 output_file << image->id << std::endl;
 
             output_file << std::endl;
         }
+
         // Read new query and output files.
         args.queryFile.clear();
         std::cout << "Enter new query file, type exit to stop: ";

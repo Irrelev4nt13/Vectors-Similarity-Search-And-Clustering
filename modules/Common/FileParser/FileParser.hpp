@@ -3,7 +3,8 @@
 
 #include <vector>
 
-#include <Image.hpp>
+#include "Image.hpp"
+#include "PublicTypes.hpp"
 
 class Metadata
 {
@@ -18,13 +19,13 @@ class FileParser
 {
 private:
     Metadata metadata;
-    std::vector<Image *> images;
+    std::vector<ImagePtr> images;
 
 public:
     FileParser(std::string inputFile);
     ~FileParser();
     inline const Metadata &GetMetadata() const { return metadata; }
-    inline const std::vector<Image *> &GetImages() const { return images; }
+    inline const std::vector<ImagePtr> &GetImages() const { return images; }
     std::string getFullPath();
 };
 
