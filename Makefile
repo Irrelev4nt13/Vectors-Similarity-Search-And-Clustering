@@ -10,6 +10,15 @@ BIN_DIR := bin
 BUILD_DIR := build
 MODULES_DIR := modules
 SRC_DIR := src
+TEST :=	tests
+
+LSH_TEST := $(TEST)/lsh_test
+CUBE_TEST := $(TEST)/cube_test
+CLUSTER_TEST := $(TEST)/cluster_test
+
+LSH_OBJ_TEST := $(TEST)/lsh_test.o
+CUBE_OBJ_TEST := $(TEST)/cube_test.o
+CLUSTER_OBJ_TEST := $(TEST)/cluster_test.o
 
 LSH := $(BIN_DIR)/lsh_main
 CUBE := $(BIN_DIR)/cube_main
@@ -40,7 +49,7 @@ INCLUDE_DIRS := $(shell find $(MODULES_DIR) -type d)
 INCLUDE_FLAGS := $(addprefix -I, $(INCLUDE_DIRS) $(MODULES_DIR))
 
 
-all: $(EXEC_FILES)
+all: $(EXEC_FILES) $(LSH_TEST) $(CUBE_TEST) $(CLUSTER_TEST)
 
 $(BUILD_DIR)/%.o: $(MODULES_DIR)/%.cpp $(LIBS)
 	@mkdir -p $(@D)
@@ -58,13 +67,20 @@ $(CUBE): $(CUBE_OBJ) $(CUBE_OBJ_MODULES) $(COMMON_OBJ_MODULES)
 $(CLUSTER): $(CLUSTER_OBJ) $(CLUSTER_OBJ_MODULES) $(COMMON_OBJ_MODULES)
 	$(CXX) $^ -o $@ $(INCLUDE_FLAGS)
 
+$(LSH_TEST): $(LSH_OBJ_TEST) $(LSH_OBJ_MODULES) $(COMMON_OBJ_MODULES)
+	$(CXX) $^ -o $@ $(INCLUDE_FLAGS)
+
+$(CUBE_TEST): $(CUBE_OBJ_TEST) $(LSH_OBJ_MODULES) $(COMMON_OBJ_MODULES)
+	$(CXX) $^ -o $@ $(INCLUDE_FLAGS)
+
+$(CLUSTER_TEST): $(CLUSTER_OBJ_TEST) $(LSH_OBJ_MODULES) $(COMMON_OBJ_MODULES)
+	$(CXX) $^ -o $@ $(INCLUDE_FLAGS)
 
 .PHONY: all clean lsh cube cluster run-lsh run-cube run-cluster \
 valgrind-lsh valgrind-cube valgrind-cluster deb-lsh deb-cube deb-cluster hpp_dependencies
 
 clean:
-	rm -rf $(BIN_DIR)/* $(BUILD_DIR)/*
-
+	rm -rf $(BIN_DIR)/* $(BUILD_DIR)/* $(LSH_TEST) $(LSH_OBJ_TEST) $(CUBE_TEST) $(CUBE_OBJ_TEST) $(CLUSTER_TEST) $(CLUSTER_OBJ_TEST)
 
 lsh: $(LSH)
 
@@ -72,6 +88,13 @@ cube: $(CUBE)
 
 cluster: $(CLUSTER)
 
+tests: $(LSH_TEST) $(CUBE_TEST) $(CLUSTER_TEST)
+
+test-lsh: $(LSH_TEST)
+
+test-cube: $(CUBE_TEST)
+
+test-cluster: $(CLUSTER_TEST)
 
 ARGS_LSH := -d datasets/train-images.idx3-ubyte -q datasets/t10k-images.idx3-ubyte -k 4 -L 5 -o output.txt -N 1 -R 10000
 
