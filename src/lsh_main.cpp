@@ -84,7 +84,8 @@ int main(int argc, char const *argv[])
 
         // Read new query and output files.
         args.queryFile.clear();
-        readFilenameIfEmpty(args.queryFile, "query");
+        std::cout << "Enter new query file, type exit to stop: ";
+        std::getline(std::cin, args.queryFile);
 
         if (args.queryFile == "exit")
             break;

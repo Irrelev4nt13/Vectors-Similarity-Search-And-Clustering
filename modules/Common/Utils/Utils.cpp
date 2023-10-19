@@ -17,16 +17,13 @@ void readFilenameIfEmpty(std::string &filename, std::string fileType)
 
 static std::chrono::_V2::system_clock::time_point startTime;
 
-void startClock()
-{
-    startTime = std::chrono::high_resolution_clock::now();
-}
+void startClock() { startTime = std::chrono::high_resolution_clock::now(); }
 
 std::chrono::nanoseconds stopClock()
 {
     std::chrono::_V2::system_clock::time_point endTime = std::chrono::high_resolution_clock::now();
 
-    std::chrono::nanoseconds duration = std::chrono::duration_cast<std::chrono::nanoseconds>(startTime - endTime);
+    std::chrono::nanoseconds duration = std::chrono::duration_cast<std::chrono::nanoseconds>(endTime - startTime);
 
     return duration;
 }
@@ -51,6 +48,8 @@ double ManhattanDistance(const std::vector<uint8_t> &first, const std::vector<ui
         result += std::abs(first[i] - second[i]);
     return result;
 }
+
+int HammingDistance(const int first, const int second) { return __builtin_popcount(first ^ second); }
 
 std::mt19937 &RandGen()
 {

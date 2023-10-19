@@ -60,7 +60,7 @@ std::vector<ImagePtr> Lsh::Approximate_Range_Search(ImagePtr query)
     for (ImagePtr input : bucket)
     {
       double dist = EuclideanDistance(input->pixels, query->pixels);
-      if (dist >= 0 && dist < radius)
+      if (dist <= radius)
         RangeSearch.push_back(input);
     }
   }

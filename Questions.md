@@ -1,2 +1,0 @@
-- Error handling για args θέλουμε; αν ναι σε πιο βαθμό
-- Ποια αρχεία χρειαζόμαστε, train ή/και test images
