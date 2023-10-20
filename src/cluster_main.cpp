@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 
+#include "PublicTypes.hpp"
 #include "Image.hpp"
 #include "FileParser.hpp"
 #include "ClusterCmdArgs.hpp"
@@ -13,10 +14,14 @@ int main(int argc, char const *argv[])
 
     FileParser inputParser(args.inputFile);
 
-    const std::vector<Image *> input_images = inputParser.GetImages();
+    const std::vector<ImagePtr> input_images = inputParser.GetImages();
 
     if (args.method == "Classic")
+    {
         std::vector<Cluster> clusters_kmeans = KMeansPlusPlus(input_images, args.number_of_clusters);
+        for (auto cluster : clusters_kmeans)
+            std::cout << cluster.GetCentroid()->id << std::endl;
+    }
     else if (args.method == "LSH")
         ;
     else if (args.method == "Hypercube")

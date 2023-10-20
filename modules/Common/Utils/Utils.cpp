@@ -51,6 +51,22 @@ double ManhattanDistance(const std::vector<uint8_t> &first, const std::vector<ui
 
 int HammingDistance(const int first, const int second) { return __builtin_popcount(first ^ second); }
 
+double MinDistanceToCentroids(const ImagePtr image, std::vector<Cluster> clusters)
+{
+    double minDistance;
+    for (int i = 0; i < clusters.size(); i++)
+    {
+        double distance = EuclideanDistance(clusters[i].GetCentroid()->pixels, image->pixels);
+        if (i == 0)
+            minDistance = distance;
+        else if (distance < minDistance)
+            minDistance = distance;
+    }
+    return minDistance;
+}
+
+// int BinarySearch();
+
 std::mt19937 &RandGen()
 {
     // static std::random_device rd;

@@ -3,9 +3,10 @@
 
 #include <vector>
 
+#include "PublicTypes.hpp"
 #include "Image.hpp"
 #include "Cluster.hpp"
 
-std::vector<Cluster> KMeansPlusPlus(std::vector<Image *> input_images, int number_of_clusters);
+std::vector<Cluster> KMeansPlusPlus(std::vector<ImagePtr> input_images, int number_of_clusters);
 
 #endif
