@@ -7,6 +7,9 @@
 #include <random>
 #include <cstdint>
 
+#include "PublicTypes.hpp"
+#include "Cluster.hpp"
+
 void readFilenameIfEmpty(std::string &filename, std::string fileType);
 
 // static std::chrono::_V2::system_clock::time_point startTime;
@@ -32,7 +35,9 @@ double EuclideanDistance(const std::vector<uint8_t> &first, const std::vector<ui
 double ManhattanDistance(const std::vector<uint8_t> &first, const std::vector<uint8_t> &second);
 
 int HammingDistance(const int first, const int second);
-// double MinDistanceToCentroid();
+
+double MinDistanceToCentroids(const ImagePtr image, std::vector<Cluster> clusters);
+
 // double MinDistanceBetweenCentroids();
 
 std::mt19937 &RandGen();
