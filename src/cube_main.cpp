@@ -39,7 +39,6 @@ int main(int argc, char const *argv[])
 
         output_file.open(args.outputFile);
 
-        int query_num = query_images.size();
         for (int q = 0; q < 10; q++)
         {
             ImagePtr query = query_images[q];
