@@ -26,7 +26,6 @@ public:
     ~FileParser();
     inline const Metadata &GetMetadata() const { return metadata; }
     inline const std::vector<ImagePtr> &GetImages() const { return images; }
-    std::string getFullPath();
 };
 
 #endif

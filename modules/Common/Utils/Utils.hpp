@@ -13,7 +13,9 @@
 
 void readFilenameIfEmpty(std::string &filename, std::string fileType);
 
-// static std::chrono::_V2::system_clock::time_point startTime;
+#ifdef DEBUG
+std::string getFullPath(std::string relativePath);
+#endif
 
 void startClock();
 

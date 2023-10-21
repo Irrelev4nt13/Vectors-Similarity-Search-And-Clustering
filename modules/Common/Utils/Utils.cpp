@@ -7,6 +7,11 @@
 
 #include "Utils.hpp"
 
+#ifdef DEBUG
+#include <unistd.h>
+#include <limits.h>
+#endif
+
 void readFilenameIfEmpty(std::string &filename, std::string fileType)
 {
     if (filename.empty())
@@ -15,6 +20,32 @@ void readFilenameIfEmpty(std::string &filename, std::string fileType)
         std::getline(std::cin, filename);
     }
 }
+
+#ifdef DEBUG
+std::string getFullPath(std::string relativePath)
+{
+    std::string cwd;
+    char buffer[PATH_MAX];
+    if (getcwd(buffer, sizeof(buffer)) != nullptr)
+    {
+        cwd = buffer;
+    }
+
+    // cwd gets the full path of the file from which the debugger was started
+    // run debugger from Makefile for 0 parent folders
+    int numParents = 0;
+    std::string fullPath = cwd;
+    for (int i = 0; i < numParents; i++)
+    {
+        size_t pos = fullPath.rfind('/');
+        if (pos != std::string::npos)
+        {
+            fullPath = fullPath.substr(0, pos);
+        }
+    }
+    return fullPath + "/" + relativePath;
+}
+#endif
 
 static std::chrono::_V2::system_clock::time_point startTime;
 
@@ -52,48 +83,7 @@ double ManhattanDistance(const std::vector<uint8_t> &first, const std::vector<ui
 
 int HammingDistance(const int first, const int second) { return __builtin_popcount(first ^ second); }
 
-std::tuple<double, int, int> MinDistanceToCentroids(const ImagePtr image, std::vector<Cluster> clusters)
-{
-    double minDistance;
-    int cluster_id;
-    int next_cluster_id;
-    for (int i = 0; i < clusters.size(); i++)
-    {
-        double distance = EuclideanDistance(clusters[i].GetCentroid()->pixels, image->pixels);
-        if (i == 0)
-        {
-            minDistance = distance;
-            next_cluster_id = i;
-            cluster_id = i;
-        }
-        else if (distance < minDistance)
-        {
-            minDistance = distance;
-            next_cluster_id = cluster_id;
-            cluster_id = i;
-        }
-    }
-    return std::tuple<double, int, int>{minDistance, cluster_id, next_cluster_id};
-}
-
 // int BinarySearch();
-
-static double AverageDistance(ImagePtr image, Cluster cluster)
-{
-    int n_members = cluster.GetMemberOfCluster().size();
-    std::vector<ImagePtr> members = cluster.GetMemberOfCluster();
-
-    int contains_it = 0; // Is set to 1 if 'cluster' contains 'data_point'
-    double avg_dist = 0.0;
-    for (int i = 0; i < n_members; i++)
-        if (image->id != members[i]->id)
-            avg_dist += EuclideanDistance(members[i]->pixels, image->pixels);
-        else
-            contains_it = 1;
-
-    // Careful: don't count dist from 'data_point' to itself, if 'cluster' contains it
-    return n_members - contains_it != 0 ? avg_dist / (n_members - contains_it) : -1;
-}
 
 // static double ClusterShilhouette(Cluster cluster)
 // {
@@ -103,49 +93,6 @@ static double AverageDistance(ImagePtr image, Cluster cluster)
 //     {
 //     }
 // }
-static int NextClosestClusterIdx(int cluster_idx, ImagePtr data_point, std::vector<Cluster> clusters)
-{
-    double min_distance = -1;
-    int next_best_cluster_idx = 0;
-
-    for (int i = 0, k_clusters = clusters.size(); i < k_clusters; i++)
-    {
-        if (i != cluster_idx)
-        {
-            double curr_dist = EuclideanDistance(clusters[i].GetCentroid()->pixels, data_point->pixels);
-
-            if (curr_dist < min_distance || min_distance == -1)
-            {
-                min_distance = curr_dist;
-                next_best_cluster_idx = i;
-            }
-        }
-    }
-
-    return next_best_cluster_idx;
-}
-std::vector<double> Silhouettes(std::vector<Cluster> clusters)
-{
-    std::vector<double> silhouettes;
-    int num_of_clusters = clusters.size();
-    for (int i = 0; i < 1; i++)
-    {
-        double curSilhouette = 0.0;
-        // Needs to change and be done into another function
-        std::vector<ImagePtr> members = clusters[i].GetMemberOfCluster();
-        for (int j = 0; j < members.size(); j++)
-        {
-            // std::tuple<double, int, int> temp = MinDistanceToCentroids(members[j], clusters);
-            double avg_dist = AverageDistance(members[j], clusters[i]);
-            double avg_dist_next_closest = AverageDistance(members[j], clusters[NextClosestClusterIdx(i, members[j], clusters)]);
-            curSilhouette += (avg_dist_next_closest - avg_dist) / std::max(avg_dist, avg_dist_next_closest);
-        }
-        silhouettes.push_back(curSilhouette / clusters[i].GetMemberOfCluster().size());
-    }
-    // double curClusterShilhouette = ClusterShilhouette(clusters[i]);
-    // silhouettes.push_back(curClusterShilhouette);
-    return silhouettes;
-}
 
 std::mt19937 &RandGen()
 {

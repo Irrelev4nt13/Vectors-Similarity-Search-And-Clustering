@@ -7,6 +7,10 @@
 #include <string>
 #include <cstring>
 
+#ifdef DEBUG
+#include "Utils.hpp"
+#endif
+
 class ClusterCmdArgs
 {
 public:
@@ -56,6 +60,10 @@ public:
             std::cout << "Error, " << emptyVar << " was not given" << std::endl;
             exit(EXIT_FAILURE);
         }
+
+#ifdef DEBUG
+        configFile = getFullPath(configFile);
+#endif
 
         std::fstream conf(configFile, std::ios::in);
         if (conf.fail())

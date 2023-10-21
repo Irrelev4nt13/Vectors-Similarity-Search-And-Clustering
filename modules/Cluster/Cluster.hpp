@@ -22,6 +22,10 @@ public:
     int GetClusterId();
     void UpdateCentroid(ImagePtr new_centroid);
     void UpdateMembers();
+    static std::tuple<double, int, int> MinDistanceToCentroids(const ImagePtr image, std::vector<Cluster> clusters);
+    static double AverageDistance(ImagePtr image, Cluster cluster);
+    static int NextClosestClusterIdx(int cluster_idx, ImagePtr data_point, std::vector<Cluster> clusters);
+    static std::vector<double> Silhouettes(std::vector<Cluster> clusters);
 };
 
 #endif
