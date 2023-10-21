@@ -4,24 +4,25 @@
 #include "Image.hpp"
 #include "Utils.hpp"
 
-Cluster::Cluster(ImagePtr image, const int id)
+Cluster::Cluster(Image image, const int id) : centroid(image), id(id)
 {
-    std::vector<double> double_vector;
-    for (uint8_t element : image->pixels)
-    {
-        double converted_element = static_cast<double>(element);
-        double_vector.push_back(converted_element);
-    }
-    centroid = Centroid(image->id, double_vector);
+    // std::vector<double> double_vector;
+    // for (uint8_t element : image->pixels)
+    // {
+    //     double converted_element = static_cast<double>(element);
+    //     double_vector.push_back(converted_element);
+    // }
+    // centroid = Centroid(image->id, double_vector);
 }
-
-Cluster::Cluster(Centroid image, const int id) : centroid(image), id(id) {}
+Cluster::Cluster(ImagePtr image, const int id) : centroid(*image), id(id) {}
+// Cluster::Cluster(Centroid image, const int id) : centroid(image), id(id) {}
 
 Cluster::~Cluster()
 {
 }
 
-Centroid Cluster::GetCentroid() { return centroid; }
+// Centroid Cluster::GetCentroid() { return centroid; }
+Image Cluster::GetCentroid() { return centroid; }
 
 std::vector<ImagePtr> Cluster::GetMemberOfCluster() { return member_of_cluster; }
 
@@ -99,8 +100,8 @@ int NextClosestClusterIdx(int cluster_idx, ImagePtr data_point, std::vector<Clus
 std::vector<double> Silhouettes(std::vector<Cluster> clusters)
 {
     std::vector<double> silhouettes;
-    // int num_of_clusters = clusters.size();
-    for (int i = 0; i < 1; i++)
+    int num_of_clusters = clusters.size();
+    for (int i = 0; i < num_of_clusters; i++)
     {
         double curSilhouette = 0.0;
         // Needs to change and be done into another function

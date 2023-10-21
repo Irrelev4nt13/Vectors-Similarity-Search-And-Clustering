@@ -101,7 +101,7 @@ std::vector<Cluster> MacQueen(std::vector<Cluster> &clusters, std::unordered_set
         // int T = clusters[id].GetMemberOfCluster().size();
         std::vector<ImagePtr> members = cluster.GetMemberOfCluster();
         int limit = (int)cluster.GetCentroid().pixels.size();
-        Centroid new_centroid = cluster.GetCentroid();
+        Image new_centroid = cluster.GetCentroid();
         for (int i = 0; i < limit; i++)
         {
             for (int j = 0; j < T; j++)

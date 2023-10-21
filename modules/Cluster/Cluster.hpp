@@ -22,15 +22,18 @@ public:
 class Cluster
 {
 private:
-    Centroid centroid;
+    // Centroid centroid;
+    Image centroid;
     std::vector<ImagePtr> member_of_cluster;
     int id;
 
 public:
     Cluster(ImagePtr image, const int id);
-    Cluster(Centroid image, const int id);
+    Cluster(Image image, const int id);
+    // Cluster(Centroid image, const int id);
     ~Cluster();
-    Centroid GetCentroid();
+    // Centroid GetCentroid();
+    Image GetCentroid();
     std::vector<ImagePtr> GetMemberOfCluster();
     void AddToCluster(ImagePtr image);
     int GetClusterId();

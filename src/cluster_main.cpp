@@ -31,7 +31,7 @@ int main(int argc, char const *argv[])
         std::cout << "Error, unknown method" << std::endl;
         exit(EXIT_FAILURE);
     }
-    std::vector<double> silhouettes; // = Silhouettes(clusters);
+    std::vector<double> silhouettes = Silhouettes(clusters);
     int total = 0;
     for (auto cluster : clusters)
     {
