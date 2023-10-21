@@ -15,7 +15,7 @@ Lsh::Lsh(const std::vector<ImagePtr> &images, int numHashFuncs, int numHtables, 
   for (int i = 0; i < numHtables; i++)
   {
     hashtables.push_back(HashTable(numBuckets, AmpLsh(w, numHashFuncs, dimension)));
-    for (int j = 0; j < images.size(); j++)
+    for (std::size_t j = 0; j < images.size(); j++)
 
       hashtables[i].insert(images[j]);
   }
@@ -36,7 +36,7 @@ std::vector<Neighbor> Lsh::Approximate_kNN(ImagePtr query)
       Neighbor new_tuple(input, dist);
       nearestNeighbors.push(new_tuple);
 
-      if (nearestNeighbors.size() > numNn)
+      if ((int)nearestNeighbors.size() > numNn)
         nearestNeighbors.pop();
     }
   }

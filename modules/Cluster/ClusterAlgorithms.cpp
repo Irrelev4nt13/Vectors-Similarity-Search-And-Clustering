@@ -28,7 +28,7 @@ std::vector<Cluster> KMeansPlusPlus(std::vector<ImagePtr> input_images, int numb
         std::vector<ImagePtr> centroid_candidates;
         double normalizer;
         // for (auto image : input_images)
-        for (int j = 0; j < input_images.size(); j++)
+        for (std::size_t j = 0; j < input_images.size(); j++)
         {
             if (centroids.find(input_images[j]->id) == centroids.end())
             {

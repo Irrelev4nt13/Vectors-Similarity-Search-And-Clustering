@@ -17,7 +17,7 @@ std::vector<Neighbor> BruteForce(const std::vector<ImagePtr> &images_input, cons
         Neighbor new_tuple(input, dist);
         nearestNeighbors.push(new_tuple);
 
-        if (nearestNeighbors.size() > k)
+        if ((int)nearestNeighbors.size() > k)
             nearestNeighbors.pop();
     }
 

@@ -38,7 +38,7 @@ std::tuple<double, int, int> MinDistanceToCentroids(const ImagePtr image, std::v
     double minDistance;
     int cluster_id;
     int next_cluster_id;
-    for (int i = 0; i < clusters.size(); i++)
+    for (std::size_t i = 0; i < clusters.size(); i++)
     {
         double distance = EuclideanDistance(clusters[i].GetCentroid().pixels, image->pixels);
         if (i == 0)
@@ -105,7 +105,7 @@ std::vector<double> Silhouettes(std::vector<Cluster> clusters)
         double curSilhouette = 0.0;
         // Needs to change and be done into another function
         std::vector<ImagePtr> members = clusters[i].GetMemberOfCluster();
-        for (int j = 0; j < members.size(); j++)
+        for (std::size_t j = 0; j < members.size(); j++)
         {
             // std::tuple<double, int, int> temp = MinDistanceToCentroids(members[j], clusters);
             double avg_dist = AverageDistance(members[j], clusters[i]);

@@ -8,9 +8,9 @@ class Image
 {
 public:
     int id;
-    std::vector<uint8_t> pixels;
+    std::vector<double> pixels;
 
-    Image(int id, const std::vector<uint8_t> &pixels) : id(id), pixels(pixels) {}
+    Image(int id, const std::vector<double> &pixels) : id(id), pixels(pixels) {}
 
     Image() {}
 
