@@ -10,7 +10,7 @@
 
 static const int64_t M = ((int64_t)(1) << 32) - 5;
 
-AmpLsh::AmpLsh(const int &w, const int &numHashFuncs, const int &dimension)
+AmpLsh::AmpLsh(int w, int numHashFuncs, int dimension)
 {
     std::normal_distribution<> standard_normal(0.0, 1.0);
     std::uniform_real_distribution<> uniform_real(0, w);
@@ -30,50 +30,13 @@ AmpLsh::~AmpLsh() {}
 
 int AmpLsh::hash(ImagePtr image)
 {
-    uint hashval = 0;
+    uint64_t hashval = 0;
     for (int i = 0, num_hashes = hash_functions.size(); i < num_hashes; i++)
         hashval += r[i] * hash_functions[i].hash(image);
     return Modulo(hashval, M);
 }
 
-// AmpCube::AmpCube(int w, int numHashFuncs, int dimension)
-// {
-//     std::normal_distribution<> standard_normal(0.0, 1.0);
-//     std::uniform_real_distribution<> uniform_real(0, w);
-
-//     cubeMaps.resize(numHashFuncs);
-
-//     for (int i = 0; i < numHashFuncs; i++)
-//     {
-//         std::vector<double> v;
-//         for (int j = 0; j < dimension; j++)
-//             v.push_back(standard_normal(RandGen()));
-//         hash_functions.push_back(HashFunction(w, uniform_real(RandGen()), v));
-
-//         cubeMaps.push_back(std::unordered_map<int, int>());
-//     }
-// }
-
-// AmpCube::~AmpCube() {}
-
-// int AmpCube::hash(ImagePtr image)
-// {
-//     std::string bits = "";
-//     std::uniform_int_distribution<> uniform_int(0, 1);
-
-//     for (int i = 0; i < hash_functions.size(); i++)
-//     {
-//         int val_to_map = hash_functions[i].hash(image);
-
-//         if (cubeMaps[i].find(val_to_map) == cubeMaps[i].end())
-//             cubeMaps[i][val_to_map] = uniform_int(RandGen());
-
-//         bits += std::to_string(cubeMaps[i][val_to_map]);
-//     }
-//     return std::stoll(bits);
-// }
-
-HashTable::HashTable(const int &numBuckets, const AmpLsh &hash) : numBuckets(numBuckets), hashmap(hash)
+HashTable::HashTable(int numBuckets, const AmpLsh &hash) : numBuckets(numBuckets), hashmap(hash)
 {
     buckets.resize(numBuckets);
     for (int i = 0; i < numBuckets; i++)

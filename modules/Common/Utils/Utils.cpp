@@ -72,7 +72,7 @@ std::chrono::nanoseconds stopClock()
 //     return sqrt(result);
 // }
 
-double ManhattanDistance(const std::vector<uint8_t> &first, const std::vector<uint8_t> &second)
+double ManhattanDistance(const std::vector<double> &first, const std::vector<double> &second)
 {
     double result = 0;
     size_t limit = first.size();

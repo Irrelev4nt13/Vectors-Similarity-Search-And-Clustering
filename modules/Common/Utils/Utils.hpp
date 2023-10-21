@@ -46,7 +46,7 @@ double EuclideanDistance(const std::vector<T> &first, const std::vector<U> &seco
     return sqrt(result);
 }
 
-double ManhattanDistance(const std::vector<uint8_t> &first, const std::vector<uint8_t> &second);
+double ManhattanDistance(const std::vector<double> &first, const std::vector<double> &second);
 
 int HammingDistance(const int first, const int second);
 
