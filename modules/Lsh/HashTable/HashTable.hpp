@@ -15,7 +15,7 @@ private:
     std::vector<HashFunction> hash_functions;
 
 public:
-    AmpLsh(const int &w, const int &numHashFuncs, const int &dimension);
+    AmpLsh(int w, int numHashFuncs, int dimension);
     ~AmpLsh();
 
     int hash(ImagePtr image);
@@ -32,7 +32,7 @@ private:
     AmpLsh hashmap;
 
 public:
-    HashTable(const int &numBuckets, const AmpLsh &hashmap);
+    HashTable(int numBuckets, const AmpLsh &hashmap);
     ~HashTable();
 
     void insert(ImagePtr image);

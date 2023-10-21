@@ -9,14 +9,14 @@ class HashFunction
 {
 private:
     int w;
-    float t;
+    double t;
     std::vector<double> v;
 
 public:
-    HashFunction(const int w, const float t, const std::vector<double> &v);
+    HashFunction(int w, double t, const std::vector<double> &v);
     ~HashFunction();
 
-    int hash(ImagePtr image) const;
+    uint64_t hash(ImagePtr image) const;
 };
 
 #endif
