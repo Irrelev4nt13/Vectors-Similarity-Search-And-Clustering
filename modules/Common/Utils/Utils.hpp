@@ -39,11 +39,6 @@ double ManhattanDistance(const std::vector<uint8_t> &first, const std::vector<ui
 
 int HammingDistance(const int first, const int second);
 
-std::tuple<double, int, int> MinDistanceToCentroids(const ImagePtr image, std::vector<Cluster> clusters);
-
-// double MinDistanceBetweenCentroids();
-std::vector<double> Silhouettes(std::vector<Cluster> clusters);
-
 std::mt19937 &RandGen();
 
 #endif
