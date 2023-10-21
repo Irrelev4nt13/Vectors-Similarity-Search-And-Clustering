@@ -99,7 +99,7 @@ int NextClosestClusterIdx(int cluster_idx, ImagePtr data_point, std::vector<Clus
 std::vector<double> Silhouettes(std::vector<Cluster> clusters)
 {
     std::vector<double> silhouettes;
-    int num_of_clusters = clusters.size();
+    // int num_of_clusters = clusters.size();
     for (int i = 0; i < 1; i++)
     {
         double curSilhouette = 0.0;
