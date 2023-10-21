@@ -42,7 +42,7 @@ FileParser::FileParser(std::string inputFile)
     const int image_size = metadata.numOfRows * metadata.numOfColumns;
 
     images.resize(metadata.numOfImages);
-    for (int i = 0; i < images.size(); i++)
+    for (std::size_t i = 0; i < images.size(); i++)
     {
         images[i] = new Image;
         images[i]->pixels.resize(metadata.numOfRows * metadata.numOfColumns);

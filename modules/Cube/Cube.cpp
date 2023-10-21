@@ -16,7 +16,7 @@ Cube::Cube(const std::vector<ImagePtr> images, int w, int dimension, int maxCand
     for (int i = 0; i < dimension; i++)
     {
         std::vector<double> v;
-        for (int j = 0; j < images[0]->pixels.size(); j++)
+        for (std::size_t j = 0; j < images[0]->pixels.size(); j++)
             v.push_back(standard_normal(RandGen()));
         hash_functions.push_back(HashFunction(w, uniform_real(RandGen()), v));
     }
@@ -25,7 +25,7 @@ Cube::Cube(const std::vector<ImagePtr> images, int w, int dimension, int maxCand
 
     map = new std::unordered_map<int, int>[dimension];
 
-    for (int i = 0; i < images.size(); i++)
+    for (std::size_t i = 0; i < images.size(); i++)
         insert(images[i]);
 }
 
@@ -64,7 +64,7 @@ std::vector<Neighbor> Cube::Approximate_kNN(ImagePtr query)
         // std::cout << dist << " ";
         Neighbor new_neighbor(input, dist);
         nearestNeighbors.push(new_neighbor);
-        if (nearestNeighbors.size() > numNn)
+        if ((int)nearestNeighbors.size() > numNn)
             nearestNeighbors.pop();
         if (++candidates == maxCanditates)
             break;
@@ -95,7 +95,7 @@ std::vector<Neighbor> Cube::Approximate_kNN(ImagePtr query)
                     // std::cout << dist << " ";
                     Neighbor new_neighbor(input, dist);
                     nearestNeighbors.push(new_neighbor);
-                    if (nearestNeighbors.size() > numNn)
+                    if ((int)nearestNeighbors.size() > numNn)
                         nearestNeighbors.pop();
                     if (++candidates == maxCanditates)
                         break;
