@@ -32,7 +32,7 @@ std::vector<Cluster> KMeansPlusPlus(std::vector<ImagePtr> input_images, int numb
         {
             if (centroids.find(input_images[j]->id) == centroids.end())
             {
-                std::tuple<double, int, int> distance_and_id = Cluster::MinDistanceToCentroids(input_images[j], clusters);
+                std::tuple<double, int, int> distance_and_id = MinDistanceToCentroids(input_images[j], clusters);
                 if (j == 0)
                     normalizer = std::get<0>(distance_and_id);
                 else if (std::get<0>(distance_and_id) > normalizer)
@@ -100,13 +100,13 @@ std::vector<Cluster> MacQueen(std::vector<Cluster> &clusters, std::unordered_set
         int T = cluster.GetMemberOfCluster().size();
         // int T = clusters[id].GetMemberOfCluster().size();
         std::vector<ImagePtr> members = cluster.GetMemberOfCluster();
-        int limit = (int)cluster.GetCentroid()->pixels.size();
-        ImagePtr new_centroid = cluster.GetCentroid();
+        int limit = (int)cluster.GetCentroid().pixels.size();
+        Centroid new_centroid = cluster.GetCentroid();
         for (int i = 0; i < limit; i++)
         {
             for (int j = 0; j < T; j++)
-                new_centroid->pixels[i] += members[j]->pixels[i];
-            new_centroid->pixels[i] = floor(new_centroid->pixels[i] / T);
+                new_centroid.pixels[i] += members[j]->pixels[i];
+            new_centroid.pixels[i] = new_centroid.pixels[i] / T;
             // new
         }
         new_clust.push_back(Cluster(new_centroid, cluster.GetClusterId()));
@@ -128,8 +128,8 @@ std::vector<Cluster> LloydsAssignment(std::vector<ImagePtr> input_images, int nu
         int assignment_occurred = 0;
         for (auto image : input_images)
         {
-            std::tuple<double, int, int> distance_and_id = Cluster::MinDistanceToCentroids(image, clusters);
-            std::cout << "Pass: " << std::get<0>(distance_and_id) << " " << std::get<1>(distance_and_id) << " " << std::get<2>(distance_and_id) << std::endl;
+            std::tuple<double, int, int> distance_and_id = MinDistanceToCentroids(image, clusters);
+            // std::cout << "Pass: " << std::get<0>(distance_and_id) << " " << std::get<1>(distance_and_id) << " " << std::get<2>(distance_and_id) << std::endl;
             // if (std::get<0>(distance_and_id) != 0)
             // {
             clusters[std::get<1>(distance_and_id)].AddToCluster(image);

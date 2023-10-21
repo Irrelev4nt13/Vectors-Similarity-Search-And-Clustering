@@ -32,12 +32,17 @@ int main(int argc, char const *argv[])
         exit(EXIT_FAILURE);
     }
     std::vector<double> silhouettes; // = Silhouettes(clusters);
+    int total = 0;
     for (auto cluster : clusters)
+    {
         std::cout << "CLUSTER-" << std::setw(cluster_id_formatter)
                   << cluster.GetClusterId() + 1 << " {size: "
                   << std::setw(size_formatter)
                   << cluster.GetMemberOfCluster().size() << ", centroid: "
-                  << cluster.GetCentroid()->id << "}" << std::endl;
+                  << cluster.GetCentroid().id << "}" << std::endl;
+        total += cluster.GetMemberOfCluster().size();
+    }
+    std::cout << "TOTAL ELEMENTS: " << total << std::endl;
     std::cout << "\nclustering_time: " << std::endl;
     std::cout << "\nSilhouette: [";
     for (auto silhouette : silhouettes)
@@ -50,7 +55,7 @@ int main(int argc, char const *argv[])
         {
             std::cout << "CLUSTER-" << std::setw(cluster_id_formatter)
                       << cluster.GetClusterId() + 1 << " {"
-                      << cluster.GetCentroid()->id;
+                      << cluster.GetCentroid().id;
             for (auto image : cluster.GetMemberOfCluster())
                 std::cout << ", " << image->id;
             std::cout << "}" << std::endl;
