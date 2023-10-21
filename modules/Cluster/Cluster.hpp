@@ -6,26 +6,40 @@
 #include "PublicTypes.hpp"
 #include "Image.hpp"
 
+class Centroid
+{
+public:
+    int id;
+    std::vector<double> pixels;
+
+    Centroid(int id, const std::vector<double> &pixels) : id(id), pixels(pixels) {}
+
+    Centroid() {}
+
+    ~Centroid() {}
+};
+
 class Cluster
 {
 private:
-    ImagePtr centroid;
+    Centroid centroid;
     std::vector<ImagePtr> member_of_cluster;
     int id;
 
 public:
     Cluster(ImagePtr image, const int id);
+    Cluster(Centroid image, const int id);
     ~Cluster();
-    ImagePtr GetCentroid();
+    Centroid GetCentroid();
     std::vector<ImagePtr> GetMemberOfCluster();
     void AddToCluster(ImagePtr image);
     int GetClusterId();
-    void UpdateCentroid(ImagePtr new_centroid);
-    void UpdateMembers();
-    static std::tuple<double, int, int> MinDistanceToCentroids(const ImagePtr image, std::vector<Cluster> clusters);
-    static double AverageDistance(ImagePtr image, Cluster cluster);
-    static int NextClosestClusterIdx(int cluster_idx, ImagePtr data_point, std::vector<Cluster> clusters);
-    static std::vector<double> Silhouettes(std::vector<Cluster> clusters);
+    // void UpdateCentroid(ImagePtr new_centroid);
+    // void UpdateMembers();
 };
+std::tuple<double, int, int> MinDistanceToCentroids(const ImagePtr image, std::vector<Cluster> clusters);
+double AverageDistance(ImagePtr image, Cluster cluster);
+int NextClosestClusterIdx(int cluster_idx, ImagePtr data_point, std::vector<Cluster> clusters);
+std::vector<double> Silhouettes(std::vector<Cluster> clusters);
 
 #endif
