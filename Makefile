@@ -68,8 +68,8 @@ $(CUBE): $(CUBE_OBJ) $(CUBE_OBJ_MODULES) $(COMMON_OBJ_MODULES)
 $(CLUSTER): $(CLUSTER_OBJ) $(CLUSTER_OBJ_MODULES) $(COMMON_OBJ_MODULES)
 	$(CXX) $^ -o $@ $(INCLUDE_FLAGS)
 
-$(BUILD_DIR)/%-test.o: $(TESTS_DIR)/%_test.cpp
-	$(CXX) -c $< -o $@
+$(BUILD_DIR)/%-test.o: $(TESTS_DIR)/%_test.cpp $(LIBS)
+	$(CXX) -c $(filter-out %.hpp, $<) -o $@ $(INCLUDE_FLAGS) $(FLAGS)
 
 $(LSH_TEST): $(LSH_OBJ_TEST) $(LSH_OBJ_MODULES) $(COMMON_OBJ_MODULES)
 	$(CXX) $^ -o $@ $(INCLUDE_FLAGS)
