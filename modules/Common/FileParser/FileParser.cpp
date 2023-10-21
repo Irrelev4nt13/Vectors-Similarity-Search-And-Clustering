@@ -8,13 +8,14 @@
 #ifdef DEBUG
 #include <unistd.h>
 #include <limits.h>
+#include "Utils.hpp"
 #endif
 
 FileParser::FileParser(std::string inputFile)
 {
 
 #ifdef DEBUG
-    inputFile = getFullPath() + "/" + inputFile;
+    inputFile = getFullPath(inputFile);
 #endif
 
     std::ifstream file(inputFile, std::ios::binary);
@@ -61,31 +62,4 @@ FileParser::~FileParser()
 {
     for (const ImagePtr image_ptr : images)
         delete image_ptr;
-}
-
-std::string FileParser::getFullPath()
-{
-#ifdef DEBUG
-
-    std::string cwd;
-    char buffer[PATH_MAX];
-    if (getcwd(buffer, sizeof(buffer)) != nullptr)
-    {
-        cwd = buffer;
-    }
-
-    int numParents = 3;
-    std::string fullPath = cwd;
-    for (int i = 0; i < numParents; i++)
-    {
-        size_t pos = fullPath.rfind('/');
-        if (pos != std::string::npos)
-        {
-            fullPath = fullPath.substr(0, pos);
-        }
-    }
-
-    return fullPath;
-#endif
-    return "";
 }
