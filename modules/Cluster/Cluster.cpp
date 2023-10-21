@@ -20,7 +20,7 @@ void Cluster::UpdateCentroid(ImagePtr new_centroid) { centroid = new_centroid; }
 
 void Cluster::UpdateMembers() { member_of_cluster = std::vector<ImagePtr>{}; }
 
-std::tuple<double, int, int> MinDistanceToCentroids(const ImagePtr image, std::vector<Cluster> clusters)
+std::tuple<double, int, int> Cluster::MinDistanceToCentroids(const ImagePtr image, std::vector<Cluster> clusters)
 {
     double minDistance;
     int cluster_id;
@@ -44,7 +44,7 @@ std::tuple<double, int, int> MinDistanceToCentroids(const ImagePtr image, std::v
     return std::tuple<double, int, int>{minDistance, cluster_id, next_cluster_id};
 }
 
-static double AverageDistance(ImagePtr image, Cluster cluster)
+double Cluster::AverageDistance(ImagePtr image, Cluster cluster)
 {
     int n_members = cluster.GetMemberOfCluster().size();
     std::vector<ImagePtr> members = cluster.GetMemberOfCluster();
@@ -61,7 +61,7 @@ static double AverageDistance(ImagePtr image, Cluster cluster)
     return n_members - contains_it != 0 ? avg_dist / (n_members - contains_it) : -1;
 }
 
-static int NextClosestClusterIdx(int cluster_idx, ImagePtr data_point, std::vector<Cluster> clusters)
+int Cluster::NextClosestClusterIdx(int cluster_idx, ImagePtr data_point, std::vector<Cluster> clusters)
 {
     double min_distance = -1;
     int next_best_cluster_idx = 0;
@@ -83,7 +83,7 @@ static int NextClosestClusterIdx(int cluster_idx, ImagePtr data_point, std::vect
     return next_best_cluster_idx;
 }
 
-std::vector<double> Silhouettes(std::vector<Cluster> clusters)
+std::vector<double> Cluster::Silhouettes(std::vector<Cluster> clusters)
 {
     std::vector<double> silhouettes;
     int num_of_clusters = clusters.size();

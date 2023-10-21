@@ -10,15 +10,15 @@ BIN_DIR := bin
 BUILD_DIR := build
 MODULES_DIR := modules
 SRC_DIR := src
-TEST :=	tests
+TESTS_DIR := tests
 
-LSH_TEST := $(TEST)/lsh_test
-CUBE_TEST := $(TEST)/cube_test
-CLUSTER_TEST := $(TEST)/cluster_test
+LSH_TEST := $(BIN_DIR)/lsh_test
+CUBE_TEST := $(BIN_DIR)/cube_test
+CLUSTER_TEST := $(BIN_DIR)/cluster_test
 
-LSH_OBJ_TEST := $(TEST)/lsh_test.o
-CUBE_OBJ_TEST := $(TEST)/cube_test.o
-CLUSTER_OBJ_TEST := $(TEST)/cluster_test.o
+LSH_OBJ_TEST := $(BUILD_DIR)/lsh_test.o
+CUBE_OBJ_TEST := $(BUILD_DIR)/cube_test.o
+CLUSTER_OBJ_TEST := $(BUILD_DIR)/cluster_test.o
 
 LSH := $(BIN_DIR)/lsh_main
 CUBE := $(BIN_DIR)/cube_main
@@ -70,17 +70,17 @@ $(CLUSTER): $(CLUSTER_OBJ) $(CLUSTER_OBJ_MODULES) $(COMMON_OBJ_MODULES)
 $(LSH_TEST): $(LSH_OBJ_TEST) $(LSH_OBJ_MODULES) $(COMMON_OBJ_MODULES)
 	$(CXX) $^ -o $@ $(INCLUDE_FLAGS)
 
-$(CUBE_TEST): $(CUBE_OBJ_TEST) $(LSH_OBJ_MODULES) $(COMMON_OBJ_MODULES)
+$(CUBE_TEST): $(CUBE_OBJ_TEST) $(CUBE_OBJ_MODULES) $(COMMON_OBJ_MODULES)
 	$(CXX) $^ -o $@ $(INCLUDE_FLAGS)
 
-$(CLUSTER_TEST): $(CLUSTER_OBJ_TEST) $(LSH_OBJ_MODULES) $(COMMON_OBJ_MODULES)
+$(CLUSTER_TEST): $(CLUSTER_OBJ_TEST) $(CLUSTER_OBJ_MODULES) $(COMMON_OBJ_MODULES)
 	$(CXX) $^ -o $@ $(INCLUDE_FLAGS)
 
-.PHONY: all clean lsh cube cluster run-lsh run-cube run-cluster \
+.PHONY: all clean lsh cube cluster tests test-lsh test-cube test-cluster run-lsh run-cube run-cluster \
 valgrind-lsh valgrind-cube valgrind-cluster deb-lsh deb-cube deb-cluster hpp_dependencies
 
 clean:
-	rm -rf $(BIN_DIR)/* $(BUILD_DIR)/* $(LSH_TEST) $(LSH_OBJ_TEST) $(CUBE_TEST) $(CUBE_OBJ_TEST) $(CLUSTER_TEST) $(CLUSTER_OBJ_TEST)
+	rm -rf $(BIN_DIR)/* $(BUILD_DIR)/*
 
 lsh: $(LSH)
 

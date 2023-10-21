@@ -32,7 +32,7 @@ std::vector<Cluster> KMeansPlusPlus(std::vector<ImagePtr> input_images, int numb
         {
             if (centroids.find(input_images[j]->id) == centroids.end())
             {
-                std::tuple<double, int, int> distance_and_id = MinDistanceToCentroids(input_images[j], clusters);
+                std::tuple<double, int, int> distance_and_id = Cluster::MinDistanceToCentroids(input_images[j], clusters);
                 if (j == 0)
                     normalizer = std::get<0>(distance_and_id);
                 else if (std::get<0>(distance_and_id) > normalizer)
@@ -128,7 +128,7 @@ std::vector<Cluster> LloydsAssignment(std::vector<ImagePtr> input_images, int nu
         int assignment_occurred = 0;
         for (auto image : input_images)
         {
-            std::tuple<double, int, int> distance_and_id = MinDistanceToCentroids(image, clusters);
+            std::tuple<double, int, int> distance_and_id = Cluster::MinDistanceToCentroids(image, clusters);
             std::cout << "Pass: " << std::get<0>(distance_and_id) << " " << std::get<1>(distance_and_id) << " " << std::get<2>(distance_and_id) << std::endl;
             // if (std::get<0>(distance_and_id) != 0)
             // {
