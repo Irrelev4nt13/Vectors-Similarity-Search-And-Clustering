@@ -13,6 +13,7 @@
             "type": "shell",
             "label": "compile-deb-lsh",
             "command": "make deb-lsh",
+            "dependsOn": "clean",
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -22,6 +23,7 @@
             "type": "shell",
             "label": "compile-deb-cube",
             "command": "make deb-cube",
+            "dependsOn": "clean",
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -31,6 +33,7 @@
             "type": "shell",
             "label": "compile-deb-cluster",
             "command": "make deb-cluster",
+            "dependsOn": "clean",
             "group": {
                 "kind": "build",
                 "isDefault": true

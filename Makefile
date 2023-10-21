@@ -138,8 +138,8 @@ $(BUILD_DIR)/%-deb.o: $(SRC_DIR)/%.cpp
 $(BIN_DIR)/%-deb: $(BUILD_DIR)/%-deb.o $(OBJ_MODULES_DEBUG)
 	$(CXX) $^ -o $@ $(INCLUDE_FLAGS) $(DEBUG_FLAGS)
 
-deb-lsh: clean $(LSH)-deb
+deb-lsh: $(LSH)-deb
 
-deb-cube: clean $(CUBE)-deb
+deb-cube: $(CUBE)-deb
 
-deb-cluster: clean $(CLUSTER)-deb
+deb-cluster: $(CLUSTER)-deb
