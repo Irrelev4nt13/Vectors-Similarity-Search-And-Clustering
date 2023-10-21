@@ -42,25 +42,29 @@ FileParser::FileParser(std::string inputFile)
     const int image_size = metadata.numOfRows * metadata.numOfColumns;
 
     images.resize(metadata.numOfImages);
+    std::size_t buffer_size = metadata.numOfRows * metadata.numOfColumns;
+    uint8_t *buffer = new uint8_t[buffer_size];
 
-    uint8_t byte;
     for (std::size_t i = 0; i < images.size(); i++)
     {
         images[i] = new Image;
-        images[i]->pixels.resize(metadata.numOfRows * metadata.numOfColumns);
+        images[i]->pixels.resize(buffer_size);
         images[i]->id = i;
 
-        for (std::size_t j = 0; j < metadata.numOfRows * metadata.numOfColumns; ++j)
+        if (!file.read((char *)buffer, buffer_size))
         {
-            if (!file.read((char *)&byte, 1))
-            {
-                std::cerr << "Failed to read image data." << std::endl;
-                file.close();
-                exit(EXIT_FAILURE);
-            }
-            images[i]->pixels[j] = static_cast<double>(byte);
+            std::cerr << "Failed to read image data." << std::endl;
+            file.close();
+            exit(EXIT_FAILURE);
+        }
+
+        for (std::size_t j = 0; j < buffer_size; ++j)
+        {
+            images[i]->pixels[j] = static_cast<double>(buffer[j]) / 255;
         }
     }
+
+    delete[] buffer;
 
     file.close();
 }
