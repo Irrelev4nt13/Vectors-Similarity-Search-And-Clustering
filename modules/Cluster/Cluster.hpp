@@ -5,44 +5,26 @@
 
 #include "PublicTypes.hpp"
 #include "Image.hpp"
-
-class Centroid
-{
-public:
-    int id;
-    std::vector<double> pixels;
-
-    Centroid(int id, const std::vector<double> &pixels) : id(id), pixels(pixels) {}
-
-    Centroid() {}
-
-    ~Centroid() {}
-};
+#include "ImageDistance.hpp"
 
 class Cluster
 {
 private:
-    // Centroid centroid;
-    Image centroid;
+    ImagePtr centroid;
     std::vector<ImagePtr> member_of_cluster;
     int id;
+    ImageDistance *distance;
 
 public:
     Cluster(ImagePtr image, const int id);
-    Cluster(Image image, const int id);
-    // Cluster(Centroid image, const int id);
+    // Cluster(Image image, const int id);
     ~Cluster();
-    // Centroid GetCentroid();
-    Image GetCentroid();
+    ImagePtr GetCentroid();
     std::vector<ImagePtr> GetMemberOfCluster();
     void AddToCluster(ImagePtr image);
     int GetClusterId();
-    // void UpdateCentroid(ImagePtr new_centroid);
-    // void UpdateMembers();
+    void UpdateMembers();
+    void UpdateCentroid();
 };
-std::tuple<double, int, int> MinDistanceToCentroids(const ImagePtr image, std::vector<Cluster> clusters);
-double AverageDistance(ImagePtr image, Cluster cluster);
-int NextClosestClusterIdx(int cluster_idx, ImagePtr data_point, std::vector<Cluster> clusters);
-std::vector<double> Silhouettes(std::vector<Cluster> clusters);
-double MinDistanceCentroids(std::vector<Cluster> clusters);
+
 #endif

@@ -98,13 +98,13 @@ std::vector<Cluster> MacQueen(std::vector<Cluster> &clusters, std::unordered_set
         int T = cluster.GetMemberOfCluster().size();
         // int T = clusters[id].GetMemberOfCluster().size();
         std::vector<ImagePtr> members = cluster.GetMemberOfCluster();
-        int limit = (int)cluster.GetCentroid().pixels.size();
-        Image new_centroid = cluster.GetCentroid();
+        int limit = (int)cluster.GetCentroid()->pixels.size();
+        ImagePtr new_centroid = cluster.GetCentroid();
         for (int i = 0; i < limit; i++)
         {
             for (int j = 0; j < T; j++)
-                new_centroid.pixels[i] += members[j]->pixels[i];
-            new_centroid.pixels[i] = new_centroid.pixels[i] / T;
+                new_centroid->pixels[i] += members[j]->pixels[i];
+            new_centroid->pixels[i] = new_centroid->pixels[i] / T;
             // new
         }
         new_clust.push_back(Cluster(new_centroid, cluster.GetClusterId()));
@@ -185,8 +185,8 @@ std::vector<Cluster> ReverseRangeSearchLSH(std::vector<ImagePtr> input_images, L
             found_at_least_one_assignment = false;
             for (int i = 0; i < number_of_clusters; i++)
             {
-                Image centroid = clusters[i].GetCentroid();
-                std::vector<ImagePtr> points_inside_range = lsh.Approximate_Range_Search(&centroid, max_radius);
+                ImagePtr centroid = clusters[i].GetCentroid();
+                std::vector<ImagePtr> points_inside_range = lsh.Approximate_Range_Search(centroid, max_radius);
 
                 for (auto data_point : points_inside_range)
                 {
@@ -200,8 +200,8 @@ std::vector<Cluster> ReverseRangeSearchLSH(std::vector<ImagePtr> input_images, L
                     }
                     else
                     {
-                        double dist1 = EuclideanDistance(clusters[i].GetCentroid().pixels, data_point->pixels);
-                        double dist2 = EuclideanDistance(clusters[entry->second].GetCentroid().pixels, data_point->pixels);
+                        double dist1 = EuclideanDistance(clusters[i].GetCentroid()->pixels, data_point->pixels);
+                        double dist2 = EuclideanDistance(clusters[entry->second].GetCentroid()->pixels, data_point->pixels);
 
                         // Only assign current data point to current cluster if it's closer to it
                         if (dist1 < dist2)
@@ -245,3 +245,108 @@ std::vector<Cluster> ReverseRangeSearchLSH(std::vector<ImagePtr> input_images, L
 }
 
 // std::vector<Cluster> ReverseRangeSearchHyperCube();
+
+std::tuple<double, int, int> MinDistanceToCentroids(const ImagePtr image, std::vector<Cluster> clusters)
+{
+    double minDistance;
+    int cluster_id;
+    int next_cluster_id;
+    for (std::size_t i = 0; i < clusters.size(); i++)
+    {
+        double distance = EuclideanDistance(clusters[i].GetCentroid()->pixels, image->pixels);
+        if (i == 0)
+        {
+            minDistance = distance;
+            next_cluster_id = i;
+            cluster_id = i;
+        }
+        else if (distance < minDistance)
+        {
+            minDistance = distance;
+            next_cluster_id = cluster_id;
+            cluster_id = i;
+        }
+    }
+    return std::tuple<double, int, int>{minDistance, cluster_id, next_cluster_id};
+}
+
+double AverageDistance(ImagePtr image, Cluster cluster)
+{
+    int n_members = cluster.GetMemberOfCluster().size();
+    std::vector<ImagePtr> members = cluster.GetMemberOfCluster();
+
+    int contains_it = 0; // Is set to 1 if 'cluster' contains 'data_point'
+    double avg_dist = 0.0;
+    for (int i = 0; i < n_members; i++)
+        if (image->id != members[i]->id)
+            avg_dist += EuclideanDistance(members[i]->pixels, image->pixels);
+        else
+            contains_it = 1;
+
+    // Careful: don't count dist from 'data_point' to itself, if 'cluster' contains it
+    return n_members - contains_it != 0 ? avg_dist / (n_members - contains_it) : -1;
+}
+
+int NextClosestClusterIdx(int cluster_idx, ImagePtr data_point, std::vector<Cluster> clusters)
+{
+    double min_distance = -1;
+    int next_best_cluster_idx = 0;
+
+    for (int i = 0, k_clusters = clusters.size(); i < k_clusters; i++)
+    {
+        if (i != cluster_idx)
+        {
+            double curr_dist = EuclideanDistance(clusters[i].GetCentroid()->pixels, data_point->pixels);
+
+            if (curr_dist < min_distance || min_distance == -1)
+            {
+                min_distance = curr_dist;
+                next_best_cluster_idx = i;
+            }
+        }
+    }
+
+    return next_best_cluster_idx;
+}
+
+std::vector<double> Silhouettes(std::vector<Cluster> clusters)
+{
+    std::vector<double> silhouettes;
+    int num_of_clusters = clusters.size();
+    for (int i = 0; i < num_of_clusters; i++)
+    {
+        double curSilhouette = 0.0;
+        // Needs to change and be done into another function
+        std::vector<ImagePtr> members = clusters[i].GetMemberOfCluster();
+        for (std::size_t j = 0; j < members.size(); j++)
+        {
+            // std::tuple<double, int, int> temp = MinDistanceToCentroids(members[j], clusters);
+            double avg_dist = AverageDistance(members[j], clusters[i]);
+            double avg_dist_next_closest = AverageDistance(members[j], clusters[NextClosestClusterIdx(i, members[j], clusters)]);
+            curSilhouette += (avg_dist_next_closest - avg_dist) / std::max(avg_dist, avg_dist_next_closest);
+        }
+        silhouettes.push_back(curSilhouette / clusters[i].GetMemberOfCluster().size());
+    }
+    // double curClusterShilhouette = ClusterShilhouette(clusters[i]);
+    // silhouettes.push_back(curClusterShilhouette);
+    return silhouettes;
+}
+
+double MinDistanceCentroids(std::vector<Cluster> clusters)
+{
+    double min_dist = -1;
+
+    for (int i = 0, n_centroids = clusters.size(); i < n_centroids - 1; i++)
+    {
+        for (int j = i + 1; j < n_centroids; j++)
+        {
+            double dist = EuclideanDistance(clusters[i].GetCentroid()->pixels, clusters[j].GetCentroid()->pixels);
+            if (dist < min_dist || min_dist == -1)
+            {
+                min_dist = dist;
+            }
+        }
+    }
+
+    return min_dist;
+}
