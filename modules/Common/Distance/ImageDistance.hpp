@@ -10,11 +10,13 @@
 class ImageDistance
 {
 private:
-    const std::string metric;
+    static std::string metric;
 
     static ImageDistance *instance;
 
-    ImageDistance(const std::string &metric);
+    static bool isMetricSet;
+
+    ImageDistance();
 
     double EuclideanImageDistance(const ImagePtr &first, const ImagePtr &second);
 
@@ -22,7 +24,8 @@ private:
 
 public:
     ~ImageDistance();
-    static ImageDistance *getInstance(const std::string &metric);
+    static void setMetric(std::string metric);
+    static ImageDistance *getInstance();
     double calculate(const ImagePtr &input, const ImagePtr &query);
 
     // Delete copy/move constructors and assignment operators
@@ -31,8 +34,5 @@ public:
     ImageDistance(ImageDistance &&) = delete;
     ImageDistance &operator=(ImageDistance &&) = delete;
 };
-
-// Initialize pointer
-ImageDistance *ImageDistance::instance = 0;
 
 #endif

@@ -9,6 +9,7 @@
 #include "LshCmdArgs.hpp"
 #include "FileParser.hpp"
 #include "BruteForce.hpp"
+#include "ImageDistance.hpp"
 
 int main(int argc, char const *argv[])
 {
@@ -29,6 +30,8 @@ int main(int argc, char const *argv[])
 
     int w = 4;
     int numBuckets = inputParser.GetMetadata().numOfImages / 8;
+
+    ImageDistance::setMetric("l2");
 
     Lsh lsh(input_images, args.numHashFuncs, args.numHtables, args.numNn, w, numBuckets);
 
