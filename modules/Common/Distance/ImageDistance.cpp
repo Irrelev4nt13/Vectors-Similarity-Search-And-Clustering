@@ -4,27 +4,49 @@
 
 #include "ImageDistance.hpp"
 
-ImageDistance::ImageDistance(const std::string &metric)
-    : metric(metric) {}
+// Initialize static variables
+ImageDistance *ImageDistance::instance = nullptr;
+std::string ImageDistance::metric = "";
+bool ImageDistance::isMetricSet = false;
+
+ImageDistance::ImageDistance() {}
 
 ImageDistance::~ImageDistance() {}
 
-ImageDistance *ImageDistance::getInstance(const std::string &metric)
+void ImageDistance::setMetric(std::string inputMetric)
+{
+    if (isMetricSet)
+    {
+        std::cerr << "ImageDistance: Metric can only be set once" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    metric = inputMetric;
+    isMetricSet = true;
+}
+
+ImageDistance *ImageDistance::getInstance()
 {
     if (!instance)
-        instance = new ImageDistance(metric);
+    {
+        if (!isMetricSet)
+        {
+            std::cerr << "Metric must be set before calling getInstance" << std::endl;
+            exit(EXIT_FAILURE);
+        }
+        instance = new ImageDistance();
+    }
     return instance;
 }
 
-double ImageDistance::calculate(const ImagePtr &input, const ImagePtr &query)
+double ImageDistance::calculate(const ImagePtr &first, const ImagePtr &second)
 {
     if (metric == "l2")
     {
-        return EuclideanImageDistance(input, query);
+        return EuclideanImageDistance(first, second);
     }
     else if (metric == "l1")
     {
-        return ManhattanDistance(input, query);
+        return ManhattanDistance(first, second);
     }
 
     std::cerr << "ImageDistance: unexpected error. Metric " << metric << " is invalid" << std::endl;

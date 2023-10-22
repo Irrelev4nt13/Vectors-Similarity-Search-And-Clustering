@@ -6,6 +6,7 @@
 
 #include "Image.hpp"
 #include "HashTable.hpp"
+#include "ImageDistance.hpp"
 class Lsh
 {
 private:
@@ -15,6 +16,7 @@ private:
     int w;                             // w
     int numBuckets;                    // number of buckets
     std::vector<HashTable> hashtables; // hash tables
+    ImageDistance *distance;
 
 public:
     Lsh(const std::vector<ImagePtr> &images, int numHashFuncs, int numHtables, int numNn, int w, int numBuckets);

@@ -2,11 +2,13 @@
 #include <vector>
 #include <queue>
 #include <tuple>
+
 #include "Image.hpp"
 #include "Utils.hpp"
 #include "HashTable.hpp"
 #include "Lsh.hpp"
 #include "PublicTypes.hpp"
+#include "ImageDistance.hpp"
 
 Lsh::Lsh(const std::vector<ImagePtr> &images, int numHashFuncs, int numHtables, int numNn, int w, int numBuckets)
     : numHashFuncs(numHashFuncs), numHtables(numHtables), numNn(numNn), w(w), numBuckets(numBuckets)
@@ -19,6 +21,8 @@ Lsh::Lsh(const std::vector<ImagePtr> &images, int numHashFuncs, int numHtables, 
 
       hashtables[i].insert(images[j]);
   }
+
+  this->distance = ImageDistance::getInstance();
 }
 
 Lsh::~Lsh() {}
@@ -32,7 +36,7 @@ std::vector<Neighbor> Lsh::Approximate_kNN(ImagePtr query)
     const std::vector<ImagePtr> bucket = hashtables[i].get_bucket(query);
     for (ImagePtr input : bucket)
     {
-      double dist = EuclideanDistance(input->pixels, query->pixels);
+      double dist = distance->calculate(input, query);
       Neighbor new_tuple(input, dist);
       nearestNeighbors.push(new_tuple);
 
@@ -59,7 +63,7 @@ std::vector<ImagePtr> Lsh::Approximate_Range_Search(ImagePtr query, const double
 
     for (ImagePtr input : bucket)
     {
-      double dist = EuclideanDistance(input->pixels, query->pixels);
+      double dist = distance->calculate(input, query);
       if (dist <= radius)
         RangeSearch.push_back(input);
     }

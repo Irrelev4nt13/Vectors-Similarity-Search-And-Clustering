@@ -6,14 +6,17 @@
 #include "Utils.hpp"
 #include "BruteForce.hpp"
 #include "PublicTypes.hpp"
+#include "ImageDistance.hpp"
 
 std::vector<Neighbor> BruteForce(const std::vector<ImagePtr> &images_input, const ImagePtr query, const int k)
 {
     std::priority_queue<Neighbor, std::vector<Neighbor>, CompareTuple> nearestNeighbors;
 
+    ImageDistance *distance = ImageDistance::getInstance();
+
     for (ImagePtr input : images_input)
     {
-        double dist = EuclideanDistance(input->pixels, query->pixels);
+        double dist = distance->calculate(input, query);
         Neighbor new_tuple(input, dist);
         nearestNeighbors.push(new_tuple);
 
