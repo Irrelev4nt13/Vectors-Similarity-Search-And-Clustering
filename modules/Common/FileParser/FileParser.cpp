@@ -59,7 +59,7 @@ FileParser::FileParser(std::string inputFile)
 
         for (std::size_t j = 0; j < image_size; ++j)
         {
-            images[i]->pixels[j] = static_cast<double>(buffer[j]) / 255;
+            images[i]->pixels[j] = static_cast<double>(buffer[j]);
         }
     }
 
