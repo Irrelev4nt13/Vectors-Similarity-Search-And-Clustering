@@ -106,6 +106,26 @@ int HammingDistance(const int first, const int second)
 //     {
 //     }
 // }
+
+// Binary search in P to find the index corresponding to x
+int binarySearch(const std::vector<double> &probs, double x)
+{
+    int l = 0, r = probs.size() - 1;
+    while (l <= r)
+    {
+        int mid = l + (r - l) / 2;
+        if (probs[mid] < x)
+        {
+            l = mid + 1;
+        }
+        else
+        {
+            r = mid - 1;
+        }
+    }
+    return l;
+}
+
 double RealDistribution(int from, int to)
 {
     std::uniform_real_distribution<double> rd(from, to);

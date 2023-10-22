@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <tuple>
 #include <unordered_map>
+#include <algorithm>
 
 #include "PublicTypes.hpp"
 #include "Utils.hpp"
@@ -19,63 +20,53 @@ std::vector<Cluster> KMeansPlusPlus(std::vector<ImagePtr> input_images, int numb
     int first_index = IntDistribution(0, input_images.size() - 1);
     clusters.push_back(Cluster(input_images[first_index], 0));
     centroids.insert(input_images[first_index]->id);
+
     for (int i = 1; i < number_of_clusters; i++)
     {
         std::vector<double> minDistances;
         std::vector<double> propabilities;
-        // propabilities.push_back(0);
-        std::vector<ImagePtr> centroid_candidates;
         double normalizer;
+
         // for (auto image : input_images)
         for (std::size_t j = 0; j < input_images.size(); j++)
         {
             if (centroids.find(input_images[j]->id) == centroids.end())
             {
                 std::tuple<double, int, int> distance_and_id = MinDistanceToCentroids(input_images[j], clusters);
+
+                double distance = std::get<0>(distance_and_id);
                 if (j == 0)
-                    normalizer = std::get<0>(distance_and_id);
-                else if (std::get<0>(distance_and_id) > normalizer)
-                    normalizer = std::get<0>(distance_and_id);
-                minDistances.push_back(std::get<0>(distance_and_id));
-            }
-            else
-                minDistances.push_back(0);
-        }
-
-        double dist_squared_sum = 0;
-        for (double &min_dist : minDistances)
-        {
-            min_dist /= normalizer;
-            dist_squared_sum += min_dist * min_dist;
-        }
-
-        // Compute the probability for choosing a data point as the next cluster
-        int idx = 0;
-        for (const ImagePtr data_point : input_images)
-        {
-            if (centroids.find(data_point->id) == centroids.end())
-            {
-                propabilities.push_back((minDistances[idx] * minDistances[idx]) / dist_squared_sum);
-                idx++;
+                    normalizer = distance;
+                else if (distance > normalizer)
+                    normalizer = distance;
+                minDistances.push_back(distance);
             }
         }
 
-        // Choose a random data point as next cluster, based on its probability
-        idx = 0;
-        double cumulative_prob = 0.0, random_prob = RealDistribution(0, 1);
-        for (const ImagePtr data_point : input_images)
+        int probs_size = minDistances.size();
+        std::cout << "probs size: " << probs_size << std::endl;
+        std::vector<double> probs(probs_size);
+
+        double maxD = *max_element(minDistances.begin(), minDistances.end());
+        double sum = 0;
+        for (int r = 0; r < probs_size; r++)
         {
-            if (centroids.find(data_point->id) == centroids.end())
-            {
-                cumulative_prob += propabilities[idx++];
-                if (random_prob <= cumulative_prob)
-                {
-                    clusters.push_back(Cluster(data_point, i));
-                    centroids.insert(data_point->id);
-                    break;
-                }
-            }
+            minDistances[r] /= maxD; // normalize
+            sum += pow(minDistances[r], 2);
+            probs[r] = sum;
         }
+
+        std::cout << "last: " << probs[probs_size - 1] << std::endl;
+
+        double x = RealDistribution(0, probs[probs_size - 1]);
+
+        std::cout << "x: " << x << std::endl;
+
+        int idx = binarySearch(probs, x);
+
+        centroids.insert(idx);
+
+        clusters.push_back(Cluster(input_images[idx], i));
     }
     return clusters;
 }

@@ -48,6 +48,8 @@ double EuclideanDistance(const std::vector<T> &first, const std::vector<U> &seco
 
 double ManhattanDistance(const std::vector<double> &first, const std::vector<double> &second);
 
+int binarySearch(const std::vector<double> &probs, double x);
+
 int HammingDistance(const int first, const int second);
 
 double RealDistribution(int from, int to);
