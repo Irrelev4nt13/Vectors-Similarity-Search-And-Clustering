@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <cmath>
 #include <tuple>
+#include <chrono>
 
 #include "Utils.hpp"
 
@@ -47,13 +48,13 @@ std::string getFullPath(std::string relativePath)
 }
 #endif
 
-static std::chrono::_V2::system_clock::time_point startTime;
+static std::chrono::high_resolution_clock::time_point startTime;
 
 void startClock() { startTime = std::chrono::high_resolution_clock::now(); }
 
 std::chrono::nanoseconds stopClock()
 {
-    std::chrono::_V2::system_clock::time_point endTime = std::chrono::high_resolution_clock::now();
+    std::chrono::high_resolution_clock::time_point endTime = std::chrono::high_resolution_clock::now();
 
     std::chrono::nanoseconds duration = std::chrono::duration_cast<std::chrono::nanoseconds>(endTime - startTime);
 
