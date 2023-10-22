@@ -21,6 +21,9 @@ int main(int argc, char const *argv[])
 
     readFilenameIfEmpty(args.queryFile, "query");
 
+    if (args.queryFile == "exit")
+        return EXIT_SUCCESS;
+
     readFilenameIfEmpty(args.outputFile, "output");
     std::ofstream output_file;
 
@@ -31,9 +34,6 @@ int main(int argc, char const *argv[])
 
     while (true)
     {
-        if (args.queryFile == "exit")
-            break;
-
         FileParser queryParser(args.queryFile);
         std::vector<ImagePtr> query_images = queryParser.GetImages();
 
