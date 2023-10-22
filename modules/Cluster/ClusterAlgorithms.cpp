@@ -12,7 +12,7 @@
 #include "ClusterAlgorithms.hpp"
 #include "Lsh.hpp"
 
-std::vector<Cluster> KMeansPlusPlus(std::vector<ImagePtr> input_images, int number_of_clusters)
+std::vector<Cluster> KMeansPlusPlus(const std::vector<ImagePtr> &input_images, int number_of_clusters)
 {
     std::vector<Cluster> clusters;
     std::unordered_set<int> centroids;
@@ -23,15 +23,14 @@ std::vector<Cluster> KMeansPlusPlus(std::vector<ImagePtr> input_images, int numb
 
     for (int i = 1; i < number_of_clusters; i++)
     {
-        int vec_size = input_images.size() - number_of_clusters;
         std::vector<double> minDistances;
         double normalizer;
 
-        for (const auto &image : input_images)
+        for (std::size_t j = 0; j < input_images.size(); j++)
         {
-            if (centroids.find(image->id) == centroids.end())
+            if (centroids.find(input_images[j]->id) == centroids.end())
             {
-                std::tuple<double, int, int> distance_and_id = MinDistanceToCentroids(image, clusters);
+                std::tuple<double, int, int> distance_and_id = MinDistanceToCentroids(input_images[j], clusters);
 
                 double distance = std::get<0>(distance_and_id);
                 if (distance > normalizer)
@@ -41,7 +40,7 @@ std::vector<Cluster> KMeansPlusPlus(std::vector<ImagePtr> input_images, int numb
             }
         }
 
-        int probs_size = minDistances.size();
+        int probs_size = input_images.size() - centroids.size();
         std::vector<double> probs(probs_size);
 
         double maxD = *max_element(minDistances.begin(), minDistances.end());

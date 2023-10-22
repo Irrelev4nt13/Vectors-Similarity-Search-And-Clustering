@@ -9,7 +9,7 @@
 #include "Cluster.hpp"
 #include "Lsh.hpp"
 
-std::vector<Cluster> KMeansPlusPlus(std::vector<ImagePtr> input_images, int number_of_clusters);
+std::vector<Cluster> KMeansPlusPlus(const std::vector<ImagePtr> &input_images, int number_of_clusters);
 
 std::vector<Cluster> MacQueen(std::vector<Cluster> &clusters, std::unordered_set<int> &ids);
 
