@@ -94,6 +94,23 @@ int HammingDistance(const int first, const int second) { return __builtin_popcou
 //     {
 //     }
 // }
+double RealDistribution(int from, int to)
+{
+    std::uniform_real_distribution<double> rd(from, to);
+    return rd(RandGen());
+}
+
+int IntDistribution(int from, int to)
+{
+    std::uniform_int_distribution<int> id(from, to);
+    return id(RandGen());
+}
+
+double NormalDistribution(double from, double to)
+{
+    std::normal_distribution<double> nd(from, to);
+    return nd(RandGen());
+}
 
 std::mt19937 &RandGen()
 {

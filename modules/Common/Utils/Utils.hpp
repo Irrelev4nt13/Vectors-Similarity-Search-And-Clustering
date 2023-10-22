@@ -50,6 +50,12 @@ double ManhattanDistance(const std::vector<double> &first, const std::vector<dou
 
 int HammingDistance(const int first, const int second);
 
+double RealDistribution(int from, int to);
+
+int IntDistribution(int from, int to);
+
+double NormalDistribution(double from, double to);
+
 std::mt19937 &RandGen();
 
 #endif

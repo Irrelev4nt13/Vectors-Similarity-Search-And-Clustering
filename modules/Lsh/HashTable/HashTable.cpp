@@ -1,5 +1,4 @@
 #include <vector>
-#include <random>
 #include <unordered_map>
 #include <string>
 #include <climits>
@@ -12,18 +11,14 @@ static const int64_t M = ((int64_t)(1) << 32) - 5;
 
 AmpLsh::AmpLsh(int w, int numHashFuncs, int dimension)
 {
-    std::normal_distribution<> standard_normal(0.0, 1.0);
-    std::uniform_real_distribution<> uniform_real(0, w);
-    std::uniform_int_distribution<> uniform_int(0, INT32_MAX);
-
     for (int i = 0; i < numHashFuncs; i++)
     {
-        r.push_back(uniform_int(RandGen()));
+        r.push_back(IntDistribution(0, INT32_MAX));
 
         std::vector<double> v;
         for (int j = 0; j < dimension; j++)
-            v.push_back(standard_normal(RandGen()));
-        hash_functions.push_back(HashFunction(w, uniform_real(RandGen()), v));
+            v.push_back(NormalDistribution(0.0, 1.0));
+        hash_functions.push_back(HashFunction(w, RealDistribution(0, w), v));
     }
 }
 AmpLsh::~AmpLsh() {}
