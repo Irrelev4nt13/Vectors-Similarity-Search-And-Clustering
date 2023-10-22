@@ -8,7 +8,17 @@
 
 typedef Image *ImagePtr;
 
-typedef std::tuple<ImagePtr, double> Neighbor;
+// typedef std::tuple<ImagePtr, double> Neighbor;
+
+class Neighbor
+{
+public:
+    ImagePtr image;
+    double distance;
+    Neighbor() {}
+    Neighbor(ImagePtr image, double distance) : image(image), distance(distance) {}
+    ~Neighbor() {}
+};
 
 class CompareTuple
 {
@@ -16,7 +26,7 @@ public:
     bool operator()(const Neighbor &a, const Neighbor &b) const
     {
         // Compare based on the double value (distance).
-        return std::get<1>(a) < std::get<1>(b);
+        return a.distance < b.distance;
     }
 };
 
