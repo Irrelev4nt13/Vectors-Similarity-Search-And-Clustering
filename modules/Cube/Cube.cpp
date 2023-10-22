@@ -10,15 +10,12 @@
 Cube::Cube(const std::vector<ImagePtr> images, int w, int dimension, int maxCanditates, int probes, int numNn, int numBuckets)
     : dimension(dimension), maxCanditates(maxCanditates), probes(probes), numNn(numNn), w(w), numBuckets(numBuckets)
 {
-    std::normal_distribution<> standard_normal(0.0, 1.0);
-    std::uniform_real_distribution<> uniform_real(0, w);
-
     for (int i = 0; i < dimension; i++)
     {
         std::vector<double> v;
         for (std::size_t j = 0; j < images[0]->pixels.size(); j++)
-            v.push_back(standard_normal(RandGen()));
-        hash_functions.push_back(HashFunction(w, uniform_real(RandGen()), v));
+            v.push_back(NormalDistribution(0.0, 1.0));
+        hash_functions.push_back(HashFunction(w, RealDistribution(0, w), v));
     }
     for (int i = 0; i < numBuckets; i++)
         buckets.push_back(std::vector<ImagePtr>());
@@ -31,13 +28,12 @@ Cube::Cube(const std::vector<ImagePtr> images, int w, int dimension, int maxCand
 
 int Cube::hash(ImagePtr image)
 {
-    std::uniform_int_distribution<> uniform_int(0, 1);
     std::string res = "";
     for (int i = 0; i < dimension; i++)
     {
         int hash = hash_functions[i].hash(image);
         if (map[i].find(hash) == map[i].end())
-            map[i][hash] = uniform_int(RandGen());
+            map[i][hash] = IntDistribution(0, 1);
 
         res += std::to_string(map[i][hash]);
     }

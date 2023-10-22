@@ -1,5 +1,4 @@
 #include <vector>
-#include <random>
 #include <unordered_set>
 #include <cstdint>
 #include <tuple>
@@ -16,9 +15,8 @@ std::vector<Cluster> KMeansPlusPlus(std::vector<ImagePtr> input_images, int numb
 {
     std::vector<Cluster> clusters;
     std::unordered_set<int> centroids;
-    std::uniform_int_distribution<> uniform_int(0, input_images.size() - 1);
 
-    int first_index = uniform_int(RandGen());
+    int first_index = IntDistribution(0, input_images.size() - 1);
     clusters.push_back(Cluster(input_images[first_index], 0));
     centroids.insert(input_images[first_index]->id);
     for (int i = 1; i < number_of_clusters; i++)
@@ -64,8 +62,7 @@ std::vector<Cluster> KMeansPlusPlus(std::vector<ImagePtr> input_images, int numb
 
         // Choose a random data point as next cluster, based on its probability
         idx = 0;
-        std::uniform_real_distribution<float> uniform_real(0, 1);
-        double cumulative_prob = 0.0, random_prob = uniform_real(RandGen());
+        double cumulative_prob = 0.0, random_prob = RealDistribution(0, 1);
         for (const ImagePtr data_point : input_images)
         {
             if (centroids.find(data_point->id) == centroids.end())
