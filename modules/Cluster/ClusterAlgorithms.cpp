@@ -218,7 +218,22 @@ std::vector<Cluster> ReverseRangeSearchLSH(std::vector<ImagePtr> input_images, L
 
             max_radius *= 2;
         } while (found_at_least_one_assignment);
+        for (auto data_point : input_images)
+        {
+            auto entry = assigned_images.find(data_point->id);
 
+            if (entry == assigned_images.end())
+            {
+                assignment_occurred++;
+                std::tuple<double, int, int> temp = MinDistanceToCentroids(data_point, clusters);
+                clusters[std::get<1>(temp)].AddToCluster(data_point);
+                assigned_images[data_point->id] = std::get<1>(temp);
+            }
+            else
+            {
+                clusters[entry->second].AddToCluster(data_point);
+            }
+        }
         epochs++;
         if (assignment_occurred == 0)
             break;
