@@ -6,14 +6,14 @@
 
 // Initialize static variables
 ImageDistance *ImageDistance::instance = nullptr;
-std::string ImageDistance::metric = "";
+DistanceMetric ImageDistance::metric;
 bool ImageDistance::isMetricSet = false;
 
 ImageDistance::ImageDistance() {}
 
 ImageDistance::~ImageDistance() {}
 
-void ImageDistance::setMetric(std::string inputMetric)
+void ImageDistance::setMetric(DistanceMetric inputMetric)
 {
     if (isMetricSet)
     {
@@ -40,16 +40,16 @@ ImageDistance *ImageDistance::getInstance()
 
 double ImageDistance::calculate(const ImagePtr &first, const ImagePtr &second)
 {
-    if (metric == "l2")
+    if (metric == DistanceMetric::EUCLIDEAN)
     {
         return EuclideanImageDistance(first, second);
     }
-    else if (metric == "l1")
+    else if (metric == DistanceMetric::MANHATTAN)
     {
         return ManhattanDistance(first, second);
     }
 
-    std::cerr << "ImageDistance: unexpected error. Metric " << metric << " is invalid" << std::endl;
+    std::cerr << "ImageDistance: unexpected error. Metric is invalid" << std::endl;
     exit(EXIT_FAILURE);
 }
 

@@ -10,7 +10,7 @@
 class ImageDistance
 {
 private:
-    static std::string metric;
+    static DistanceMetric metric;
 
     static ImageDistance *instance;
 
@@ -24,7 +24,7 @@ private:
 
 public:
     ~ImageDistance();
-    static void setMetric(std::string metric);
+    static void setMetric(DistanceMetric metric);
     static ImageDistance *getInstance();
     double calculate(const ImagePtr &input, const ImagePtr &query);
 
