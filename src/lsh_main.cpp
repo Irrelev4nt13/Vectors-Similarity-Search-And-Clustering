@@ -44,7 +44,7 @@ int main(int argc, char const *argv[])
             ImagePtr query = query_images[q];
 
             startClock();
-            std::vector<Neighbor> aprox_vector = lsh.Approximate_kNN(query);
+            std::vector<Neighbor> approx_vector = lsh.Approximate_kNN(query);
             auto elapsed_lsh = stopClock();
 
             startClock();
@@ -53,16 +53,16 @@ int main(int argc, char const *argv[])
 
             output_file << "Query: " << query->id << std::endl;
 
-            int limit = aprox_vector.size();
+            int limit = approx_vector.size();
             for (int i = 0; i < limit; i++)
             {
-                double dist = std::get<1>(aprox_vector[i]);
-                ImagePtr image = std::get<0>(aprox_vector[i]);
+                ImagePtr image = approx_vector[i].image;
+                double dist = approx_vector[i].distance;
 
                 output_file << "Nearest neighbor-" << i + 1 << ": " << image->id << std::endl
                             << "distanceLSH: " << dist << "\n";
 
-                dist = std::get<1>(brute_vector[i]);
+                dist = brute_vector[i].distance;
                 output_file << "distanceTrue: " << dist << "\n";
             }
 
