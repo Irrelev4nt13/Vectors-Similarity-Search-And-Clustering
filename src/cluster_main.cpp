@@ -9,6 +9,7 @@
 #include "ClusterCmdArgs.hpp"
 #include "Cluster.hpp"
 #include "ClusterAlgorithms.hpp"
+#include "Lsh.hpp"
 
 int main(int argc, char const *argv[])
 {
@@ -23,7 +24,13 @@ int main(int argc, char const *argv[])
     if (args.method == "Classic")
         clusters = LloydsAssignment(input_images, args.number_of_clusters);
     else if (args.method == "LSH")
-        ;
+    {
+        int w = 4;
+        int numBuckets = inputParser.GetMetadata().numOfImages / 8;
+        Lsh lsh(input_images, args.number_of_vector_hash_functions, args.number_of_vector_hash_tables, -1, w, numBuckets);
+
+        clusters = ReverseRangeSearchLSH(input_images, lsh, args.number_of_clusters);
+    }
     else if (args.method == "Hypercube")
         ;
     else
