@@ -44,5 +44,5 @@ std::tuple<double, int, int> MinDistanceToCentroids(const ImagePtr image, std::v
 double AverageDistance(ImagePtr image, Cluster cluster);
 int NextClosestClusterIdx(int cluster_idx, ImagePtr data_point, std::vector<Cluster> clusters);
 std::vector<double> Silhouettes(std::vector<Cluster> clusters);
-
+double MinDistanceCentroids(std::vector<Cluster> clusters);
 #endif

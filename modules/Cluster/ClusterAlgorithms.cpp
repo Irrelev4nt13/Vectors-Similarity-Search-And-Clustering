@@ -10,6 +10,7 @@
 #include "Image.hpp"
 #include "Cluster.hpp"
 #include "ClusterAlgorithms.hpp"
+#include "Lsh.hpp"
 
 std::vector<Cluster> KMeansPlusPlus(std::vector<ImagePtr> input_images, int number_of_clusters)
 {
@@ -167,6 +168,67 @@ std::vector<Cluster> LloydsAssignment(std::vector<ImagePtr> input_images, int nu
     return clusters;
 }
 
-// std::vector<Cluster> ReverseRangeSearchLSH();
+std::vector<Cluster> ReverseRangeSearchLSH(std::vector<ImagePtr> input_images, Lsh lsh, int number_of_clusters)
+{
+    std::vector<Cluster> clusters = KMeansPlusPlus(input_images, number_of_clusters);
+    std::unordered_map<int, int> assigned_images;
+    std::unordered_set<int> ids;
+    int epochs = 0;
+
+    while (true)
+    {
+        int assignment_occurred = 0;
+        bool found_at_least_one_assignment;
+        double max_radius = MinDistanceCentroids(clusters) / 2.0;
+
+        do
+        {
+            // Assign data points using progressively expanding range searches around centroids
+            // until we reach a point where there are no new assignments => continue with Lloyd's
+            found_at_least_one_assignment = false;
+            for (int i = 0; i < number_of_clusters; i++)
+            {
+                std::vector<ImagePtr> points_inside_range = lsh.Approximate_Range_Search(&(clusters[i].GetCentroid()), max_radius);
+
+                for (auto data_point : points_inside_range)
+                {
+                    auto entry = assigned_images.find(data_point->id);
+
+                    if (entry == assigned_images.end())
+                    {
+                        assignment_occurred++;
+                        found_at_least_one_assignment = true;
+                        assigned_images[data_point->id] = i;
+                    }
+                    else
+                    {
+                        double dist1 = EuclideanDistance(clusters[i].GetCentroid().pixels, data_point->pixels);
+                        double dist2 = EuclideanDistance(clusters[entry->second].GetCentroid().pixels, data_point->pixels);
+
+                        // Only assign current data point to current cluster if it's closer to it
+                        if (dist1 < dist2)
+                        {
+                            assignment_occurred++;
+                            found_at_least_one_assignment = true;
+                            assigned_images[data_point->id] = i;
+                        }
+                    }
+                }
+            }
+
+            max_radius *= 2;
+        } while (found_at_least_one_assignment);
+
+        epochs++;
+        if (assignment_occurred == 0)
+            break;
+        else
+        {
+            clusters = MacQueen(clusters, ids);
+            // exit(1);
+        }
+    }
+    return clusters;
+}
 
 // std::vector<Cluster> ReverseRangeSearchHyperCube();

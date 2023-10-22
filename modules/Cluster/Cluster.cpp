@@ -119,3 +119,22 @@ std::vector<double> Silhouettes(std::vector<Cluster> clusters)
     // silhouettes.push_back(curClusterShilhouette);
     return silhouettes;
 }
+
+double MinDistanceCentroids(std::vector<Cluster> clusters)
+{
+    double min_dist = -1;
+
+    for (int i = 0, n_centroids = clusters.size(); i < n_centroids - 1; i++)
+    {
+        for (int j = i + 1; j < n_centroids; j++)
+        {
+            double dist = EuclideanDistance(clusters[i].GetCentroid().pixels, clusters[j].GetCentroid().pixels);
+            if (dist < min_dist || min_dist == -1)
+            {
+                min_dist = dist;
+            }
+        }
+    }
+
+    return min_dist;
+}
