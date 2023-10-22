@@ -188,7 +188,8 @@ std::vector<Cluster> ReverseRangeSearchLSH(std::vector<ImagePtr> input_images, L
             found_at_least_one_assignment = false;
             for (int i = 0; i < number_of_clusters; i++)
             {
-                std::vector<ImagePtr> points_inside_range = lsh.Approximate_Range_Search(&(clusters[i].GetCentroid()), max_radius);
+                Image centroid = clusters[i].GetCentroid();
+                std::vector<ImagePtr> points_inside_range = lsh.Approximate_Range_Search(&centroid, max_radius);
 
                 for (auto data_point : points_inside_range)
                 {

@@ -36,11 +36,13 @@ LSH_MODULES := $(shell find $(MODULES_DIR)/Lsh -name '*.cpp')
 CUBE_MODULES := $(shell find $(MODULES_DIR)/Cube -name '*.cpp')
 CLUSTER_MODULES := $(shell find $(MODULES_DIR)/Cluster -name '*.cpp')
 COMMON_MODULES := $(shell find $(MODULES_DIR)/Common -name '*.cpp')
+ALL_MODULES := $(shell find $(MODULES_DIR) -name '*.cpp')
 
 LSH_OBJ_MODULES := $(LSH_MODULES:$(MODULES_DIR)/Lsh/%.cpp=$(BUILD_DIR)/Lsh/%.o)
 CUBE_OBJ_MODULES := $(CUBE_MODULES:$(MODULES_DIR)/Cube/%.cpp=$(BUILD_DIR)/Cube/%.o)
 CLUSTER_OBJ_MODULES := $(CLUSTER_MODULES:$(MODULES_DIR)/Cluster/%.cpp=$(BUILD_DIR)/Cluster/%.o)
 COMMON_OBJ_MODULES := $(COMMON_MODULES:$(MODULES_DIR)/Common/%.cpp=$(BUILD_DIR)/Common/%.o)
+ALL_OBJ_MODULES := $(ALL_MODULES:$(MODULES_DIR)/%.cpp=$(BUILD_DIR)/%.o)
 
 OBJ_MODULES_DEBUG := $(MODULES_FILES:$(MODULES_DIR)/%.cpp=$(BUILD_DIR)/%-deb.o)
 
@@ -50,7 +52,7 @@ INCLUDE_FLAGS := $(addprefix -I, $(INCLUDE_DIRS) $(MODULES_DIR))
 
 MAKEFLAGS += -j8
 
-all: $(EXEC_FILES) $(LSH_TEST) $(CUBE_TEST) $(CLUSTER_TEST)
+all: $(EXEC_FILES)
 
 $(BUILD_DIR)/%.o: $(MODULES_DIR)/%.cpp $(LIBS)
 	@mkdir -p $(@D)
@@ -65,7 +67,7 @@ $(LSH): $(LSH_OBJ) $(LSH_OBJ_MODULES) $(COMMON_OBJ_MODULES)
 $(CUBE): $(CUBE_OBJ) $(CUBE_OBJ_MODULES) $(COMMON_OBJ_MODULES)
 	$(CXX) $^ -o $@ $(INCLUDE_FLAGS)
 
-$(CLUSTER): $(CLUSTER_OBJ) $(CLUSTER_OBJ_MODULES) $(COMMON_OBJ_MODULES)
+$(CLUSTER): $(CLUSTER_OBJ) $(ALL_OBJ_MODULES)
 	$(CXX) $^ -o $@ $(INCLUDE_FLAGS)
 
 $(BUILD_DIR)/%-test.o: $(TESTS_DIR)/%_test.cpp $(LIBS)
