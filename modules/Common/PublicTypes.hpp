@@ -8,7 +8,11 @@
 
 typedef Image *ImagePtr;
 
-// typedef std::tuple<ImagePtr, double> Neighbor;
+enum class DistanceMetric
+{
+    MANHATTAN,
+    EUCLIDEAN
+};
 
 class Neighbor
 {
