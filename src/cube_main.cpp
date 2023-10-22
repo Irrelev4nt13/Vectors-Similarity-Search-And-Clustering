@@ -56,13 +56,13 @@ int main(int argc, char const *argv[])
             int limit = aprox_vector.size();
             for (int i = 0; i < limit; i++)
             {
-                double dist = std::get<1>(aprox_vector[i]);
-                ImagePtr image = std::get<0>(aprox_vector[i]);
+                ImagePtr image = aprox_vector[i].image;
+                double dist = aprox_vector[i].distance;
 
                 output_file << "Nearest neighbor-" << i + 1 << ": " << image->id << std::endl
                             << "distanceHypercube: " << dist << "\n";
 
-                dist = std::get<1>(brute_vector[i]);
+                dist = brute_vector[i].distance;
                 output_file << "distanceTrue: " << dist << "\n";
             }
 
