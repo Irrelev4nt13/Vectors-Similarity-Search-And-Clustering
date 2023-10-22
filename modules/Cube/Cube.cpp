@@ -51,90 +51,45 @@ void Cube::insert(ImagePtr image) { buckets[hash(image)].push_back(image); }
 std::vector<Neighbor> Cube::Approximate_kNN(ImagePtr query)
 {
     std::priority_queue<Neighbor, std::vector<Neighbor>, CompareTuple> nearestNeighbors;
-
-    // std::cout << std::endl;
-    // std::cout << std::endl;
     int query_bucket = hash(query);
     int candidates = 0;
-    // std::cout << query_bucket << " " << std::bitset<32>(query_bucket).to_string() << std::endl;
-    std::vector<ImagePtr> bucket = buckets[query_bucket];
-    for (ImagePtr input : bucket)
+    std::vector<ImagePtr> bucket;
+    for (int i = 0; i < probes + 1 && candidates < maxCanditates; i++)
     {
-        double dist = EuclideanDistance(input->pixels, query->pixels);
-        // std::cout << dist << " ";
-        Neighbor new_neighbor(input, dist);
-        nearestNeighbors.push(new_neighbor);
-        if ((int)nearestNeighbors.size() > numNn)
-            nearestNeighbors.pop();
-        if (++candidates == maxCanditates)
-            break;
-    }
-    if (candidates == maxCanditates)
-    {
-        std::vector<Neighbor> KnearestNeighbors;
-        while (!nearestNeighbors.empty())
+        if (i == 0)
         {
-            KnearestNeighbors.insert(KnearestNeighbors.begin(), nearestNeighbors.top());
-            nearestNeighbors.pop();
-        }
-        return KnearestNeighbors;
-    }
-    for (int i = 1; i < probes + 1; i++)
-    {
-
-        for (int j = 0; j < numBuckets; j++)
-        {
-            if (HammingDistance(query_bucket, j) == i)
+            bucket = buckets[query_bucket];
+            for (ImagePtr input : bucket)
             {
-                // std::cout << std::setw(6) << query_bucket << " and " << std::setw(6) << j << " has hamDistance: " << i
-                //           << std::setw(6) << j << " bucket has: " << std::setw(6) << buckets[j].size() << " elements" << std::endl;
-                bucket = buckets[j];
-                for (ImagePtr input : bucket)
+                double dist = EuclideanDistance(input->pixels, query->pixels);
+                nearestNeighbors.push(Neighbor(input, dist));
+                if ((int)nearestNeighbors.size() > numNn)
+                    nearestNeighbors.pop();
+                if (++candidates == maxCanditates)
+                    break;
+            }
+        }
+        else
+        {
+            for (int j = 0; j < numBuckets && candidates < maxCanditates; j++)
+            {
+                if (HammingDistance(query_bucket, j) == i)
                 {
-                    double dist = EuclideanDistance(input->pixels, query->pixels);
-                    // std::cout << dist << " ";
-                    Neighbor new_neighbor(input, dist);
-                    nearestNeighbors.push(new_neighbor);
-                    if ((int)nearestNeighbors.size() > numNn)
-                        nearestNeighbors.pop();
-                    if (++candidates == maxCanditates)
-                        break;
+                    bucket = buckets[j];
+                    for (ImagePtr input : bucket)
+                    {
+                        double dist = EuclideanDistance(input->pixels, query->pixels);
+                        nearestNeighbors.push(Neighbor(input, dist));
+                        if ((int)nearestNeighbors.size() > numNn)
+                            nearestNeighbors.pop();
+                        if (++candidates == maxCanditates)
+                            break;
+                    }
                 }
             }
-            if (candidates == maxCanditates)
-                break;
         }
-        if (candidates == maxCanditates)
-            break;
-        // if (i == 2)
-        //     break;
     }
-    // std::cout << std::endl;
-    // std::cout << std::endl;
-    // std::cout << (1 << 3) << std::endl;
 
-    // Get buckets with ham distance + 1
-    // for (int i = 0, candidates = 0; i <= probes && candidates < maxCanditates;)
-    // {
-    //     // if (i == 0)
-    // }
-    // Do the search
-    // for (;;)
-    // {
-    //     // if ()
-    // const std::vector<ImagePtr> bucket = buckets[query_bucket];
-    // for (ImagePtr input : bucket)
-    // {
-    //     double dist = EuclideanDistance(input->pixels, query->pixels);
-    //     Neighbor new_neighbor(input, dist);
-    //     nearestNeighbors.push(new_neighbor);
-
-    //     if (nearestNeighbors.size() > numNn)
-    //         nearestNeighbors.pop();
-    // }
-    //     if (maxCanditates)
-    //         break;
-    // }
     std::vector<Neighbor> KnearestNeighbors;
     while (!nearestNeighbors.empty())
     {
@@ -147,49 +102,42 @@ std::vector<ImagePtr> Cube::Approximate_Range_Search(ImagePtr query, const doubl
 {
     std::vector<ImagePtr> RangeSearch;
 
-    // std::cout << std::endl;
-    // std::cout << std::endl;
     int query_bucket = hash(query);
     int candidates = 0;
-    // std::cout << query_bucket << " " << std::bitset<32>(query_bucket).to_string() << std::endl;
-    std::vector<ImagePtr> bucket = buckets[query_bucket];
-    for (ImagePtr input : bucket)
-    {
-        double dist = EuclideanDistance(input->pixels, query->pixels);
-        if (dist <= radius)
-            RangeSearch.push_back(input);
-        if (++candidates == maxCanditates)
-            break;
-    }
-    if (candidates == maxCanditates)
-        return RangeSearch;
 
-    for (int i = 1; i < probes + 1; i++)
+    std::vector<ImagePtr> bucket;
+    for (int i = 0; i < probes + 1 && candidates < maxCanditates; i++)
     {
-
-        for (int j = 0; j < numBuckets; j++)
+        if (i == 0)
         {
-            if (HammingDistance(query_bucket, j) == i)
+            bucket = buckets[query_bucket];
+            for (ImagePtr input : bucket)
             {
-                // std::cout << std::setw(6) << query_bucket << " and " << std::setw(6) << j << " has hamDistance: " << i
-                //           << std::setw(6) << j << " bucket has: " << std::setw(6) << buckets[j].size() << " elements" << std::endl;
-                bucket = buckets[j];
-                for (ImagePtr input : bucket)
+                double dist = EuclideanDistance(input->pixels, query->pixels);
+                if (dist <= radius)
+                    RangeSearch.push_back(input);
+                if (++candidates == maxCanditates)
+                    break;
+            }
+        }
+        else
+        {
+            for (int j = 0; j < numBuckets && candidates < maxCanditates; j++)
+            {
+                if (HammingDistance(query_bucket, j) == i)
                 {
-                    double dist = EuclideanDistance(input->pixels, query->pixels);
-                    if (dist <= radius)
-                        RangeSearch.push_back(input);
-                    if (++candidates == maxCanditates)
-                        break;
+                    bucket = buckets[j];
+                    for (ImagePtr input : bucket)
+                    {
+                        double dist = EuclideanDistance(input->pixels, query->pixels);
+                        if (dist <= radius)
+                            RangeSearch.push_back(input);
+                        if (++candidates == maxCanditates)
+                            break;
+                    }
                 }
             }
-            if (candidates == maxCanditates)
-                break;
         }
-        if (candidates == maxCanditates)
-            break;
-        // if (i == 2)
-        //     break;
     }
     return RangeSearch;
 }
