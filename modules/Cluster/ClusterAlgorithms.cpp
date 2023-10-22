@@ -23,31 +23,30 @@ std::vector<Cluster> KMeansPlusPlus(std::vector<ImagePtr> input_images, int numb
 
     for (int i = 1; i < number_of_clusters; i++)
     {
+        int vec_size = input_images.size() - number_of_clusters;
         std::vector<double> minDistances;
-        std::vector<double> propabilities;
         double normalizer;
 
-        // for (auto image : input_images)
-        for (std::size_t j = 0; j < input_images.size(); j++)
+        for (const auto &image : input_images)
         {
-            if (centroids.find(input_images[j]->id) == centroids.end())
+            if (centroids.find(image->id) == centroids.end())
             {
-                std::tuple<double, int, int> distance_and_id = MinDistanceToCentroids(input_images[j], clusters);
+                std::tuple<double, int, int> distance_and_id = MinDistanceToCentroids(image, clusters);
 
                 double distance = std::get<0>(distance_and_id);
-                if (j == 0)
+                if (distance > normalizer)
                     normalizer = distance;
-                else if (distance > normalizer)
-                    normalizer = distance;
+
                 minDistances.push_back(distance);
             }
         }
 
         int probs_size = minDistances.size();
-        std::cout << "probs size: " << probs_size << std::endl;
         std::vector<double> probs(probs_size);
 
         double maxD = *max_element(minDistances.begin(), minDistances.end());
+
+        // calculate partial sums
         double sum = 0;
         for (int r = 0; r < probs_size; r++)
         {
@@ -56,11 +55,7 @@ std::vector<Cluster> KMeansPlusPlus(std::vector<ImagePtr> input_images, int numb
             probs[r] = sum;
         }
 
-        std::cout << "last: " << probs[probs_size - 1] << std::endl;
-
         double x = RealDistribution(0, probs[probs_size - 1]);
-
-        std::cout << "x: " << x << std::endl;
 
         int idx = binarySearch(probs, x);
 
