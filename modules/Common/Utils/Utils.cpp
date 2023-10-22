@@ -82,7 +82,19 @@ double ManhattanDistance(const std::vector<double> &first, const std::vector<dou
     return result;
 }
 
-int HammingDistance(const int first, const int second) { return __builtin_popcount(first ^ second); }
+int HammingDistance(const int first, const int second)
+{
+    int xorResult = first ^ second;
+    int distance = 0;
+
+    while (xorResult > 0)
+    {
+        distance += xorResult & 1;
+        xorResult >>= 1;
+    }
+
+    return distance;
+}
 
 // int BinarySearch();
 
