@@ -7,6 +7,7 @@
 #include "PublicTypes.hpp"
 #include "Image.hpp"
 #include "HashFunction.hpp"
+#include "ImageDistance.hpp"
 
 class Cube
 {
@@ -21,6 +22,7 @@ private:
     std::unordered_map<int, int> *map;
     std::vector<HashFunction> hash_functions;
     int hash(ImagePtr image);
+    ImageDistance *distance;
 
 public:
     Cube(const std::vector<ImagePtr> images, int w, int dimension, int maxCanditates, int probes, int numNn, int numBuckets);

@@ -6,6 +6,7 @@
 #include "Cube.hpp"
 #include "PublicTypes.hpp"
 #include "HashFunction.hpp"
+#include "ImageDistance.hpp"
 
 Cube::Cube(const std::vector<ImagePtr> images, int w, int dimension, int maxCanditates, int probes, int numNn, int numBuckets)
     : dimension(dimension), maxCanditates(maxCanditates), probes(probes), numNn(numNn), w(w), numBuckets(numBuckets)
@@ -24,6 +25,8 @@ Cube::Cube(const std::vector<ImagePtr> images, int w, int dimension, int maxCand
 
     for (std::size_t i = 0; i < images.size(); i++)
         insert(images[i]);
+
+    this->distance = ImageDistance::getInstance();
 }
 
 int Cube::hash(ImagePtr image)
@@ -57,7 +60,7 @@ std::vector<Neighbor> Cube::Approximate_kNN(ImagePtr query)
             bucket = buckets[query_bucket];
             for (ImagePtr input : bucket)
             {
-                double dist = EuclideanDistance(input->pixels, query->pixels);
+                double dist = distance->calculate(input, query);
                 nearestNeighbors.push(Neighbor(input, dist));
                 if ((int)nearestNeighbors.size() > numNn)
                     nearestNeighbors.pop();
@@ -74,7 +77,7 @@ std::vector<Neighbor> Cube::Approximate_kNN(ImagePtr query)
                     bucket = buckets[j];
                     for (ImagePtr input : bucket)
                     {
-                        double dist = EuclideanDistance(input->pixels, query->pixels);
+                        double dist = distance->calculate(input, query);
                         nearestNeighbors.push(Neighbor(input, dist));
                         if ((int)nearestNeighbors.size() > numNn)
                             nearestNeighbors.pop();
@@ -109,7 +112,7 @@ std::vector<ImagePtr> Cube::Approximate_Range_Search(ImagePtr query, const doubl
             bucket = buckets[query_bucket];
             for (ImagePtr input : bucket)
             {
-                double dist = EuclideanDistance(input->pixels, query->pixels);
+                double dist = distance->calculate(input, query);
                 if (dist <= radius)
                     RangeSearch.push_back(input);
                 if (++candidates == maxCanditates)
@@ -125,7 +128,7 @@ std::vector<ImagePtr> Cube::Approximate_Range_Search(ImagePtr query, const doubl
                     bucket = buckets[j];
                     for (ImagePtr input : bucket)
                     {
-                        double dist = EuclideanDistance(input->pixels, query->pixels);
+                        double dist = distance->calculate(input, query);
                         if (dist <= radius)
                             RangeSearch.push_back(input);
                         if (++candidates == maxCanditates)
