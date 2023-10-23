@@ -10,6 +10,7 @@
 #include "Cluster.hpp"
 #include "ClusterAlgorithms.hpp"
 #include "Lsh.hpp"
+#include "Cube.hpp"
 
 int main(int argc, char const *argv[])
 {
@@ -35,10 +36,20 @@ int main(int argc, char const *argv[])
         int numBuckets = inputParser.GetMetadata().numOfImages / 8;
         Lsh lsh(input_images, args.number_of_vector_hash_functions, args.number_of_vector_hash_tables, -1, w, numBuckets);
 
+        startClock();
         clusters = ReverseRangeSearchLSH(input_images, lsh, args.number_of_clusters);
+        elapsed_cluster = stopClock();
     }
     else if (args.method == "Hypercube")
-        ;
+    {
+        int w = 4;
+        int numBuckets = std::pow(2, args.number_of_hypercube_dimensions);
+        Cube cube(input_images, w, args.number_of_hypercube_dimensions, args.max_number_M_hypercube, args.number_of_probes, -1, numBuckets);
+
+        startClock();
+        clusters = ReverseRangeSearchHyperCube(input_images, cube, args.number_of_clusters);
+        elapsed_cluster = stopClock();
+    }
     else
     {
         std::cout << "Error, unknown method" << std::endl;

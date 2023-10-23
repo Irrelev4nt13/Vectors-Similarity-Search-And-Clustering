@@ -11,6 +11,7 @@
 #include "Cluster.hpp"
 #include "ClusterAlgorithms.hpp"
 #include "Lsh.hpp"
+#include "Cube.hpp"
 
 static std::tuple<double, int, int> MinDistanceToCentroids(const ImagePtr image, std::vector<Cluster> clusters)
 {
@@ -44,6 +45,31 @@ static std::tuple<double, int, int> MinDistanceToCentroids(const ImagePtr image,
         }
     }
     return std::tuple<double, int, int>{minDistance, cluster_id, next_cluster_id};
+}
+
+static double MinDistanceCentroids(std::vector<Cluster> clusters)
+{
+    double minDistance = -1;
+    bool minDistanceInitialized = false;
+    for (auto &cluster1 : clusters)
+    {
+        for (auto &cluster2 : clusters)
+        {
+            if (&cluster1 != &cluster2)
+            { // Avoid comparing a cluster with itself
+                double dist = EuclideanDistance(cluster1.GetCentroid()->pixels, cluster2.GetCentroid()->pixels);
+                if (!minDistanceInitialized)
+                {
+                    minDistance = dist;
+                    minDistanceInitialized = true;
+                }
+                else if (dist < minDistance)
+                    minDistance = dist;
+            }
+        }
+    }
+
+    return minDistance;
 }
 
 std::vector<Cluster> KMeansPlusPlus(std::vector<ImagePtr> input_images, int number_of_clusters)
@@ -122,7 +148,6 @@ std::vector<Cluster> LloydsAssignment(std::vector<ImagePtr> input_images, int nu
         {
             std::tuple<double, int, int> distance_and_id = MinDistanceToCentroids(image, clusters);
 
-            auto is_assigned = assigned_images.find(image->id);
             if (assigned_images.find(image->id) == assigned_images.end())
             {
                 // No assignments before
@@ -156,55 +181,60 @@ std::vector<Cluster> ReverseRangeSearchLSH(std::vector<ImagePtr> input_images, L
     while (true)
     {
         int assignment_occurred = 0;
-        bool found_at_least_one_assignment;
-        double max_radius; // = MinDistanceCentroids(clusters) / 2.0;
-        do
+        double radius = MinDistanceCentroids(clusters) / 2.0;
+        while (true)
         {
             // Assign data points using progressively expanding range searches around centroids
             // until we reach a point where there are no new assignments => continue with Lloyd's
-            found_at_least_one_assignment = false;
+            int assignment_occurred_inner = 0;
             for (int i = 0; i < number_of_clusters; i++)
             {
                 ImagePtr centroid = clusters[i].GetCentroid();
-                std::vector<ImagePtr> points_inside_range = lsh.Approximate_Range_Search(centroid, max_radius);
-                for (auto data_point : points_inside_range)
+                std::vector<ImagePtr> RangeSearch = lsh.Approximate_Range_Search(centroid, radius);
+                for (auto image : RangeSearch)
                 {
-                    auto entry = assigned_images.find(data_point->id);
+                    auto entry = assigned_images.find(image->id);
                     if (entry == assigned_images.end())
                     {
                         assignment_occurred++;
-                        found_at_least_one_assignment = true;
-                        assigned_images[data_point->id] = i;
+                        assignment_occurred_inner++;
+                        assigned_images[image->id] = i;
+                        clusters[i].AddToCluster(image);
+                        MacQueen(clusters, -1, i, image);
                     }
                     else
                     {
-                        double dist1 = EuclideanDistance(clusters[i].GetCentroid()->pixels, data_point->pixels);
-                        double dist2 = EuclideanDistance(clusters[entry->second].GetCentroid()->pixels, data_point->pixels);
+                        double dist1 = EuclideanDistance(clusters[i].GetCentroid()->pixels, image->pixels);
+                        double dist2 = EuclideanDistance(clusters[entry->second].GetCentroid()->pixels, image->pixels);
                         // Only assign current data point to current cluster if it's closer to it
                         if (dist1 < dist2)
                         {
                             assignment_occurred++;
-                            found_at_least_one_assignment = true;
-                            assigned_images[data_point->id] = i;
+                            assignment_occurred_inner++;
+                            int prev_clust = assigned_images[image->id];
+                            assigned_images[image->id] = i;
+                            clusters[i].AddToCluster(image);
+                            MacQueen(clusters, prev_clust, i, image);
                         }
                     }
                 }
             }
-            max_radius *= 2;
-        } while (found_at_least_one_assignment);
-        for (auto data_point : input_images)
+            if (assignment_occurred_inner == 0)
+                break;
+            radius *= 2;
+        }
+
+        // Assign the rest based on Lloyd's algorithm
+        for (auto image : input_images)
         {
-            auto entry = assigned_images.find(data_point->id);
+            auto entry = assigned_images.find(image->id);
             if (entry == assigned_images.end())
             {
                 assignment_occurred++;
-                std::tuple<double, int, int> temp = MinDistanceToCentroids(data_point, clusters);
-                clusters[std::get<1>(temp)].AddToCluster(data_point);
-                assigned_images[data_point->id] = std::get<1>(temp);
-            }
-            else
-            {
-                clusters[entry->second].AddToCluster(data_point);
+                std::tuple<double, int, int> distance_id_nextid = MinDistanceToCentroids(image, clusters);
+                clusters[std::get<1>(distance_id_nextid)].AddToCluster(image);
+                assigned_images[image->id] = std::get<1>(distance_id_nextid);
+                MacQueen(clusters, -1, std::get<1>(distance_id_nextid), image);
             }
         }
         if (assignment_occurred == 0)
@@ -213,7 +243,74 @@ std::vector<Cluster> ReverseRangeSearchLSH(std::vector<ImagePtr> input_images, L
     return clusters;
 }
 
-// std::vector<Cluster> ReverseRangeSearchHyperCube();
+std::vector<Cluster> ReverseRangeSearchHyperCube(std::vector<ImagePtr> input_images, Cube cube, int number_of_clusters)
+{
+    std::vector<Cluster> clusters = KMeansPlusPlus(input_images, number_of_clusters);
+    std::unordered_map<int, int> assigned_images;
+    while (true)
+    {
+        int assignment_occurred = 0;
+        double radius = MinDistanceCentroids(clusters) / 2.0;
+        while (true)
+        {
+            // Assign data points using progressively expanding range searches around centroids
+            // until we reach a point where there are no new assignments => continue with Lloyd's
+            int assignment_occurred_inner = 0;
+            for (int i = 0; i < number_of_clusters; i++)
+            {
+                ImagePtr centroid = clusters[i].GetCentroid();
+                std::vector<ImagePtr> RangeSearch = cube.Approximate_Range_Search(centroid, radius);
+                for (auto image : RangeSearch)
+                {
+                    std::cout << RangeSearch.size() << std::endl;
+                    auto entry = assigned_images.find(image->id);
+                    if (entry == assigned_images.end())
+                    {
+                        assignment_occurred++;
+                        assignment_occurred_inner++;
+                        assigned_images[image->id] = i;
+                        clusters[i].AddToCluster(image);
+                        MacQueen(clusters, -1, i, image);
+                    }
+                    else
+                    {
+                        double dist1 = EuclideanDistance(clusters[i].GetCentroid()->pixels, image->pixels);
+                        double dist2 = EuclideanDistance(clusters[entry->second].GetCentroid()->pixels, image->pixels);
+                        // Only assign current data point to current cluster if it's closer to it
+                        if (dist1 < dist2)
+                        {
+                            assignment_occurred++;
+                            assignment_occurred_inner++;
+                            int prev_clust = assigned_images[image->id];
+                            assigned_images[image->id] = i;
+                            clusters[i].AddToCluster(image);
+                            MacQueen(clusters, prev_clust, i, image);
+                        }
+                    }
+                }
+            }
+            if (assignment_occurred_inner == 0)
+                break;
+            radius *= 2;
+        }
+        // Assign the rest based on Lloyd's algorithm
+        for (auto image : input_images)
+        {
+            auto entry = assigned_images.find(image->id);
+            if (entry == assigned_images.end())
+            {
+                assignment_occurred++;
+                std::tuple<double, int, int> distance_id_nextid = MinDistanceToCentroids(image, clusters);
+                clusters[std::get<1>(distance_id_nextid)].AddToCluster(image);
+                assigned_images[image->id] = std::get<1>(distance_id_nextid);
+                MacQueen(clusters, -1, std::get<1>(distance_id_nextid), image);
+            }
+        }
+        if (assignment_occurred == 0)
+            break;
+    }
+    return clusters;
+}
 
 std::tuple<std::vector<double>, double> Silhouettes(std::vector<Cluster> clusters)
 {
