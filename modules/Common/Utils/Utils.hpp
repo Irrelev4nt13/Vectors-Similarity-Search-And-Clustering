@@ -6,7 +6,6 @@
 #include <vector>
 #include <random>
 #include <cstdint>
-#include <tuple>
 
 #include "PublicTypes.hpp"
 #include "Cluster.hpp"

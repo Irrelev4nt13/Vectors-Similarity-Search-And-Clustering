@@ -2,7 +2,7 @@
 #define LSH_HPP_
 
 #include <vector>
-#include <tuple>
+
 
 #include "Image.hpp"
 #include "HashTable.hpp"
