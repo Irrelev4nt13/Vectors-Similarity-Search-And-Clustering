@@ -49,7 +49,7 @@ void Cube::insert(ImagePtr image) { buckets[hash(image)].push_back(image); }
 
 std::vector<Neighbor> Cube::Approximate_kNN(ImagePtr query)
 {
-    std::priority_queue<Neighbor, std::vector<Neighbor>, CompareTuple> nearestNeighbors;
+    std::priority_queue<Neighbor, std::vector<Neighbor>, CompareNeighbor> nearestNeighbors;
     int query_bucket = hash(query);
     int candidates = 0;
     std::vector<ImagePtr> bucket;
