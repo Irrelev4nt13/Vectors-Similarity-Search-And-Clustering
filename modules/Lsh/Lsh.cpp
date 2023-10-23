@@ -37,8 +37,7 @@ std::vector<Neighbor> Lsh::Approximate_kNN(ImagePtr query)
     for (ImagePtr input : bucket)
     {
       double dist = distance->calculate(input, query);
-      Neighbor new_tuple(input, dist);
-      nearestNeighbors.push(new_tuple);
+      nearestNeighbors.push(Neighbor(input, dist));
 
       if ((int)nearestNeighbors.size() > numNn)
         nearestNeighbors.pop();
