@@ -91,14 +91,14 @@
             "cwd": "${fileDirname}",
             "args": [
                 "-i",
-                "datasets/train-images.idx3-ubyte",
+                "datasets/t10k-images.idx3-ubyte",
                 "-c",
                 "conf/cluster.conf",
                 "-o",
                 "output.txt",
                 "-complete",
                 "-m",
-                "Classic"
+                "Hypercube"
             ],
             "stopAtEntry": false,
             "externalConsole": false,
