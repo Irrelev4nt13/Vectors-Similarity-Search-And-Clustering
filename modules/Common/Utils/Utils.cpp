@@ -61,51 +61,13 @@ std::chrono::nanoseconds stopClock()
     return duration;
 }
 
-// double EuclideanDistance(const std::vector<uint8_t> &first, const std::vector<uint8_t> &second)
-// {
-//     double difference, result = 0.0;
-//     size_t limit = first.size();
-//     for (size_t i = 0; i < limit; i++)
-//     {
-//         difference = first[i] - second[i];
-//         result += difference * difference;
-//     }
-//     return sqrt(result);
-// }
-
-double ManhattanDistance(const std::vector<double> &first, const std::vector<double> &second)
+double DotProduct(const std::vector<double> &first, const std::vector<double> &second)
 {
-    double result = 0;
-    size_t limit = first.size();
-    for (size_t i = 0; i < limit; i++)
-        result += std::abs(first[i] - second[i]);
-    return result;
+    double sum = 0.0;
+    for (size_t i = 0; i < first.size(); ++i)
+        sum += first[i] * second[i];
+    return sum;
 }
-
-int HammingDistance(const int first, const int second)
-{
-    int xorResult = first ^ second;
-    int distance = 0;
-
-    while (xorResult > 0)
-    {
-        distance += xorResult & 1;
-        xorResult >>= 1;
-    }
-
-    return distance;
-}
-
-// int BinarySearch();
-
-// static double ClusterShilhouette(Cluster cluster)
-// {
-//     int size = cluster.GetMemberOfCluster().size();
-//     std::vector<ImagePtr> members = cluster.GetMemberOfCluster();
-//     for (int i = 0; i < size; i++)
-//     {
-//     }
-// }
 
 // Binary search in P to find the index corresponding to x
 int binarySearch(const std::vector<double> &probs, double x)
@@ -124,6 +86,20 @@ int binarySearch(const std::vector<double> &probs, double x)
         }
     }
     return l;
+}
+
+int HammingDistance(const int first, const int second)
+{
+    int xorResult = first ^ second;
+    int distance = 0;
+
+    while (xorResult > 0)
+    {
+        distance += xorResult & 1;
+        xorResult >>= 1;
+    }
+
+    return distance;
 }
 
 double RealDistribution(int from, int to)

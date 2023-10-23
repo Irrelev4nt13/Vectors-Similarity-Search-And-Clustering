@@ -21,14 +21,7 @@ void startClock();
 
 std::chrono::nanoseconds stopClock();
 
-template <typename T, typename U>
-double DotProduct(const std::vector<T> &first, const std::vector<U> &second)
-{
-    double sum = 0.0;
-    for (size_t i = 0; i < first.size(); ++i)
-        sum += first[i] * second[i];
-    return sum;
-}
+double DotProduct(const std::vector<double> &first, const std::vector<double> &second);
 
 template <typename T, typename U>
 uint8_t Modulo(T a, U b) { return static_cast<uint8_t>(a % b); }
