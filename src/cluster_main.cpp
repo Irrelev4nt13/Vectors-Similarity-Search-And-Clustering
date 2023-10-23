@@ -22,9 +22,13 @@ int main(int argc, char const *argv[])
     int cluster_id_formatter = (int)std::to_string(args.number_of_clusters).length();
     int size_formatter = (int)std::to_string(input_images.size()).length();
     ImageDistance::setMetric(DistanceMetric::EUCLIDEAN);
-
+    std::chrono::nanoseconds elapsed_cluster;
     if (args.method == "Classic")
+    {
+        startClock();
         clusters = LloydsAssignment(input_images, args.number_of_clusters);
+        elapsed_cluster = stopClock();
+    }
     else if (args.method == "LSH")
     {
         int w = 4;
@@ -40,24 +44,20 @@ int main(int argc, char const *argv[])
         std::cout << "Error, unknown method" << std::endl;
         exit(EXIT_FAILURE);
     }
-    std::vector<double> silhouettes = Silhouettes(clusters);
-    int total = 0;
+    std::tuple<std::vector<double>, double> silhouettes = Silhouettes(clusters);
     for (auto cluster : clusters)
-    {
         std::cout << "CLUSTER-" << std::setw(cluster_id_formatter)
                   << cluster.GetClusterId() + 1 << " {size: "
                   << std::setw(size_formatter)
                   << cluster.GetMemberOfCluster().size() << ", centroid: "
                   << cluster.GetCentroid()->id << "}" << std::endl;
-        total += cluster.GetMemberOfCluster().size();
-    }
-    std::cout << "TOTAL ELEMENTS: " << total << std::endl;
-    std::cout << "\nclustering_time: " << std::endl;
+
+    std::cout << "\nclustering_time: " << elapsed_cluster.count() * 1e-9 << std::endl;
     std::cout << "\nSilhouette: [";
-    for (auto silhouette : silhouettes)
+    for (auto silhouette : std::get<0>(silhouettes))
         std::cout << silhouette << ", ";
-    // for to print silhouette, needs to be done
-    std::cout << "]" << std::endl
+
+    std::cout << std::get<1>(silhouettes) << "]" << std::endl
               << std::endl;
     if (args.complete)
         for (auto cluster : clusters)
