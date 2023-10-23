@@ -2,7 +2,6 @@
 #define PUBLIC_TYPES_HPP_
 
 #include <iostream>
-#include <tuple>
 
 #include "Image.hpp"
 

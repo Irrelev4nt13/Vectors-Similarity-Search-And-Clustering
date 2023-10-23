@@ -2,7 +2,6 @@
 #include <fstream>
 #include <vector>
 #include <math.h>
-#include <tuple>
 
 #include "BruteForce.hpp"
 #include "CubeCmdArgs.hpp"

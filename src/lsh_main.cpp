@@ -1,7 +1,6 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
-#include <tuple>
 
 #include "Image.hpp"
 #include "Utils.hpp"
