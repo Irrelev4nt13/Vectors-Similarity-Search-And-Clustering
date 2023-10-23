@@ -24,7 +24,7 @@ public:
     ~Neighbor() {}
 };
 
-class CompareTuple
+class CompareNeighbor
 {
 public:
     bool operator()(const Neighbor &a, const Neighbor &b) const

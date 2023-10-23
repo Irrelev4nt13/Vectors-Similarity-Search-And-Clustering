@@ -10,7 +10,7 @@
 
 std::vector<Neighbor> BruteForce(const std::vector<ImagePtr> &images_input, const ImagePtr query, const int k)
 {
-    std::priority_queue<Neighbor, std::vector<Neighbor>, CompareTuple> nearestNeighbors;
+    std::priority_queue<Neighbor, std::vector<Neighbor>, CompareNeighbor> nearestNeighbors;
 
     ImageDistance *distance = ImageDistance::getInstance();
 

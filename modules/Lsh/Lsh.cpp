@@ -29,7 +29,7 @@ Lsh::~Lsh() {}
 
 std::vector<Neighbor> Lsh::Approximate_kNN(ImagePtr query)
 {
-  std::priority_queue<Neighbor, std::vector<Neighbor>, CompareTuple> nearestNeighbors;
+  std::priority_queue<Neighbor, std::vector<Neighbor>, CompareNeighbor> nearestNeighbors;
 
   for (int i = 0; i < numHtables; i++)
   {
