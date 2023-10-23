@@ -9,6 +9,7 @@
 #include "Cube.hpp"
 #include "FileParser.hpp"
 #include "Utils.hpp"
+#include "ImageDistance.hpp"
 
 int main(int argc, char const *argv[])
 {
@@ -26,6 +27,8 @@ int main(int argc, char const *argv[])
 
     int w = 4;
     int numBuckets = std::pow(2, args.dimension);
+
+    ImageDistance::setMetric(DistanceMetric::EUCLIDEAN);
 
     Cube cube(input_images, w, args.dimension, args.maxCanditates, args.probes, args.numNn, numBuckets);
 
