@@ -18,7 +18,7 @@ std::vector<Cluster> LloydsAssignment(std::vector<ImagePtr> input_images, int nu
 
 std::vector<Cluster> ReverseRangeSearchLSH(std::vector<ImagePtr> input_images, Lsh lsh, int number_of_clusters);
 
-std::vector<Cluster> ReverseRangeSearchHyperCube(std::vector<ImagePtr> input_images, Cube cube, int number_of_clusters);
+std::vector<Cluster> ReverseRangeSearchHyperCube(std::vector<ImagePtr> input_images, Cube &cube, int number_of_clusters);
 
 std::tuple<std::vector<double>, double> Silhouettes(std::vector<Cluster> clusters);
 #endif

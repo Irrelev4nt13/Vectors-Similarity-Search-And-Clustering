@@ -243,7 +243,7 @@ std::vector<Cluster> ReverseRangeSearchLSH(std::vector<ImagePtr> input_images, L
     return clusters;
 }
 
-std::vector<Cluster> ReverseRangeSearchHyperCube(std::vector<ImagePtr> input_images, Cube cube, int number_of_clusters)
+std::vector<Cluster> ReverseRangeSearchHyperCube(std::vector<ImagePtr> input_images, Cube &cube, int number_of_clusters)
 {
     std::vector<Cluster> clusters = KMeansPlusPlus(input_images, number_of_clusters);
     std::unordered_map<int, int> assigned_images;
