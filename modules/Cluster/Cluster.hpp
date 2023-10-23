@@ -13,18 +13,19 @@ private:
     ImagePtr centroid;
     std::vector<ImagePtr> member_of_cluster;
     int id;
+    int prev_len;
+    int cur_len;
     ImageDistance *distance;
 
 public:
     Cluster(ImagePtr image, const int id);
-    // Cluster(Image image, const int id);
     ~Cluster();
     ImagePtr GetCentroid();
     std::vector<ImagePtr> GetMemberOfCluster();
     void AddToCluster(ImagePtr image);
     int GetClusterId();
-    void UpdateMembers();
-    void UpdateCentroid();
+    void RemoveMember(ImagePtr member);
+    void UpdateCentroid(int from_to, ImagePtr image);
 };
 
 #endif

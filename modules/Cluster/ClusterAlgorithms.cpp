@@ -12,7 +12,7 @@
 #include "ClusterAlgorithms.hpp"
 #include "Lsh.hpp"
 
-std::vector<Cluster> KMeansPlusPlus(const std::vector<ImagePtr> &input_images, int number_of_clusters)
+std::vector<Cluster> KMeansPlusPlus(std::vector<ImagePtr> input_images, int number_of_clusters)
 {
     std::vector<Cluster> clusters;
     std::unordered_set<int> centroids;
@@ -65,88 +65,53 @@ std::vector<Cluster> KMeansPlusPlus(const std::vector<ImagePtr> &input_images, i
     return clusters;
 }
 
-std::vector<Cluster> MacQueen(std::vector<Cluster> &clusters, std::unordered_set<int> &ids)
+void MacQueen(std::vector<Cluster> &clusters, int prev_clust, int new_clust, ImagePtr image)
 {
-    // for (auto id : ids)
-    std::vector<Cluster> new_clust;
-    for (auto cluster : clusters)
+    if (prev_clust != -1)
     {
-        /*
-            old center = sum of prev points / prev len ==>
-
-            old center * prev len / curr len = sum of prev points / curr len ==>
-
-            old center * prev len / curr len + new point / curr len = (sum of prev points + new point) / curr len = sum of new points / current len
-
-         */
-
-        int T = cluster.GetMemberOfCluster().size();
-        // int T = clusters[id].GetMemberOfCluster().size();
-        std::vector<ImagePtr> members = cluster.GetMemberOfCluster();
-        int limit = (int)cluster.GetCentroid()->pixels.size();
-        ImagePtr new_centroid = cluster.GetCentroid();
-        for (int i = 0; i < limit; i++)
-        {
-            for (int j = 0; j < T; j++)
-                new_centroid->pixels[i] += members[j]->pixels[i];
-            new_centroid->pixels[i] = new_centroid->pixels[i] / T;
-            // new
-        }
-        new_clust.push_back(Cluster(new_centroid, cluster.GetClusterId()));
-        // cluster.UpdateMembers();
+        clusters[prev_clust].RemoveMember(image);
+        clusters[prev_clust].UpdateCentroid(-1, image);
     }
-    // ids.clear();
-    return new_clust;
+    clusters[new_clust].UpdateCentroid(1, image);
 }
 
 std::vector<Cluster> LloydsAssignment(std::vector<ImagePtr> input_images, int number_of_clusters)
 {
     std::vector<Cluster> clusters = KMeansPlusPlus(input_images, number_of_clusters);
-    std::unordered_set<int> ids;
-    // First the image id, second the cluster id
+
     std::unordered_map<int, int> assigned_images;
-    int epochs = 0;
+
     while (true)
     {
         int assignment_occurred = 0;
         for (auto image : input_images)
         {
             std::tuple<double, int, int> distance_and_id = MinDistanceToCentroids(image, clusters);
-            // std::cout << "Pass: " << std::get<0>(distance_and_id) << " " << std::get<1>(distance_and_id) << " " << std::get<2>(distance_and_id) << std::endl;
-            // if (std::get<0>(distance_and_id) != 0)
-            // {
-            clusters[std::get<1>(distance_and_id)].AddToCluster(image);
 
-            if (assigned_images.find(image->id) == assigned_images.end() || assigned_images[image->id] != std::get<1>(distance_and_id))
+            auto is_assigned = assigned_images.find(image->id);
+            if (assigned_images.find(image->id) == assigned_images.end())
             {
-                // if (ids.find(std::get<1>(distance_and_id)) == ids.end())
-                //     ids.insert(std::get<1>(distance_and_id));
-                assigned_images[image->id] = std::get<1>(distance_and_id);
+                // No assignments before
                 assignment_occurred++;
+                assigned_images[image->id] = std::get<1>(distance_and_id);
+                clusters[std::get<1>(distance_and_id)].AddToCluster(image);
+                MacQueen(clusters, -1, std::get<1>(distance_and_id), image);
             }
-
-            // break;
-            // }
+            else // Have been assigned at least once
+            {
+                if (assigned_images[image->id] != std::get<1>(distance_and_id))
+                { // Re-assign only if the new cluster is different
+                    assignment_occurred++;
+                    int prev_clust = assigned_images[image->id];
+                    assigned_images[image->id] = std::get<1>(distance_and_id);
+                    clusters[std::get<1>(distance_and_id)].AddToCluster(image);
+                    MacQueen(clusters, prev_clust, std::get<1>(distance_and_id), image);
+                }
+            }
         }
-        epochs++;
         if (assignment_occurred == 0)
             break;
-        else
-        {
-            clusters = MacQueen(clusters, ids);
-            // exit(1);
-        }
-
-        // int res = 0;
-        // for (auto cluster : clusters)
-        // {
-        //     std::cout << "Size: " << cluster.GetMemberOfCluster().size() << std::endl;
-        //     // std::cout << "Size: " << cluster.GetMemberOfCluster()[0] << std::endl;
-        //     res += cluster.GetMemberOfCluster().size();
-        // }
-        // std::cout << res << std::endl;
     }
-    std::cout << "Data was clustered after: " << epochs << " epochs" << std::endl;
     return clusters;
 }
 
@@ -222,7 +187,7 @@ std::vector<Cluster> ReverseRangeSearchLSH(std::vector<ImagePtr> input_images, L
             break;
         else
         {
-            clusters = MacQueen(clusters, ids);
+            // MacQueen(clusters);
             // exit(1);
         }
     }
