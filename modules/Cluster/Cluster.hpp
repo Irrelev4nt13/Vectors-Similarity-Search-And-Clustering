@@ -25,7 +25,8 @@ public:
     void AddToCluster(ImagePtr image);
     int GetClusterId();
     void RemoveMember(ImagePtr member);
-    void UpdateCentroid(int from_to, ImagePtr image);
+    void UpdateCentroid(ImagePtr image);
+    double AverageDistance(ImagePtr image);
 };
 
 #endif

@@ -5,6 +5,7 @@
 #include "Cluster.hpp"
 #include "Image.hpp"
 #include "Utils.hpp"
+#include "ClusterAlgorithms.hpp"
 
 Cluster::Cluster(ImagePtr image, const int id) : centroid(new Image(*image)), id(id), prev_len(0), cur_len(0), distance(ImageDistance::getInstance()) {}
 
@@ -34,9 +35,9 @@ void Cluster::RemoveMember(ImagePtr member)
     }
 }
 
-void Cluster::UpdateCentroid(int from_to, ImagePtr image)
+void Cluster::UpdateCentroid(ImagePtr image)
 {
-    if (from_to == 1) // Point was added
+    if (cur_len > prev_len) // Point was added
         for (int i = 0; i < centroid->pixels.size(); i++)
             centroid->pixels[i] = centroid->pixels[i] * prev_len / cur_len + image->pixels[i] / cur_len;
     else // Point was removed
@@ -56,4 +57,18 @@ void Cluster::UpdateCentroid(int from_to, ImagePtr image)
     old center * prev len / curr len + new point / curr len = (sum of prev points + new point) / curr len = sum of new points / current len
 
     */
+}
+
+double Cluster::AverageDistance(ImagePtr image)
+{
+    bool is_member = false;
+    double totalDistance = 0.0;
+    for (auto member : this->GetMemberOfCluster())
+        if (image->id == member->id)
+            is_member = true;
+        else
+            totalDistance += distance->calculate(member, image);
+    if (!is_member)
+        return totalDistance / (int)this->GetMemberOfCluster().size();
+    return totalDistance / ((int)this->GetMemberOfCluster().size() - 1);
 }
