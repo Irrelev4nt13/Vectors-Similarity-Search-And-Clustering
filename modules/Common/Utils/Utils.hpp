@@ -25,8 +25,6 @@ double DotProduct(const std::vector<double> &first, const std::vector<double> &s
 template <typename T, typename U>
 uint8_t Modulo(T a, U b) { return static_cast<uint8_t>(a % b); }
 
-double ManhattanDistance(const std::vector<double> &first, const std::vector<double> &second);
-
 int binarySearch(const std::vector<double> &probs, double x);
 
 int HammingDistance(const int first, const int second);

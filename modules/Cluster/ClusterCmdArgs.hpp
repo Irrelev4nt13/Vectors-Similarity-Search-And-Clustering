@@ -11,6 +11,9 @@
 #include "Utils.hpp"
 #endif
 
+// A simple class which stores the command line argument for clustering algorithms
+// The arguments are initialized to their default values except from input,
+// query and output file which are necessary in order for the program to execute
 class ClusterCmdArgs
 {
 public:
