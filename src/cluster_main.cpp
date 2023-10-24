@@ -24,10 +24,13 @@ int main(int argc, char const *argv[])
     int size_formatter = (int)std::to_string(input_images.size()).length();
     ImageDistance::setMetric(DistanceMetric::EUCLIDEAN);
     std::chrono::nanoseconds elapsed_cluster;
+
+    ClusterAlgorithms *alg = new ClusterAlgorithms();
+
     if (args.method == "Classic")
     {
         startClock();
-        clusters = LloydsAssignment(input_images, args.number_of_clusters);
+        clusters = alg->LloydsAssignment(input_images, args.number_of_clusters);
         elapsed_cluster = stopClock();
     }
     else if (args.method == "LSH")
@@ -37,7 +40,7 @@ int main(int argc, char const *argv[])
         Lsh lsh(input_images, args.number_of_vector_hash_functions, args.number_of_vector_hash_tables, -1, w, numBuckets);
 
         startClock();
-        clusters = ReverseRangeSearchLSH(input_images, lsh, args.number_of_clusters);
+        clusters = alg->ReverseRangeSearchLSH(input_images, lsh, args.number_of_clusters);
         elapsed_cluster = stopClock();
     }
     else if (args.method == "Hypercube")
@@ -47,7 +50,7 @@ int main(int argc, char const *argv[])
         Cube cube(input_images, w, args.number_of_hypercube_dimensions, args.max_number_M_hypercube, args.number_of_probes, -1, numBuckets);
 
         startClock();
-        clusters = ReverseRangeSearchHyperCube(input_images, cube, args.number_of_clusters);
+        clusters = alg->ReverseRangeSearchHyperCube(input_images, cube, args.number_of_clusters);
         elapsed_cluster = stopClock();
     }
     else
@@ -55,7 +58,7 @@ int main(int argc, char const *argv[])
         std::cout << "Error, unknown method" << std::endl;
         exit(EXIT_FAILURE);
     }
-    std::tuple<std::vector<double>, double> silhouettes = Silhouettes(clusters);
+    std::tuple<std::vector<double>, double> silhouettes = alg->Silhouettes(clusters);
     for (auto cluster : clusters)
         std::cout << "CLUSTER-" << std::setw(cluster_id_formatter)
                   << cluster.GetClusterId() + 1 << " {size: "
@@ -83,5 +86,7 @@ int main(int argc, char const *argv[])
     // std::ofstream output_file;
     // output_file.open(args.outputFile);
     // output_file.close();
+
+    delete alg;
     return EXIT_SUCCESS;
 }

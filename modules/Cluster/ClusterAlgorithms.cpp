@@ -12,8 +12,16 @@
 #include "ClusterAlgorithms.hpp"
 #include "Lsh.hpp"
 #include "Cube.hpp"
+#include "ImageDistance.hpp"
 
-static std::tuple<double, int, int> MinDistanceToCentroids(const ImagePtr image, std::vector<Cluster> clusters)
+ClusterAlgorithms::ClusterAlgorithms()
+{
+    distanceHelper = ImageDistance::getInstance();
+}
+
+ClusterAlgorithms::~ClusterAlgorithms() {}
+
+std::tuple<double, int, int> ClusterAlgorithms::MinDistanceToCentroids(const ImagePtr image, std::vector<Cluster> clusters)
 {
     double minDistance = -1;       // Initialize minDistance to a negative value
     double secondMinDistance = -1; // Initialize secondMinDistance to a negative value
@@ -23,7 +31,7 @@ static std::tuple<double, int, int> MinDistanceToCentroids(const ImagePtr image,
 
     for (std::size_t i = 0; i < clusters.size(); i++)
     {
-        double distance = EuclideanDistance(clusters[i].GetCentroid()->pixels, image->pixels);
+        double distance = distanceHelper->calculate(clusters[i].GetCentroid(), image);
 
         if (!minDistanceInitialized)
         {
@@ -47,7 +55,7 @@ static std::tuple<double, int, int> MinDistanceToCentroids(const ImagePtr image,
     return std::tuple<double, int, int>{minDistance, cluster_id, next_cluster_id};
 }
 
-static double MinDistanceCentroids(std::vector<Cluster> clusters)
+double ClusterAlgorithms::MinDistanceCentroids(std::vector<Cluster> clusters)
 {
     double minDistance = -1;
     bool minDistanceInitialized = false;
@@ -57,7 +65,7 @@ static double MinDistanceCentroids(std::vector<Cluster> clusters)
         {
             if (&cluster1 != &cluster2)
             { // Avoid comparing a cluster with itself
-                double dist = EuclideanDistance(cluster1.GetCentroid()->pixels, cluster2.GetCentroid()->pixels);
+                double dist = distanceHelper->calculate(cluster1.GetCentroid(), cluster2.GetCentroid());
                 if (!minDistanceInitialized)
                 {
                     minDistance = dist;
@@ -72,7 +80,7 @@ static double MinDistanceCentroids(std::vector<Cluster> clusters)
     return minDistance;
 }
 
-std::vector<Cluster> KMeansPlusPlus(std::vector<ImagePtr> input_images, int number_of_clusters)
+std::vector<Cluster> ClusterAlgorithms::KMeansPlusPlus(std::vector<ImagePtr> input_images, int number_of_clusters)
 {
     std::vector<Cluster> clusters;
     std::unordered_set<int> centroids;
@@ -125,7 +133,7 @@ std::vector<Cluster> KMeansPlusPlus(std::vector<ImagePtr> input_images, int numb
     return clusters;
 }
 
-void MacQueen(std::vector<Cluster> &clusters, int prev_clust, int new_clust, ImagePtr image)
+void ClusterAlgorithms::MacQueen(std::vector<Cluster> &clusters, int prev_clust, int new_clust, ImagePtr image)
 {
     if (prev_clust != -1)
     {
@@ -135,7 +143,7 @@ void MacQueen(std::vector<Cluster> &clusters, int prev_clust, int new_clust, Ima
     clusters[new_clust].UpdateCentroid(image);
 }
 
-std::vector<Cluster> LloydsAssignment(std::vector<ImagePtr> input_images, int number_of_clusters)
+std::vector<Cluster> ClusterAlgorithms::LloydsAssignment(std::vector<ImagePtr> input_images, int number_of_clusters)
 {
     std::vector<Cluster> clusters = KMeansPlusPlus(input_images, number_of_clusters);
 
@@ -174,7 +182,7 @@ std::vector<Cluster> LloydsAssignment(std::vector<ImagePtr> input_images, int nu
     return clusters;
 }
 
-std::vector<Cluster> ReverseRangeSearchLSH(std::vector<ImagePtr> input_images, Lsh lsh, int number_of_clusters)
+std::vector<Cluster> ClusterAlgorithms::ReverseRangeSearchLSH(std::vector<ImagePtr> input_images, Lsh lsh, int number_of_clusters)
 {
     std::vector<Cluster> clusters = KMeansPlusPlus(input_images, number_of_clusters);
     std::unordered_map<int, int> assigned_images;
@@ -204,8 +212,8 @@ std::vector<Cluster> ReverseRangeSearchLSH(std::vector<ImagePtr> input_images, L
                     }
                     else
                     {
-                        double dist1 = EuclideanDistance(clusters[i].GetCentroid()->pixels, image->pixels);
-                        double dist2 = EuclideanDistance(clusters[entry->second].GetCentroid()->pixels, image->pixels);
+                        double dist1 = distanceHelper->calculate(clusters[i].GetCentroid(), image);
+                        double dist2 = distanceHelper->calculate(clusters[entry->second].GetCentroid(), image);
                         // Only assign current data point to current cluster if it's closer to it
                         if (dist1 < dist2)
                         {
@@ -243,7 +251,7 @@ std::vector<Cluster> ReverseRangeSearchLSH(std::vector<ImagePtr> input_images, L
     return clusters;
 }
 
-std::vector<Cluster> ReverseRangeSearchHyperCube(std::vector<ImagePtr> input_images, Cube &cube, int number_of_clusters)
+std::vector<Cluster> ClusterAlgorithms::ReverseRangeSearchHyperCube(std::vector<ImagePtr> input_images, Cube &cube, int number_of_clusters)
 {
     std::vector<Cluster> clusters = KMeansPlusPlus(input_images, number_of_clusters);
     std::unordered_map<int, int> assigned_images;
@@ -274,8 +282,8 @@ std::vector<Cluster> ReverseRangeSearchHyperCube(std::vector<ImagePtr> input_ima
                     }
                     else
                     {
-                        double dist1 = EuclideanDistance(clusters[i].GetCentroid()->pixels, image->pixels);
-                        double dist2 = EuclideanDistance(clusters[entry->second].GetCentroid()->pixels, image->pixels);
+                        double dist1 = distanceHelper->calculate(clusters[i].GetCentroid(), image);
+                        double dist2 = distanceHelper->calculate(clusters[entry->second].GetCentroid(), image);
                         // Only assign current data point to current cluster if it's closer to it
                         if (dist1 < dist2)
                         {
@@ -312,7 +320,7 @@ std::vector<Cluster> ReverseRangeSearchHyperCube(std::vector<ImagePtr> input_ima
     return clusters;
 }
 
-std::tuple<std::vector<double>, double> Silhouettes(std::vector<Cluster> clusters)
+std::tuple<std::vector<double>, double> ClusterAlgorithms::Silhouettes(std::vector<Cluster> clusters)
 {
     std::vector<double> silhouettes;
     int num_of_clusters = clusters.size();
