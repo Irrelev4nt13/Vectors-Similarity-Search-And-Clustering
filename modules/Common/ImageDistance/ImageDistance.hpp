@@ -6,7 +6,13 @@
 
 #include "PublicTypes.hpp"
 
-// Singleton class to configure distance metric
+/**
+ * @brief singleton class that stores the metric that is preffered.
+ * In the main call setMetric and then get access to the instance
+ * with getInstance method.
+ * @param metric choose from DistanceMetric enum
+ *
+ */
 class ImageDistance
 {
 private:
@@ -20,7 +26,7 @@ private:
 
     double EuclideanImageDistance(const ImagePtr &first, const ImagePtr &second);
 
-    double ManhattanDistance(const ImagePtr &first, const ImagePtr &second);
+    double ManhattanImageDistance(const ImagePtr &first, const ImagePtr &second);
 
 public:
     ~ImageDistance();

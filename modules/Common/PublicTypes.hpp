@@ -5,6 +5,8 @@
 
 #include "Image.hpp"
 
+// Define types that should be used across multiple modules or programs
+
 typedef Image *ImagePtr;
 
 enum class DistanceMetric

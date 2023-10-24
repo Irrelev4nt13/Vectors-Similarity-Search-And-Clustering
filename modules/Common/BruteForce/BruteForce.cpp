@@ -7,8 +7,17 @@
 #include "PublicTypes.hpp"
 #include "ImageDistance.hpp"
 
+/**
+ * @brief find the true nearest neigbors with brute force by comparing the distance of query to all images
+ *
+ * @param images_input all images from input
+ * @param query query image
+ * @param k number of nearest neighbors
+ * @return vector of nearest Neighbors in Neigbor class format
+ */
 std::vector<Neighbor> BruteForce(const std::vector<ImagePtr> &images_input, const ImagePtr query, const int k)
 {
+    // store in priority queue to keep the correct queue of the k nearest neighbors
     std::priority_queue<Neighbor, std::vector<Neighbor>, CompareNeighbor> nearestNeighbors;
 
     ImageDistance *distance = ImageDistance::getInstance();
