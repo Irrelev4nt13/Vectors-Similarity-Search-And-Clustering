@@ -4,6 +4,9 @@
 #include <string>
 #include <cstring>
 
+// A simple class which stores the command line argument for hypercube algorithms
+// The arguments are initialized to their default values except from input,
+// query and output file which are necessary in order for the program to execute
 class CubeCmdArgs
 {
 public:

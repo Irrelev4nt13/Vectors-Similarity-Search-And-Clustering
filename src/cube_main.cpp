@@ -12,11 +12,13 @@
 
 int main(int argc, char const *argv[])
 {
+    // Analyze arguments from command line and store them in a simple object
     CubeCmdArgs args(argc, argv);
 
     readFilenameIfEmpty(args.inputFile, "input");
-    FileParser inputParser(args.inputFile);
 
+    // Parse file and get the images
+    FileParser inputParser(args.inputFile);
     const std::vector<ImagePtr> input_images = inputParser.GetImages();
 
     readFilenameIfEmpty(args.queryFile, "query");
@@ -24,23 +26,27 @@ int main(int argc, char const *argv[])
     readFilenameIfEmpty(args.outputFile, "output");
     std::ofstream output_file;
 
+    // window
     int w = 4;
-    int numBuckets = std::pow(2, args.dimension);
+    int numBuckets = std::pow(2, args.dimension); // {0,1}^d'=> 2^k
 
+    // Configure the metric used for the lsh program
     ImageDistance::setMetric(DistanceMetric::EUCLIDEAN);
 
+    // Initialize cube structure
     Cube cube(input_images, w, args.dimension, args.maxCanditates, args.probes, args.numNn, numBuckets);
 
+    // Keep reading new query and output files until the user types "exit"
     while (true)
     {
-        if (args.queryFile == "exit")
-            break;
-
+        // Get query images
         FileParser queryParser(args.queryFile);
         std::vector<ImagePtr> query_images = queryParser.GetImages();
 
         output_file.open(args.outputFile);
 
+        // For each query data point calculate its approximate k nearesest neighbors with hypercube algorithm and compare it to brute force
+        // Also, make a range search with hypercube
         for (int q = 0; q < 10; q++)
         {
             ImagePtr query = query_images[q];

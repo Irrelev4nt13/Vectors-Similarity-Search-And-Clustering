@@ -23,9 +23,6 @@ int main(int argc, char const *argv[])
 
     readFilenameIfEmpty(args.queryFile, "query");
 
-    if (args.queryFile == "exit")
-        return EXIT_SUCCESS;
-
     readFilenameIfEmpty(args.outputFile, "output");
     std::ofstream output_file;
 
