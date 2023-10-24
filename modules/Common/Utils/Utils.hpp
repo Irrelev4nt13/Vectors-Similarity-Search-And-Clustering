@@ -25,19 +25,6 @@ double DotProduct(const std::vector<double> &first, const std::vector<double> &s
 template <typename T, typename U>
 uint8_t Modulo(T a, U b) { return static_cast<uint8_t>(a % b); }
 
-template <typename T, typename U>
-double EuclideanDistance(const std::vector<T> &first, const std::vector<U> &second)
-{
-    double difference, result = 0.0;
-    size_t limit = first.size();
-    for (size_t i = 0; i < limit; i++)
-    {
-        difference = first[i] - second[i];
-        result += difference * difference;
-    }
-    return sqrt(result);
-}
-
 double ManhattanDistance(const std::vector<double> &first, const std::vector<double> &second);
 
 int binarySearch(const std::vector<double> &probs, double x);
