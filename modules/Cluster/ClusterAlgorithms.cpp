@@ -107,7 +107,6 @@ std::vector<Cluster> ClusterAlgorithms::KMeansPlusPlus(std::vector<ImagePtr> inp
     for (int i = 1; i < number_of_clusters; i++)
     {
         std::vector<double> minDistances;
-        double normalizer;
 
         for (std::size_t j = 0; j < input_images.size(); j++)
         {
@@ -121,8 +120,6 @@ std::vector<Cluster> ClusterAlgorithms::KMeansPlusPlus(std::vector<ImagePtr> inp
             std::tuple<double, int, int> distance_and_id = MinDistanceToCentroids(input_images[j], clusters);
 
             double distance = std::get<0>(distance_and_id);
-            if (distance > normalizer)
-                normalizer = distance;
 
             minDistances.push_back(distance);
         }
