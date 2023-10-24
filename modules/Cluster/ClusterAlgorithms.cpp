@@ -82,13 +82,18 @@ double ClusterAlgorithms::MinDistanceCentroids(std::vector<Cluster> clusters)
 
 std::vector<Cluster> ClusterAlgorithms::KMeansPlusPlus(std::vector<ImagePtr> input_images, int number_of_clusters)
 {
-    std::vector<Cluster> clusters;
-    std::unordered_set<int> centroids;
+    std::vector<Cluster> clusters;     // all clusters
+    std::unordered_set<int> centroids; // set to remember which centroids have already been chosen
 
+    // choose a random existing data point as an initial centroid in the first cluster
     int first_index = IntDistribution(0, input_images.size() - 1);
     clusters.push_back(Cluster(input_images[first_index], 0));
+
+    // update set
     centroids.insert(input_images[first_index]->id);
 
+    // For each cluster after the first one
+    // Calculate the min distance from the images to centroids
     for (int i = 1; i < number_of_clusters; i++)
     {
         std::vector<double> minDistances;
@@ -96,21 +101,29 @@ std::vector<Cluster> ClusterAlgorithms::KMeansPlusPlus(std::vector<ImagePtr> inp
 
         for (std::size_t j = 0; j < input_images.size(); j++)
         {
-            if (centroids.find(input_images[j]->id) == centroids.end())
+            // If current image id of dataset matches an id from previously selected centroids, continue
+            if (centroids.find(input_images[j]->id) != centroids.end())
             {
-                std::tuple<double, int, int> distance_and_id = MinDistanceToCentroids(input_images[j], clusters);
-
-                double distance = std::get<0>(distance_and_id);
-                if (distance > normalizer)
-                    normalizer = distance;
-
-                minDistances.push_back(distance);
+                continue;
             }
+
+            // calculate the min distances
+            std::tuple<double, int, int> distance_and_id = MinDistanceToCentroids(input_images[j], clusters);
+
+            double distance = std::get<0>(distance_and_id);
+            if (distance > normalizer)
+                normalizer = distance;
+
+            minDistances.push_back(distance);
         }
 
+        // size: n - t where t increases by 1 after each cluster has been initialized
         int probs_size = input_images.size() - centroids.size();
+
+        // probabilities
         std::vector<double> probs(probs_size);
 
+        // Get the max from the min distances in order to later normalize the distances
         double maxD = *max_element(minDistances.begin(), minDistances.end());
 
         // calculate partial sums
@@ -122,12 +135,14 @@ std::vector<Cluster> ClusterAlgorithms::KMeansPlusPlus(std::vector<ImagePtr> inp
             probs[r] = sum;
         }
 
+        // random x with uniform real distriubution in the range of the probabilities values
         double x = RealDistribution(0, probs[probs_size - 1]);
 
+        // apply binary search for x in probs vector and find the corresponding index
         int idx = binarySearch(probs, x);
 
+        // update set and clusters
         centroids.insert(idx);
-
         clusters.push_back(Cluster(input_images[idx], i));
     }
     return clusters;
