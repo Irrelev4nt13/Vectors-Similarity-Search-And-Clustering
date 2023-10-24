@@ -70,5 +70,7 @@ double Cluster::AverageDistance(ImagePtr image)
             totalDistance += distance->calculate(member, image);
     if (!is_member)
         return totalDistance / (int)this->GetMemberOfCluster().size();
-    return totalDistance / ((int)this->GetMemberOfCluster().size() - 1);
+    if ((int)this->GetMemberOfCluster().size() > 1)
+        return totalDistance / ((int)this->GetMemberOfCluster().size() - 1);
+    return totalDistance / (int)this->GetMemberOfCluster().size();
 }
