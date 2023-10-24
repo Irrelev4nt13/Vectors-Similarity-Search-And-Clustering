@@ -4,6 +4,8 @@
 #include <iostream>
 #include <vector>
 
+// Defines a data point of a MNIST dataset. The id is stored to later indentify neighbors and images found in the range search
+// Pixels is stored as double due to clustering which creates data points with non-existing coordinates from the dataset
 class Image
 {
 public:

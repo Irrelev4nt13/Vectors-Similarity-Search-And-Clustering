@@ -6,6 +6,10 @@
 #include "Image.hpp"
 #include "PublicTypes.hpp"
 
+/**
+ * @brief Stores the metadata of a MNIST dataset
+ *
+ */
 class Metadata
 {
 public:
@@ -15,6 +19,10 @@ public:
     uint32_t numOfColumns;
 };
 
+/**
+ * @brief Parses a file of a MNIST dataset and stores its metadata and data points
+ * @param inputFile filename of dataset
+ */
 class FileParser
 {
 private:

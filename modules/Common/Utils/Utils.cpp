@@ -13,6 +13,12 @@
 #include <limits.h>
 #endif
 
+/**
+ * @brief Waits for user input for a filename in case the file is already empty.
+ *
+ * @param filename name of file that will be read
+ * @param fileType category of file to help user input the correct file
+ */
 void readFilenameIfEmpty(std::string &filename, std::string fileType)
 {
     if (filename.empty())
@@ -22,6 +28,10 @@ void readFilenameIfEmpty(std::string &filename, std::string fileType)
     }
 }
 
+/**
+ * @brief Finds the full path in the filesystem from a given relative path of an existing file
+ * @param relativePath relative path to the file
+ */
 #ifdef DEBUG
 std::string getFullPath(std::string relativePath)
 {
@@ -50,8 +60,10 @@ std::string getFullPath(std::string relativePath)
 
 static std::chrono::high_resolution_clock::time_point startTime;
 
+// Call before stop clock to start clock timer. Call more than once only if the clock is already stopped with stop clock
 void startClock() { startTime = std::chrono::high_resolution_clock::now(); }
 
+// Call after start clock and get the duration
 std::chrono::nanoseconds stopClock()
 {
     std::chrono::high_resolution_clock::time_point endTime = std::chrono::high_resolution_clock::now();
@@ -69,7 +81,13 @@ double DotProduct(const std::vector<double> &first, const std::vector<double> &s
     return sum;
 }
 
-// Binary search in P to find the index corresponding to x
+/**
+ * @brief Binary search in probalities to find the index corresponding to x
+ *
+ * @param probs probalities used in KmeansPlusPlus
+ * @param x must be uniform real number from 0 to last of probs
+ * @return index to probs based on x
+ */
 int binarySearch(const std::vector<double> &probs, double x)
 {
     int l = 0, r = probs.size() - 1;
@@ -95,7 +113,10 @@ int HammingDistance(const int first, const int second)
 
     while (xorResult > 0)
     {
+        // Increment the distance for each set by 1 bit.
         distance += xorResult & 1;
+
+        // Right-shift the XOR result to check the next bit.
         xorResult >>= 1;
     }
 
