@@ -14,31 +14,35 @@
 #include "Cube.hpp"
 #include "ImageDistance.hpp"
 
-ClusterAlgorithms::ClusterAlgorithms()
-{
-    distanceHelper = ImageDistance::getInstance();
-}
+// Initializes the generic distance
+ClusterAlgorithms::ClusterAlgorithms() { distanceHelper = ImageDistance::getInstance(); }
 
 ClusterAlgorithms::~ClusterAlgorithms() {}
 
+// Calculates and returns the distance from the closest cluster, the id of the closest cluster and the next closest cluster id
 std::tuple<double, int, int> ClusterAlgorithms::MinDistanceToCentroids(const ImagePtr image, std::vector<Cluster> clusters)
 {
-    double minDistance = -1;       // Initialize minDistance to a negative value
-    double secondMinDistance = -1; // Initialize secondMinDistance to a negative value
+
+    double minDistance = -1;
+    double secondMinDistance = -1;
     int cluster_id = -1;
     int next_cluster_id = -1;
     bool minDistanceInitialized = false;
 
+    // We iterate over all clusters
     for (std::size_t i = 0; i < clusters.size(); i++)
     {
+        // Calculate the distance
         double distance = distanceHelper->calculate(clusters[i].GetCentroid(), image);
 
+        // If the minDistance is unitialized we initialize it
         if (!minDistanceInitialized)
         {
             minDistance = distance;
             cluster_id = i;
             minDistanceInitialized = true;
         }
+        // If the new distance is smaller update the minDistance
         else if (distance < minDistance)
         {
             secondMinDistance = minDistance;
@@ -46,6 +50,7 @@ std::tuple<double, int, int> ClusterAlgorithms::MinDistanceToCentroids(const Ima
             minDistance = distance;
             cluster_id = i;
         }
+        // If the new distance is not smaller from the minDistance check if it is from the secondMinDistance in order to save the next closest cluster too
         else if (distance < secondMinDistance || secondMinDistance == -1)
         {
             secondMinDistance = distance;
@@ -55,16 +60,21 @@ std::tuple<double, int, int> ClusterAlgorithms::MinDistanceToCentroids(const Ima
     return std::tuple<double, int, int>{minDistance, cluster_id, next_cluster_id};
 }
 
+// Returns the minimum distance between centroids
 double ClusterAlgorithms::MinDistanceCentroids(std::vector<Cluster> clusters)
 {
     double minDistance = -1;
     bool minDistanceInitialized = false;
+    // For every cluster we need to compute the distance of its centroid with the other centroids
+    // But we need to make sure we don't take into calculation the same cluster.
     for (auto &cluster1 : clusters)
     {
         for (auto &cluster2 : clusters)
         {
+            // Avoid comparing a cluster with itself
             if (&cluster1 != &cluster2)
-            { // Avoid comparing a cluster with itself
+            {
+                // Calculate the distance
                 double dist = distanceHelper->calculate(cluster1.GetCentroid(), cluster2.GetCentroid());
                 if (!minDistanceInitialized)
                 {
@@ -148,41 +158,51 @@ std::vector<Cluster> ClusterAlgorithms::KMeansPlusPlus(std::vector<ImagePtr> inp
     return clusters;
 }
 
+// The MacQueen updates the centroids on two clusters.
 void ClusterAlgorithms::MacQueen(std::vector<Cluster> &clusters, int prev_clust, int new_clust, ImagePtr image)
 {
+    // If the image was previously in a different cluster it removes the image from that cluster and also update its centroid
     if (prev_clust != -1)
     {
         clusters[prev_clust].RemoveMember(image);
         clusters[prev_clust].UpdateCentroid(image);
     }
+    // Also, it will update the centroid of the new cluster
     clusters[new_clust].UpdateCentroid(image);
 }
 
 std::vector<Cluster> ClusterAlgorithms::LloydsAssignment(std::vector<ImagePtr> input_images, int number_of_clusters)
 {
+    // Get the initializations of centroids bases on KMeans++
     std::vector<Cluster> clusters = KMeansPlusPlus(input_images, number_of_clusters);
 
+    // A map to match each image in the cluster it is assigned to
     std::unordered_map<int, int> assigned_images;
 
+    // Until there are no new assignments
     while (true)
     {
         int assignment_occurred = 0;
+        // Iterate over every image from input
         for (auto image : input_images)
         {
+            // Calculate its minDistance from centroids and the cluster it belongs to
             std::tuple<double, int, int> distance_and_id = MinDistanceToCentroids(image, clusters);
 
+            // If this is the first assignment just add it to the cluster and call MacQueen with prev_clust = -1 to let it know that its the first assignment
             if (assigned_images.find(image->id) == assigned_images.end())
             {
-                // No assignments before
                 assignment_occurred++;
                 assigned_images[image->id] = std::get<1>(distance_and_id);
                 clusters[std::get<1>(distance_and_id)].AddToCluster(image);
                 MacQueen(clusters, -1, std::get<1>(distance_and_id), image);
             }
-            else // Have been assigned at least once
+            else // If the image have been assigned at least once
             {
+                // Re-assign only if the new cluster is different
+                // Only this time call MacQueen with a real prev_clust to make the necessary updates
                 if (assigned_images[image->id] != std::get<1>(distance_and_id))
-                { // Re-assign only if the new cluster is different
+                {
                     assignment_occurred++;
                     int prev_clust = assigned_images[image->id];
                     assigned_images[image->id] = std::get<1>(distance_and_id);
@@ -191,20 +211,25 @@ std::vector<Cluster> ClusterAlgorithms::LloydsAssignment(std::vector<ImagePtr> i
                 }
             }
         }
+        // That's the condition to break the while loop as we said before
         if (assignment_occurred == 0)
             break;
     }
     return clusters;
 }
 
+// That's the helper method for ReverseRangeSearch for LSH and Hypercube
+// It's purpose is to assign each object from the range search result
 void ClusterAlgorithms::ReverseAssignment(std::vector<Cluster> &clusters,
                                           std::vector<ImagePtr> RangeSearch,
                                           std::unordered_map<int, int> &assigned_images,
                                           int &assignment_occurred,
                                           int &assignment_occurred_inner, int candidate_cluster)
 {
+    // Iterate over every image from Range Search
     for (auto image : RangeSearch)
     {
+        // If this is the first assignment just add it to the cluster and call MacQueen with prev_clust = -1 to let it know that its the first assignment
         if (assigned_images.find(image->id) == assigned_images.end())
         {
             assignment_occurred++;
@@ -215,8 +240,11 @@ void ClusterAlgorithms::ReverseAssignment(std::vector<Cluster> &clusters,
         }
         else
         {
+            // If it's not the first assignment calculate the distance between the new and the previous cluster
             double candidate_cluster_distance = distanceHelper->calculate(clusters[candidate_cluster].GetCentroid(), image);
             double cur_cluster_distance = distanceHelper->calculate(clusters[assigned_images[image->id]].GetCentroid(), image);
+
+            // Make a new assignment only if the new cluster candidate is closer than the previous one
             if (candidate_cluster_distance < cur_cluster_distance)
             {
                 assignment_occurred++;
@@ -230,15 +258,18 @@ void ClusterAlgorithms::ReverseAssignment(std::vector<Cluster> &clusters,
     }
 }
 
+// That's the helper method for ReverseRangeSearch for LSH and Hypercube
+// It's purpose is to assign all the leftover images after the ReverseAssignment using Lloyd's Algorithm
 void ClusterAlgorithms::LloydsForRest(std::vector<ImagePtr> input_images,
                                       std::vector<Cluster> &clusters,
                                       std::unordered_map<int, int> &assigned_images,
                                       int &assignment_occurred)
 {
+    // Iterate over every image from input
     for (auto image : input_images)
     {
-        auto entry = assigned_images.find(image->id);
-        if (entry == assigned_images.end())
+        // If the image is not assigned then add it to the closest cluster and call MacQueen with prev_clust = -1 to let it know that its the first assignment
+        if (assigned_images.find(image->id) == assigned_images.end())
         {
             assignment_occurred++;
             std::tuple<double, int, int> distance_id_nextid = MinDistanceToCentroids(image, clusters);
@@ -249,27 +280,50 @@ void ClusterAlgorithms::LloydsForRest(std::vector<ImagePtr> input_images,
     }
 }
 
+// The method which does all the essential handling of submethods for the implementation of Reverse Range Search with LSH
 std::vector<Cluster> ClusterAlgorithms::ReverseRangeSearchLSH(std::vector<ImagePtr> input_images, Lsh lsh, int number_of_clusters)
 {
+    // Get the initializations of centroids bases on KMeans++
     std::vector<Cluster> clusters = KMeansPlusPlus(input_images, number_of_clusters);
+
+    // A map to match each image in the cluster it is assigned to
     std::unordered_map<int, int> assigned_images;
+
+    // Until there are no new assignments
     while (true)
     {
         int assignment_occurred = 0;
+
+        // We initialize the radius based on the minDistance between all centroids devided by 2
         double radius = MinDistanceCentroids(clusters) / 2.0;
+
+        // Until there are no new assignments from range search
         while (true)
         {
             int assignment_occurred_inner = 0;
+
+            // For every cluster we make a range search for its centroid
             for (int i = 0; i < number_of_clusters; i++)
             {
+                // Do the range search for its centroid with LSH
                 std::vector<ImagePtr> RangeSearch = lsh.Approximate_Range_Search(clusters[i].GetCentroid(), radius);
+
+                // Call the reverse assignment helper method to do the assigns and the necessary updates
                 ReverseAssignment(clusters, RangeSearch, assigned_images, assignment_occurred, assignment_occurred_inner, i);
             }
+
+            // That's the condition to break the inner while loop as we said before
             if (assignment_occurred_inner == 0)
                 break;
+
+            // If there is at least one assignment multiply the radius by 2 and start all over again
             radius *= 2;
         }
+
+        // Call the helper method to assign the rest images based on Lloyd's
         LloydsForRest(input_images, clusters, assigned_images, assignment_occurred);
+
+        // That's the condition to break the while loop as we said before
         if (assignment_occurred == 0)
             break;
     }
@@ -278,43 +332,72 @@ std::vector<Cluster> ClusterAlgorithms::ReverseRangeSearchLSH(std::vector<ImageP
 
 std::vector<Cluster> ClusterAlgorithms::ReverseRangeSearchHyperCube(std::vector<ImagePtr> input_images, Cube &cube, int number_of_clusters)
 {
+    // Get the initializations of centroids bases on KMeans++
     std::vector<Cluster> clusters = KMeansPlusPlus(input_images, number_of_clusters);
+
+    // A map to match each image in the cluster it is assigned to
     std::unordered_map<int, int> assigned_images;
+
+    // Until there are no new assignments
     while (true)
     {
         int assignment_occurred = 0;
+
+        // We initialize the radius based on the minDistance between all centroids devided by 2
         double radius = MinDistanceCentroids(clusters) / 2.0;
+
+        // Until there are no new assignments from range search
         while (true)
         {
             int assignment_occurred_inner = 0;
+
+            // For every cluster we make a range search for its centroid
             for (int i = 0; i < number_of_clusters; i++)
             {
+                // Do the range search for its centroid with Hypercube
                 std::vector<ImagePtr> RangeSearch = cube.Approximate_Range_Search(clusters[i].GetCentroid(), radius);
+
+                // Call the reverse assignment helper method to do the assigns and the necessary updates
                 ReverseAssignment(clusters, RangeSearch, assigned_images, assignment_occurred, assignment_occurred_inner, i);
             }
+
+            // That's the condition to break the inner while loop as we said before
             if (assignment_occurred_inner == 0)
                 break;
+
+            // If there is at least one assignment multiply the radius by 2 and start all over again
             radius *= 2;
         }
+
+        // Call the helper method to assign the rest images based on Lloyd's
         LloydsForRest(input_images, clusters, assigned_images, assignment_occurred);
+
+        // That's the condition to break the while loop as we said before
         if (assignment_occurred == 0)
             break;
     }
     return clusters;
 }
 
+// Calculates and returns the sihlouetters for all clusters and the stotal
 std::tuple<std::vector<double>, double> ClusterAlgorithms::Silhouettes(std::vector<Cluster> clusters)
 {
+    // We initialize an empty vector which will be used to store the silhouette for each cluster
     std::vector<double> silhouettes;
     int num_of_clusters = clusters.size();
     double stotal = 0.0;
     int total_members = 0;
+
+    // Iterate over every cluster
     for (int i = 0; i < num_of_clusters; i++)
     {
+
         double si = 0.0;
-        std::vector<ImagePtr> members = clusters[i].GetMemberOfCluster();
+
+        // Iterate over every member from the current cluster's member list
         for (auto member : clusters[i].GetMemberOfCluster())
         {
+            // We apply the formula from the slides
             double ai = clusters[i].AverageDistance(member);
             double bi = clusters[std::get<2>(MinDistanceToCentroids(member, clusters))].AverageDistance(member);
             si += (bi - ai) / std::max(ai, bi);

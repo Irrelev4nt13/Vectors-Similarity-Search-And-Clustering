@@ -9,7 +9,22 @@
 #include "Cluster.hpp"
 #include "Lsh.hpp"
 #include "Cube.hpp"
-
+/**
+ * @brief The class of the clustering algorithms consists of the following
+ *
+ * @param distanceHelper the generic distance
+ *
+ * @method MinDistanceToCentroids calculates and returns the minDistance, the cluster with minDistance and the next closest cluster for the given image
+ * @method MinDistanceCentroids calculates and returns the minDistance between all centroids
+ * @method KMeansPlusPlus returns a vector with Cluster objects with initialized centroids
+ * @method MacQueen the MacQueen algorithm to update the centroids
+ * @method LloydsAssignment the implementation of Lloyds algorithm
+ * @method ReverseAssignment a helper function to assign the objects from RangeSearch
+ * @method LloydsForRest a helper function to assign the images that were not assigned during reverse assignment
+ * @method ReverseRangeSearchLSH the clustering algorithm for LSH
+ * @method ReverseRangeSearchHyperCube the clustering algorithm for Hypercube
+ * @method Silhouettes returns a tuple with first element a vector of double values with the silhouette of each cluster and the second element is the stotal
+ */
 class ClusterAlgorithms
 {
 private:
