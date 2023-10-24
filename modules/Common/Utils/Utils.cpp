@@ -85,8 +85,8 @@ double DotProduct(const std::vector<double> &first, const std::vector<double> &s
  * @brief Binary search in probalities to find the index corresponding to x
  *
  * @param partial partial sums used in KmeansPlusPlus
- * @param x must be uniform real number from 0 to last of probs
- * @return index to probs based on x
+ * @param x must be uniform real number from 0 to last of partial
+ * @return index to partial sums based on x
  */
 int binarySearch(const std::vector<double> &partial, double x)
 {

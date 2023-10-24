@@ -131,7 +131,7 @@ std::vector<Cluster> ClusterAlgorithms::KMeansPlusPlus(std::vector<ImagePtr> inp
         // size: n - t where t increases by 1 after each cluster has been initialized
         int partialSum_size = input_images.size() - centroids.size();
 
-        // probabilities
+        // partial sums
         std::vector<double> partialSum(partialSum_size);
 
         // calculate partial sums
