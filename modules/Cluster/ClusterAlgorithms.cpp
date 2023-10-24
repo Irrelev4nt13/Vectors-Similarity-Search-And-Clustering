@@ -108,6 +108,8 @@ std::vector<Cluster> ClusterAlgorithms::KMeansPlusPlus(std::vector<ImagePtr> inp
     {
         std::vector<double> minDistances;
 
+        double maxDistance = 0.0;
+
         for (std::size_t j = 0; j < input_images.size(); j++)
         {
             // If current image id of dataset matches an id from previously selected centroids, continue
@@ -120,33 +122,32 @@ std::vector<Cluster> ClusterAlgorithms::KMeansPlusPlus(std::vector<ImagePtr> inp
             std::tuple<double, int, int> distance_and_id = MinDistanceToCentroids(input_images[j], clusters);
 
             double distance = std::get<0>(distance_and_id);
-
             minDistances.push_back(distance);
+
+            if (distance > maxDistance)
+                maxDistance = distance;
         }
 
         // size: n - t where t increases by 1 after each cluster has been initialized
-        int probs_size = input_images.size() - centroids.size();
+        int partialSum_size = input_images.size() - centroids.size();
 
         // probabilities
-        std::vector<double> probs(probs_size);
-
-        // Get the max from the min distances in order to later normalize the distances
-        double maxD = *max_element(minDistances.begin(), minDistances.end());
+        std::vector<double> partialSum(partialSum_size);
 
         // calculate partial sums
         double sum = 0;
-        for (int r = 0; r < probs_size; r++)
+        for (int r = 0; r < partialSum_size; r++)
         {
-            minDistances[r] /= maxD; // normalize
+            minDistances[r] /= maxDistance;
             sum += pow(minDistances[r], 2);
-            probs[r] = sum;
+            partialSum[r] = sum;
         }
 
         // random x with uniform real distriubution in the range of the probabilities values
-        double x = RealDistribution(0, probs[probs_size - 1]);
+        double x = RealDistribution(0, partialSum[partialSum_size - 1]);
 
-        // apply binary search for x in probs vector and find the corresponding index
-        int idx = binarySearch(probs, x);
+        // apply binary search for x in partialSum vector and find the corresponding index
+        int idx = binarySearch(partialSum, x);
 
         // update set and clusters
         centroids.insert(idx);
