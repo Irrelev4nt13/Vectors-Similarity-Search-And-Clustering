@@ -8,7 +8,7 @@
 #include "HashFunction.hpp"
 #include "ImageDistance.hpp"
 
-// Constructor for cube object, uses initialization list for all parameters
+// Constructor for cube object, uses initialization list
 Cube::Cube(const std::vector<ImagePtr> images, int w, int dimension, int maxCanditates, int probes, int numNn, int numBuckets)
     : dimension(dimension), maxCanditates(maxCanditates), probes(probes), numNn(numNn), w(w), numBuckets(numBuckets)
 {
