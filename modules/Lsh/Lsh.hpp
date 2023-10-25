@@ -7,7 +7,7 @@
 #include "HashTable.hpp"
 #include "ImageDistance.hpp"
 /**
- * @brief The class of a cluster consists of the following
+ * @brief The class of a lsh consists of the following
  *
  * @param numHashFuncs the dimension k = d' of hypercube
  * @param numHtables the maximum number of points the algorithm will check
