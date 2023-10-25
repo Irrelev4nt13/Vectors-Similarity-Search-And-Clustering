@@ -53,7 +53,8 @@ std::vector<Neighbor> Cube::Approximate_kNN(ImagePtr query)
     int query_bucket = hash(query);
     int candidates = 0;
     std::vector<ImagePtr> bucket;
-    for (int i = 0; i < probes + 1 && candidates < maxCanditates; i++)
+    int hamDistance = 0;
+    for (int i = 0; i < probes + 1 && candidates < maxCanditates; hamDistance++)
     {
         if (i == 0)
         {
@@ -67,12 +68,13 @@ std::vector<Neighbor> Cube::Approximate_kNN(ImagePtr query)
                 if (++candidates == maxCanditates)
                     break;
             }
+            i++;
         }
         else
         {
-            for (int j = 0; j < numBuckets && candidates < maxCanditates; j++)
+            for (int j = 0; j < numBuckets && candidates < maxCanditates && i < probes + 1; j++)
             {
-                if (HammingDistance(query_bucket, j) == i)
+                if (HammingDistance(query_bucket, j) == hamDistance)
                 {
                     bucket = buckets[j];
                     for (ImagePtr input : bucket)
@@ -84,6 +86,7 @@ std::vector<Neighbor> Cube::Approximate_kNN(ImagePtr query)
                         if (++candidates == maxCanditates)
                             break;
                     }
+                    ++i;
                 }
             }
         }
@@ -103,9 +106,9 @@ std::vector<ImagePtr> Cube::Approximate_Range_Search(ImagePtr query, const doubl
 
     int query_bucket = hash(query);
     int candidates = 0;
-
     std::vector<ImagePtr> bucket;
-    for (int i = 0; i < probes + 1 && candidates < maxCanditates; i++)
+    int hamDistance = 0;
+    for (int i = 0; i < probes + 1 && candidates < maxCanditates; hamDistance++)
     {
         if (i == 0)
         {
@@ -118,12 +121,13 @@ std::vector<ImagePtr> Cube::Approximate_Range_Search(ImagePtr query, const doubl
                 if (++candidates == maxCanditates)
                     break;
             }
+            i++;
         }
         else
         {
-            for (int j = 0; j < numBuckets && candidates < maxCanditates; j++)
+            for (int j = 0; j < numBuckets && candidates < maxCanditates && i < probes + 1; j++)
             {
-                if (HammingDistance(query_bucket, j) == i)
+                if (HammingDistance(query_bucket, j) == hamDistance)
                 {
                     bucket = buckets[j];
                     for (ImagePtr input : bucket)
@@ -134,6 +138,7 @@ std::vector<ImagePtr> Cube::Approximate_Range_Search(ImagePtr query, const doubl
                         if (++candidates == maxCanditates)
                             break;
                     }
+                    ++i;
                 }
             }
         }
