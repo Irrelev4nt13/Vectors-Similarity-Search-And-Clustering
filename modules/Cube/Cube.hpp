@@ -10,7 +10,7 @@
 #include "ImageDistance.hpp"
 
 /**
- * @brief The class of a cluster consists of the following
+ * @brief The class of a cube consists of the following
  *
  * @param dimension the dimension k = d' of hypercube
  * @param maxCanditates the maximum number of points the algorithm will check
