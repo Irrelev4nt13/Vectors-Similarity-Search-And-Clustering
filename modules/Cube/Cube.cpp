@@ -138,6 +138,8 @@ std::vector<Neighbor> Cube::Approximate_kNN(ImagePtr query)
     }
     return KnearestNeighbors;
 }
+
+// Returns a vector with images inside the given radius
 std::vector<ImagePtr> Cube::Approximate_Range_Search(ImagePtr query, const double radius)
 {
     std::vector<ImagePtr> RangeSearch;
