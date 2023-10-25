@@ -55,31 +55,24 @@ public:
                 method = std::string(argv[i + 1]);
         }
 
-        if (inputFile.empty() || configFile.empty() || outputFile.empty() || method.empty())
-        {
-            std::string emptyVar = (inputFile.empty() ? "input file" : configFile.empty() ? "config file"
-                                                                   : outputFile.empty()   ? "output file"
-                                                                                          : "method");
-            std::cout << "Error, " << emptyVar << " was not given" << std::endl;
-            exit(EXIT_FAILURE);
-        }
+        readFilenameIfEmpty(configFile, "configuration file");
 
 #ifdef DEBUG
         configFile = getFullPath(configFile);
 #endif
 
-        std::fstream conf(configFile, std::ios::in);
-        if (conf.fail())
+        std::fstream config(configFile, std::ios::in);
+        if (config.fail())
         {
-            std::cerr << "Failed to open the file." << std::endl;
-            conf.close();
+            std::cout << "Failed to open the file." << std::endl;
+            config.close();
             exit(EXIT_FAILURE);
         }
 
         bool cluster_was_given = false;
         std::string line;
 
-        while (std::getline(conf, line))
+        while (std::getline(config, line))
         {
             if (line.empty())
                 continue;
@@ -107,12 +100,12 @@ public:
         }
         if (!cluster_was_given)
         {
-            std::cerr << "Error, number K of cluster was not given" << std::endl;
-            conf.close();
+            std::cout << "Error, number K of cluster was not given" << std::endl;
+            config.close();
             exit(EXIT_FAILURE);
         }
 
-        conf.close();
+        config.close();
     }
 };
 
