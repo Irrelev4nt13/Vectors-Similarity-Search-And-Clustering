@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <set>
+#include <unordered_set>
 
 #include "Image.hpp"
 #include "Utils.hpp"
@@ -34,8 +36,8 @@ Lsh::~Lsh() {}
 // Returns the k approximate nearest neighbors
 std::vector<Neighbor> Lsh::Approximate_kNN(ImagePtr query)
 {
-  // We are using a priority queue to store the objects efficiently with a custom compare class
-  std::priority_queue<Neighbor, std::vector<Neighbor>, CompareNeighbor> nearestNeighbors;
+  // We are using a set to store the objects efficiently with a custom compare class
+  std::set<Neighbor, CompareNeighbor> nearestNeighbors;
 
   // We are searching in every hash table
   for (int i = 0; i < numHtables; i++)
@@ -48,30 +50,24 @@ std::vector<Neighbor> Lsh::Approximate_kNN(ImagePtr query)
     {
       // We calculate the distance from this image to the query
       double dist = distance->calculate(input, query);
-      // Push it to the priority queue
-      nearestNeighbors.push(Neighbor(input, dist));
+      // Push it to the set which will automatically check for duplicates
+      nearestNeighbors.insert(Neighbor(input, dist));
 
-      // In order to save time later we only store numNn of approximate nearest neighbors
-      if ((int)nearestNeighbors.size() > numNn)
-        nearestNeighbors.pop();
+      // In order to save space we only store numNn of approximate nearest neighbors
+      if (nearestNeighbors.size() > numNn)
+        nearestNeighbors.erase(std::prev(nearestNeighbors.end()));
     }
   }
-
   // Lastly we want to make a vector from those neighbors
-  std::vector<Neighbor> KnearestNeighbors;
-  while (!nearestNeighbors.empty())
-  {
-    // We insert it in the beginning of the vector because the elements in priority queue are stored in descending order based on their distances
-    KnearestNeighbors.insert(KnearestNeighbors.begin(), nearestNeighbors.top());
-    nearestNeighbors.pop();
-  }
+  std::vector<Neighbor> KnearestNeighbors(nearestNeighbors.begin(), nearestNeighbors.end());
   return KnearestNeighbors;
 }
 
 // Returns a vector with images inside the given radius
 std::vector<ImagePtr> Lsh::Approximate_Range_Search(ImagePtr query, const double radius)
 {
-  std::vector<ImagePtr> RangeSearch;
+  // We are using a set to store the objects efficiently without duplicates
+  std::set<ImagePtr> rangesearch;
   // We are searching in every hash table
   for (int i = 0; i < numHtables; i++)
   {
@@ -86,8 +82,9 @@ std::vector<ImagePtr> Lsh::Approximate_Range_Search(ImagePtr query, const double
       // If its distance is less or equal to the given radius
       if (dist <= radius)
         // We push it to the vector
-        RangeSearch.push_back(input);
+        rangesearch.insert(input);
     }
   }
+  std::vector<ImagePtr> RangeSearch(rangesearch.begin(), rangesearch.end());
   return RangeSearch;
 }
