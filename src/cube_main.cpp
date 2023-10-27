@@ -27,7 +27,7 @@ int main(int argc, char const *argv[])
     std::ofstream output_file;
 
     // window
-    int w = 4;
+    int w = 2240;
     int numBuckets = std::pow(2, args.dimension); // {0,1}^d'=> 2^k
 
     // Configure the metric used for the lsh program
@@ -47,7 +47,7 @@ int main(int argc, char const *argv[])
 
         // For each query data point calculate its approximate k nearesest neighbors with hypercube algorithm and compare it to brute force
         // Also, make a range search with hypercube
-        for (int q = 0; q < 10; q++)
+        for (int q = 0; q < (int)query_images.size(); q++)
         {
             ImagePtr query = query_images[q];
 
