@@ -102,11 +102,11 @@ test-cube: $(CUBE_TEST)
 
 test-cluster: $(CLUSTER_TEST)
 
-ARGS_LSH := -d datasets/train-images.idx3-ubyte -q datasets/t10k-images.idx3-ubyte -k 4 -L 5 -o output.txt -N 1 -R 10000
+ARGS_LSH := -d datasets/train-images.idx3-ubyte -q datasets/t10k-images.idx3-ubyte -k 4 -L 5 -o output.txt -N 5 -R 10000
 
-ARGS_CUBE := -d datasets/train-images.idx3-ubyte -q datasets/t10k-images.idx3-ubyte -k 14 -M 10 -probes 2 -o output.txt -N 1 -R 10000
+ARGS_CUBE := -d datasets/train-images.idx3-ubyte -q datasets/t10k-images.idx3-ubyte -k 14 -M 6000 -probes 15 -o output.txt -N 5 -R 10000
 
-ARGS_CLUSTER := -i datasets/t10k-images.idx3-ubyte -c conf/cluster.conf -o output.txt  -m Hypercube
+ARGS_CLUSTER := -i datasets/t10k-images.idx3-ubyte -c conf/cluster.conf -o output.txt -complete -m Classic
 
 run-lsh: lsh
 	./$(LSH) $(ARGS_LSH)
