@@ -123,28 +123,22 @@ int HammingDistance(const int first, const int second)
     return distance;
 }
 
+static std::random_device generator;
+
 double RealDistribution(int from, int to)
 {
     std::uniform_real_distribution<double> rd(from, to);
-    return rd(RandGen());
+    return rd(generator);
 }
 
 int IntDistribution(int from, int to)
 {
     std::uniform_int_distribution<int> id(from, to);
-    return id(RandGen());
+    return id(generator);
 }
 
 double NormalDistribution(double from, double to)
 {
     std::normal_distribution<double> nd(from, to);
-    return nd(RandGen());
-}
-
-std::mt19937 &RandGen()
-{
-    // static std::random_device rd;
-    // static std::mt19937 gen(rd());
-    static std::mt19937 gen(0);
-    return gen;
+    return nd(generator);
 }
