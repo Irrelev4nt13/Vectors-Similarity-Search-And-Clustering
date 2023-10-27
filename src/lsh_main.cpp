@@ -27,7 +27,7 @@ int main(int argc, char const *argv[])
     std::ofstream output_file;
 
     // window
-    int w = 4;
+    int w = 2240;
     int numBuckets = inputParser.GetMetadata().numOfImages / 8; // n / 8
 
     // Configure the metric used for the lsh program
@@ -77,12 +77,12 @@ int main(int argc, char const *argv[])
             output_file << "tLSH: " << elapsed_lsh.count() * 1e-9 << std::endl;
             output_file << "tTrue: " << elapsed_brute.count() * 1e-9 << std::endl;
 
-            std::vector<ImagePtr> range_vector = lsh.Approximate_Range_Search(query, args.radius);
+            // std::vector<ImagePtr> range_vector = lsh.Approximate_Range_Search(query, args.radius);
 
-            output_file << "R-near neighbors:" << std::endl;
-            limit = range_vector.size();
-            for (int i = 0; i < limit; i++)
-                output_file << range_vector[i]->id << std::endl;
+            // output_file << "R-near neighbors:" << std::endl;
+            // limit = range_vector.size();
+            // for (int i = 0; i < limit; i++)
+            //     output_file << range_vector[i]->id << std::endl;
 
             output_file << std::endl;
         }
