@@ -47,7 +47,7 @@ int main(int argc, char const *argv[])
 
         // For each query data point calculate its approximate k nearesest neighbors with lsh algorithm and compare it to brute force
         // Also, make a range search with lsh
-        for (int q = 0; q < 10; q++)
+        for (int q = 0; q < (int)query_images.size(); q++)
         {
             ImagePtr query = query_images[q];
 
@@ -77,12 +77,12 @@ int main(int argc, char const *argv[])
             output_file << "tLSH: " << elapsed_lsh.count() * 1e-9 << std::endl;
             output_file << "tTrue: " << elapsed_brute.count() * 1e-9 << std::endl;
 
-            // std::vector<ImagePtr> range_vector = lsh.Approximate_Range_Search(query, args.radius);
+            std::vector<ImagePtr> range_vector = lsh.Approximate_Range_Search(query, args.radius);
 
-            // output_file << "R-near neighbors:" << std::endl;
-            // limit = range_vector.size();
-            // for (int i = 0; i < limit; i++)
-            //     output_file << range_vector[i]->id << std::endl;
+            output_file << "R-near neighbors:" << std::endl;
+            limit = range_vector.size();
+            for (int i = 0; i < limit; i++)
+                output_file << range_vector[i]->id << std::endl;
 
             output_file << std::endl;
         }
