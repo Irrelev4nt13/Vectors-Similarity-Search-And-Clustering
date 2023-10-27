@@ -35,6 +35,4 @@ int IntDistribution(int from, int to);
 
 double NormalDistribution(double from, double to);
 
-std::mt19937 &RandGen();
-
 #endif
