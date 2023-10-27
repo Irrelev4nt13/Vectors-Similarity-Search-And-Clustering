@@ -50,7 +50,7 @@ int main(int argc, char const *argv[])
     }
     else if (args.method == "LSH")
     {
-        int w = 4;
+        int w = 10;
         int numBuckets = inputParser.GetMetadata().numOfImages / 8;
         Lsh lsh(input_images, args.number_of_vector_hash_functions, args.number_of_vector_hash_tables, -1, w, numBuckets);
 
@@ -60,7 +60,7 @@ int main(int argc, char const *argv[])
     }
     else if (args.method == "Hypercube")
     {
-        int w = 4;
+        int w = 10;
         int numBuckets = std::pow(2, args.number_of_hypercube_dimensions);
         Cube cube(input_images, w, args.number_of_hypercube_dimensions, args.max_number_M_hypercube, args.number_of_probes, -1, numBuckets);
 
