@@ -8,7 +8,7 @@ Implement the `LSH` algorithm for vectors in d-dimensional space based on the eu
 
 The design of the code should allow its easy extension to vector spaces with another metric, e.g. p-norm or different spaces.
 
-Implementation of algorithms for vector clustering in R^d space. The L2 metric will be used. The initialization is performed with the `k-Means++` technique and the update based on the `MacQueen` method. The algorithms differ in the assignment step where one of the following algorithms is used:
+Implementation of algorithms for vector clustering in $R^d$ space. The L2 metric will be used. The initialization is performed with the `k-Means++` technique and the update based on the `MacQueen` method. The algorithms differ in the assignment step where one of the following algorithms is used:
 
 1. `Lloyd's` exact algorithm
 
